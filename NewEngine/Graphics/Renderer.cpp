@@ -1,5 +1,13 @@
 #include "Renderer.h"
-//#include <SDL.h>
+
+//#pragma comment(lib, "../glew-2.0.0/lib/Debug/Win32/glew32.lib")
+//#include "../glew-2.0.0/include/GL/glew.h"
+//#include <glew.h>
+#include <GL\glew.h>
+#include <GL\freeglut.h>
+
+//#pragma comment(lib, "glew32.lib")
+//#pragma comment(lib, "../freeglut/lib/freeglut.lib")
 
 #define FRAME_RATE 60
 
@@ -7,6 +15,11 @@ Renderer::Renderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
 	screen = SDL_CreateWindow("SDL Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 720, SDL_WINDOW_OPENGL);
 	renderer = SDL_CreateRenderer(screen, -1, 0);
+	
+	//OpenGL
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 }
 
 Renderer::~Renderer(){
@@ -42,7 +55,7 @@ void Renderer::UpdateScene(float msec){
 	SDL_RenderClear(renderer);
 
 	//Additional stuff render here
-	DrawText();
+	DrawTextLabel();
 	/*Draw2DRect(10, 10, 100, 200, 100, 205, 222, 200);*/
 	//End
 	
@@ -69,7 +82,7 @@ void Renderer::Draw2DRect(int x, int y, int height, int width,
 }
 
 
-void Renderer::DrawText(){
+void Renderer::DrawTextLabel(){
 	TTF_Init();
 
 	TTF_Font *font = TTF_OpenFont("../Assets/Fonts/UnifrakturCook-Bold.ttf", 200);

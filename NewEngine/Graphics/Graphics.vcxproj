@@ -38,20 +38,24 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(ProjectDir)freeglut\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)SDL2-2.0.5\include;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SDL2-2.0.5\include;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\include;$(SolutionDir)glew-2.0.0\include;$(SolutionDir)freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
       <OutputFile>$(SolutionDir)$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2.lib;$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2main.lib;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\lib\$(PlatformShortName)\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2.lib;$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2main.lib;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\lib\$(PlatformShortName)\SDL2_ttf.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32s.lib;$(SolutionDir)freeglut\lib\freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
