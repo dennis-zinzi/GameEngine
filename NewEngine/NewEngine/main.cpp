@@ -1,11 +1,17 @@
-#include <iostream>
+//Graphics includes
 #include "../Graphics/Renderer.h"
-
 #pragma comment(lib, "Graphics.lib")
+
+//Physics includes
+#include "../Physics/PhysicsManager.h"
+#pragma comment(lib, "Physics.lib")
 
 int main(int argc, char **argv){
 	//Create Graphics environment
-	Renderer r;
+	Renderer renderer;
+
+	//Create Physics environment
+	PhysicsManager physics;
 
 	bool running = true;
 
@@ -13,9 +19,9 @@ int main(int argc, char **argv){
 	int time = 0;
 
 	while(running){
-		time = r.GetTime();
-		running = r.CheckStillRunning();
-		r.UpdateScene((float)time);
+		time = renderer.GetTime();
+		running = renderer.CheckStillRunning();
+		renderer.UpdateScene((float)time);
 	}
 
 	return 0;

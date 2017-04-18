@@ -7,14 +7,19 @@ class Renderer{
 		Renderer();
 		~Renderer();
 
+		void OpenGLUpdate();
+
 		bool CheckStillRunning();
 		void UpdateScene(float msec);
 		void Draw2DRect(int x, int y, int height, int width, int red, int green, int blue, int alpha);
 		void DrawTextLabel();
 
-		int GetTime() const;
+		inline int GetTime() const{
+			return SDL_GetTicks();
+		}
 
 	private:
 		SDL_Window *screen;
 		SDL_Renderer *renderer;
+		SDL_GLContext context;
 };

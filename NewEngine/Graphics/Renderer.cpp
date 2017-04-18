@@ -1,25 +1,30 @@
 #include "Renderer.h"
 
-//#pragma comment(lib, "../glew-2.0.0/lib/Debug/Win32/glew32.lib")
-//#include "../glew-2.0.0/include/GL/glew.h"
-//#include <glew.h>
-#include <GL\glew.h>
-#include <GL\freeglut.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
-//#pragma comment(lib, "glew32.lib")
-//#pragma comment(lib, "../freeglut/lib/freeglut.lib")
 
 #define FRAME_RATE 60
+#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH 1200
+
 
 Renderer::Renderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
-	screen = SDL_CreateWindow("SDL Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 720, SDL_WINDOW_OPENGL);
+	screen = SDL_CreateWindow("SDL Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
 	renderer = SDL_CreateRenderer(screen, -1, 0);
+	context = SDL_GL_CreateContext(screen);
+
+	//Set OpenGL attribs
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	
 	//OpenGL
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	gluPerspective(45.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
+	glMatrixMode(GL_MODELVIEW);
 }
 
 Renderer::~Renderer(){
@@ -27,8 +32,16 @@ Renderer::~Renderer(){
 }
 
 
-int Renderer::GetTime() const{
-	return SDL_GetTicks();
+void Renderer::OpenGLUpdate(){
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	//glBegin(GL_TRIANGLES);
+	//{
+	//	glVertex3f(1.0f, 1.0f, -5.0f);
+	//	glVertex3f(-1.0f, -1.0f, -5.0f);
+	//	glVertex3f(1.0f, -1.0f, -5.0f);
+	//}
+	//glEnd();
 }
 
 
@@ -61,6 +74,8 @@ void Renderer::UpdateScene(float msec){
 	
 	SDL_RenderPresent(renderer);
 
+	//OpenGLUpdate();
+	//SDL_GL_SwapWindow(screen);
 
 	if(1000 / FRAME_RATE > SDL_GetTicks() - msec){
 		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (SDL_GetTicks() - msec)));
