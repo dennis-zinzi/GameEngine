@@ -15,6 +15,13 @@ class PhysicsManager{
 			world->stepSimulation(1 / 120.0f);
 		}
 
+		btRigidBody* AddSphereObj(float radius, float x, float y, float z, float mass);
+		btRigidBody* AddPlane(float x, float y, float z, float mass);
+
+		btRigidBody* GetWorldPlane() const{
+			return physicsObjects[0];
+		}
+
 	private:
 		vector<btRigidBody*> physicsObjects;
 		btDynamicsWorld *world;
