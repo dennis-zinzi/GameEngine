@@ -29,7 +29,7 @@ PhysicsManager::~PhysicsManager(){
 	delete world;
 }
 
-btRigidBody* PhysicsManager::AddSphereObj(float radius, float x, float y, float z, float mass){
+btRigidBody* PhysicsManager::AddSphere(float radius, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
@@ -69,4 +69,67 @@ btRigidBody * PhysicsManager::AddPlane(float x, float y, float z, float mass)
 	physicsObjects.push_back(planeBod);
 
 	return planeBod;
+}
+
+btRigidBody * PhysicsManager::AddCylinder(float radius, float height, float x, float y, float z, float mass){
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(x, y, z));
+
+	btCylinderShape *cylinder = new btCylinderShape(btVector3(radius, height / 2.0f, radius));
+
+	btVector3 inertia;
+	if(mass > 0.0f){
+		cylinder->calculateLocalInertia(mass, inertia);
+	}
+	btMotionState *motion = new btDefaultMotionState(t);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cylinder, inertia);
+
+	btRigidBody *cylinderBod = new btRigidBody(info);
+	world->addRigidBody(cylinderBod);
+	physicsObjects.push_back(cylinderBod);
+
+	return cylinderBod;
+}
+
+btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float y, float z, float mass){
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(x, y, z));
+
+	btConeShape *cone = new btConeShape(radius, height);
+
+	btVector3 inertia;
+	if(mass > 0.0f){
+		cone->calculateLocalInertia(mass, inertia);
+	}
+	btMotionState *motion = new btDefaultMotionState(t);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cone, inertia);
+
+	btRigidBody *coneBod = new btRigidBody(info);
+	world->addRigidBody(coneBod);
+	physicsObjects.push_back(coneBod);
+
+	return coneBod;
+}
+
+btRigidBody * PhysicsManager::AddBox(float halfWidth, float halfHeight, float halfDepth, float x, float y, float z, float mass){
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(x, y, z));
+
+	btBoxShape *box = new btBoxShape(btVector3(halfWidth, halfHeight, halfHeight));
+
+	btVector3 inertia;
+	if(mass > 0.0f){
+		box->calculateLocalInertia(mass, inertia);
+	}
+	btMotionState *motion = new btDefaultMotionState(t);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, box, inertia);
+
+	btRigidBody *boxBod = new btRigidBody(info);
+	world->addRigidBody(boxBod);
+	physicsObjects.push_back(boxBod);
+
+	return boxBod;
 }

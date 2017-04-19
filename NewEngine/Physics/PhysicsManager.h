@@ -15,8 +15,12 @@ class PhysicsManager{
 			world->stepSimulation(1 / 120.0f);
 		}
 
-		btRigidBody* AddSphereObj(float radius, float x, float y, float z, float mass);
+		btRigidBody* AddSphere(float radius, float x, float y, float z, float mass);
 		btRigidBody* AddPlane(float x, float y, float z, float mass);
+		btRigidBody* AddCylinder(float radius, float height, float x, float y, float z, float mass);
+		btRigidBody* AddCone(float radius, float height, float x, float y, float z, float mass);
+		btRigidBody* AddBox(float halfWidth, float halfHeight, float halfDepth, float x, float y, float z, float mass);
+
 
 		btRigidBody* GetWorldPlane() const{
 			return physicsObjects[0];

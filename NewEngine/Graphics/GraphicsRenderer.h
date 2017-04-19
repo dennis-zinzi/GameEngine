@@ -25,10 +25,22 @@ class GraphicsRenderer{
 			return SDL_GetTicks();
 		}
 
-		static void RenderPlane(float halfWidth, float halfHeight, float halfDepth, float matrix[16],
+		//Shape Rendering functions
+		static void RenderPlane(float x, float y, float z,
+			float halfWidth, float halfHeight, float halfDepth, float matrix[16],
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
 		static void RenderSphere(float radius, float matrix[16], int red = 45, int green = 85, int blue = 235, int alpha = 255);
+
+		static void RenderCylinder(float radius, float height, float matrix[16],
+			int red = 45, int green = 85, int blue = 235, int alpha = 255);
+
+		static void RenderCone(float radius, float height, float matrix[16],
+			int red = 45, int green = 85, int blue = 235, int alpha = 255);
+
+		static void RenderBox(float x, float y, float z,
+			float halfWidth, float halfHeight, float halfDepth, float matrix[16],
+			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
 	private:
 		SDL_Window *screen;
