@@ -13,7 +13,7 @@ GraphicsRenderer::GraphicsRenderer(){
 	context = SDL_GL_CreateContext(screen);
 	IMG_Init(IMG_INIT_JPG);
 	IMG_Init(IMG_INIT_PNG);
-
+	
 	//Set OpenGL attribs
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -31,9 +31,13 @@ GraphicsRenderer::GraphicsRenderer(){
 	
 	//Enable depth test (Causes z-fighting)
 	glEnable(GL_DEPTH_TEST);
+
+	//Enable texture mapping
+	glEnable(GL_TEXTURE_2D);
 }
 
 GraphicsRenderer::~GraphicsRenderer(){
+	glDisable(GL_TEXTURE_2D);
 	SDL_Quit();
 }
 
@@ -118,25 +122,67 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	//Get full image path
 	string imagePath = IMAGE_PATH + imagename;
 
-	SDL_Surface *image = IMG_Load(imagePath.c_str());
-	if(!image){
-		cout << "Error loading image: " << IMG_GetError() << endl;
-		//cout << imagePath << " not found, check path" << endl;
-		return -1;
-	}
+	//SDL_Surface *image = IMG_Load(imagePath.c_str());
+	//if(!image){
+	//	cout << "Error loading image: " << IMG_GetError() << endl;
+	//	//cout << imagePath << " not found, check path" << endl;
+	//	return -1;
+	//}
 
-	unsigned int texID;
-	glGenTextures(1, &texID);
+	//unsigned int texID = 0;
+	//glGenTextures(1, &texID);
+	//glBindTexture(GL_TEXTURE_2D, texID);
+
+
+	//int mode = GL_RGB;
+	//if(image->format->BytesPerPixel == 4){
+	//	if(image->format->Rmask == 0x000000ff){
+	//		cout << "4yay" << endl;
+	//		mode = GL_RGBA;
+	//	}
+	//	else{
+	//		cout << "4b" << endl;
+	//		mode = GL_BGRA;
+	//	}
+	//}
+	//else if(image->format->BytesPerPixel == 3){
+	//	if(image->format->Rmask == 0x000000ff){
+	//		cout << "3yay" << endl;
+	//		mode = GL_RGB;
+	//	}
+	//	else{
+	//		cout << "3b" << endl;
+	//		mode = GL_BGR;
+	//	}
+	//}
+
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, mode, GL_UNSIGNED_BYTE, image->pixels);
+
+	//if(glGetError() == GL_NO_ERROR){ cout << "Nice" << endl; }
+	//if(glGetError() != GL_NO_ERROR){
+	//	cout << "Error: " << gluErrorString(glGetError()) << endl;
+	//}
+
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	////glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	////glGenerateMipmap(GL_TEXTURE_2D);
+
+	////Release image surface
+	//SDL_FreeSurface(image);
+
+	GLuint texID = SOIL_load_OGL_texture(imagePath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	glBindTexture(GL_TEXTURE_2D, texID);
+
+	//Set filters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, image->pixels);
 	//glGenerateMipmap(GL_TEXTURE_2D);
-
-	//Release image surface
-	SDL_FreeSurface(image);
 
 	return texID;
 }
@@ -151,9 +197,15 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 		halfHeight = height / 2.0f,
 		halfDepth = depth / 2.0f;
 
+	//GLuint tex = LoadTexture("chess_board.jpg");
+	//GLuint tex = SOIL_load_OGL_texture(IMAGE_PATH"chessboard.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	//glGenTextures(1, &tex);
+	//glBindTexture(GL_TEXTURE_2D, tex);
+
+	//LoadTexture("chess_board.jpg");
 	GLuint tex = LoadTexture("chess_board.jpg");
+	if(tex == 0){ cout << SOIL_last_result() << endl; }
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
 	{
@@ -174,8 +226,8 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 	}
 	glPopMatrix();
 
-	glDisable(GL_TEXTURE_2D);
-	glDeleteTextures(1, &tex);
+	//SOIL_free_image_data(img);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void GraphicsRenderer::RenderSphere(float radius, float matrix[16], int red, int green, int blue, int alpha){
@@ -235,7 +287,8 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 
 	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
 
-	unsigned int tex = LoadTexture("chess_board.jpg");
+	//unsigned int tex = LoadTexture("chess_board.jpg");
+	GLuint tex = SOIL_load_OGL_texture(IMAGE_PATH"chessboard.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glEnable(GL_TEXTURE_2D);
 

@@ -46,14 +46,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)SDL2-2.0.5\include;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\include;$(SolutionDir)glew-2.0.0\include;$(SolutionDir)freeglut\include;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SDL2-2.0.5\include;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\include;$(SolutionDir)glew-2.0.0\include;$(SolutionDir)freeglut\include;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\include;$(SolutionDir)SOIL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
       <OutputFile>$(SolutionDir)$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2.lib;$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2main.lib;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\lib\$(PlatformShortName)\SDL2_ttf.lib;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\lib\$(PlatformShortName)\SDL2_image.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32s.lib;$(SolutionDir)freeglut\lib\freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2.lib;$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2main.lib;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\lib\$(PlatformShortName)\SDL2_ttf.lib;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\lib\$(PlatformShortName)\SDL2_image.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32s.lib;$(SolutionDir)freeglut\lib\freeglut.lib;$(SolutionDir)SOIL\$(Configuration)\SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Lib>

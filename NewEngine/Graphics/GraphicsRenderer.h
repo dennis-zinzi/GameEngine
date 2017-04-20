@@ -2,6 +2,7 @@
 #include "../SDL2-2.0.5/include/SDL.h"
 #include "../SDL2-2.0.5/SDL2_ttf-2.0.14/include/SDL_ttf.h"
 #include "../SDL2-2.0.5/SDL2_image-2.0.1/include/SDL_image.h"
+#include "../SOIL/SOIL.h"
 
 //OpenGL
 //#include <GL/glew.h>

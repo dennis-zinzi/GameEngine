@@ -6,6 +6,10 @@
 #include "../Physics/PhysicsManager.h"
 #pragma comment(lib, "Physics.lib")
 
+//Audio includes
+#include "../Audio/AudioPlayer.h"
+#pragma comment(lib, "Audio.lib")
+
 #include <vector>
 #include "GameObject.h"
 
@@ -17,6 +21,10 @@ int main(int argc, char **argv){
 	//Create Graphics environment
 	GraphicsRenderer renderer;
 
+	//Create Audio environment
+	AudioPlayer player("notahero.wav");
+	player.PlayMusic();
+
 	//Create Physics environment
 	PhysicsManager physics;
 	//Add floor
@@ -24,7 +32,7 @@ int main(int argc, char **argv){
 	
 	//Spheres
 	GameObject *sp1 = new GameObject(physics.AddSphere(1.0f, 0.0f, 20.0f, -10.0f, 1.0f));
-	GameObject *sp2 = new GameObject(physics.AddSphere(1.0f, 0.5f, 20.5f, -10.0f, 1.0f), 255);
+	//GameObject *sp2 = new GameObject(physics.AddSphere(1.0f, 0.5f, 20.5f, -10.0f, 1.0f), 255);
 	//Cylinder
 	GameObject *cyl = new GameObject(physics.AddCylinder(1.5f, 3.0f, 1.2f, 10.0f, -10.0f, 5.0f), 10, 0, 200, 150);
 	//Cone
@@ -36,7 +44,7 @@ int main(int argc, char **argv){
 	gameObjects.push_back(cone1);
 	gameObjects.push_back(box1);
 	gameObjects.push_back(sp1);
-	gameObjects.push_back(sp2);
+	//gameObjects.push_back(sp2);
 	gameObjects.push_back(cyl);
 
 

@@ -73,6 +73,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Audio\Audio.vcxproj">
+      <Project>{1d5cddf4-6489-4dbe-8bc8-2a4dae88960b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{3d23a848-7e3c-47c4-bc02-983982f73c40}</Project>
     </ProjectReference>
