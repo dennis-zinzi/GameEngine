@@ -97,7 +97,7 @@ btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
 
-	btConeShape *cone = new btConeShape(radius, height);
+	btConeShape *cone = new btConeShape(radius*2, height);
 
 	btVector3 inertia;
 	if(mass > 0.0f){
@@ -113,12 +113,12 @@ btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float
 	return coneBod;
 }
 
-btRigidBody * PhysicsManager::AddBox(float halfWidth, float halfHeight, float halfDepth, float x, float y, float z, float mass){
+btRigidBody * PhysicsManager::AddBox(float width, float height, float depth, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
 
-	btBoxShape *box = new btBoxShape(btVector3(halfWidth, halfHeight, halfHeight));
+	btBoxShape *box = new btBoxShape(btVector3(width / 2.0f, height / 2.0f, depth / 2.0f));
 
 	btVector3 inertia;
 	if(mass > 0.0f){

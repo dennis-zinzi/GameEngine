@@ -1,6 +1,7 @@
 //#include <SDL.h>
 #include "../SDL2-2.0.5/include/SDL.h"
 #include "../SDL2-2.0.5/SDL2_ttf-2.0.14/include/SDL_ttf.h"
+#include "../SDL2-2.0.5/SDL2_image-2.0.1/include/SDL_image.h"
 
 //OpenGL
 //#include <GL/glew.h>
@@ -8,6 +9,14 @@
 
 //#include <GL/freeglut.h>
 #include "../freeglut/include/GL/freeglut.h"
+
+#include "common.h"
+#include <string>
+#include <iostream>
+
+using std::string;
+using std::cout;
+using std::endl;
 
 class GraphicsRenderer{
 	public:
@@ -21,25 +30,31 @@ class GraphicsRenderer{
 		void Draw2DRect(int x, int y, int height, int width, int red, int green, int blue, int alpha);
 		void DrawTextLabel();
 
+		static unsigned int LoadTexture(string imagename);
+
 		inline int GetTime() const{
 			return SDL_GetTicks();
 		}
 
-		//Shape Rendering functions
+		/** Shape Rendering functions **/
+		//Renders plane
 		static void RenderPlane(float x, float y, float z,
-			float halfWidth, float halfHeight, float halfDepth, float matrix[16],
+			float width, float height, float depth, float matrix[16],
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
+		//Renders spere objects
 		static void RenderSphere(float radius, float matrix[16], int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
+		//Renders cylinder objects
 		static void RenderCylinder(float radius, float height, float matrix[16],
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
+		//Renders cone objects
 		static void RenderCone(float radius, float height, float matrix[16],
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
-		static void RenderBox(float x, float y, float z,
-			float halfWidth, float halfHeight, float halfDepth, float matrix[16],
+		//Renders box objects
+		static void RenderBox(float xExtent, float yExtent, float zExtent, float matrix[16],
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
 	private:

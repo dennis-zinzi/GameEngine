@@ -11,6 +11,8 @@ GraphicsRenderer::GraphicsRenderer(){
 	screen = SDL_CreateWindow("SDL Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
 	renderer = SDL_CreateRenderer(screen, -1, 0);
 	context = SDL_GL_CreateContext(screen);
+	IMG_Init(IMG_INIT_JPG);
+	IMG_Init(IMG_INIT_PNG);
 
 	//Set OpenGL attribs
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -22,33 +24,25 @@ GraphicsRenderer::GraphicsRenderer(){
 	glLoadIdentity();
 	gluPerspective(45.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_ALPHA_TEST);
-
-	quadric = gluNewQuadric();
+	
+	//Enable Alpha blending
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+	
+	//Enable depth test (Causes z-fighting)
+	glEnable(GL_DEPTH_TEST);
 }
 
 GraphicsRenderer::~GraphicsRenderer(){
-	//gluDeleteQuadric(quadric);
 	SDL_Quit();
-}
-
-
-void GraphicsRenderer::OpenGLUpdate(){
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	//glBegin(GL_TRIANGLES);
-	//{
-	//	glVertex3f(1.0f, 1.0f, -5.0f);
-	//	glVertex3f(-1.0f, -1.0f, -5.0f);
-	//	glVertex3f(1.0f, -1.0f, -5.0f);
-	//}
-	//glEnd();
 }
 
 
 bool GraphicsRenderer::CheckStillRunning(){
 	SDL_Event event;
-	if(SDL_PollEvent(&event)){
+
+	//Runs whilst any event being queued
+	while(SDL_PollEvent(&event)){
 		switch(event.type){
 			case SDL_QUIT:
 				return false;
@@ -119,10 +113,47 @@ void GraphicsRenderer::DrawTextLabel(){
 	TTF_CloseFont(font);
 }
 
-void GraphicsRenderer::RenderPlane(float x, float y, float z, 
-	float halfWidth, float halfHeight, float halfDepth, float matrix[16],
+
+unsigned int GraphicsRenderer::LoadTexture(string imagename){
+	//Get full image path
+	string imagePath = IMAGE_PATH + imagename;
+
+	SDL_Surface *image = IMG_Load(imagePath.c_str());
+	if(!image){
+		cout << "Error loading image: " << IMG_GetError() << endl;
+		//cout << imagePath << " not found, check path" << endl;
+		return -1;
+	}
+
+	unsigned int texID;
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, image->pixels);
+	//glGenerateMipmap(GL_TEXTURE_2D);
+
+	//Release image surface
+	SDL_FreeSurface(image);
+
+	return texID;
+}
+
+
+void GraphicsRenderer::RenderPlane(float x, float y, float z,
+	float width, float height, float depth, float matrix[16],
 	int red, int green, int blue, int alpha){
 	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
+
+	float halfWidth = width / 2.0f,
+		halfHeight = height / 2.0f,
+		halfDepth = depth / 2.0f;
+
+	GLuint tex = LoadTexture("chess_board.jpg");
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
 	{
@@ -130,14 +161,21 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 		glBegin(GL_QUADS);
 		{
 			//TODO - Need to think about this
+			glTexCoord2f(0, 0);
 			glVertex3f(x - halfWidth, y + halfHeight, z + halfDepth);
+			glTexCoord2f(0, 1);
 			glVertex3f(x - halfWidth, y + halfHeight, z - halfDepth);
+			glTexCoord2f(1, 1);
 			glVertex3f(x + halfWidth, y - halfHeight, z - halfDepth);
+			glTexCoord2f(1, 0);
 			glVertex3f(x + halfWidth, y - halfHeight, z + halfDepth);
 		}
 		glEnd();
 	}
 	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
+	glDeleteTextures(1, &tex);
 }
 
 void GraphicsRenderer::RenderSphere(float radius, float matrix[16], int red, int green, int blue, int alpha){
@@ -163,9 +201,9 @@ void GraphicsRenderer::RenderCylinder(float radius, float height, float matrix[1
 	glPushMatrix();
 	{
 		glMultMatrixf(matrix); //translation + rotation
-		//glRotatef(deg, !!x-axis, !!y-axis, !!z-axis); 
-		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-		gluCylinder(quadr, radius, radius, height*2.0, 100.0f, 100.0f);
+		glTranslatef(0.0f, height / 2.0f, 0.0f);
+		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(quadr, radius, radius, height, 100.0f, 100.0f);
 	}
 	glPopMatrix();
 
@@ -182,8 +220,8 @@ void GraphicsRenderer::RenderCone(float radius, float height, float matrix[16],
 	{
 		glMultMatrixf(matrix); //translation + rotation
 		//glRotatef(deg, !!x-axis, !!y-axis, !!z-axis); 
-		//glTranslatef(0, 0.f, 0);
-		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		glTranslatef(0, height / 2.0f, 0);
+		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 		gluCylinder(quadr, 0, radius, height, 100.0f, 100.0f);
 	}
 	glPopMatrix();
@@ -192,63 +230,79 @@ void GraphicsRenderer::RenderCone(float radius, float height, float matrix[16],
 }
 
 
-void GraphicsRenderer::RenderBox(float x, float y, float z,
-	float halfWidth, float halfHeight, float halfDepth, float matrix[16],
+void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, float matrix[16],
 	int red, int green, int blue, int alpha){
 
 	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
 
+	unsigned int tex = LoadTexture("chess_board.jpg");
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glEnable(GL_TEXTURE_2D);
+
 	glPushMatrix();
 	{
 		glMultMatrixf(matrix);
+		//Back
 		glBegin(GL_QUADS);
 		{
-			glVertex3f(x - halfWidth, y + halfHeight, z - halfDepth);
-			glVertex3f(x - halfWidth, y - halfHeight, z - halfDepth);
-			glVertex3f(x - halfWidth, y - halfHeight, z + halfDepth);
-			glVertex3f(x - halfWidth, y + halfHeight, z + halfDepth);
+			glVertex3f(-xExtent, -yExtent, -zExtent);
+			glVertex3f(-xExtent, yExtent, -zExtent);
+			glVertex3f(xExtent, yExtent, -zExtent);
+			glVertex3f(xExtent, -yExtent, -zExtent);
 		}
 		glEnd();
+		//Left
 		glBegin(GL_QUADS);
 		{
-			glVertex3f(x + halfWidth, y + halfHeight, z - halfDepth);
-			glVertex3f(x + halfWidth, y - halfHeight, z - halfDepth);
-			glVertex3f(x + halfWidth, y - halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y + halfHeight, z + halfDepth);
+			glVertex3f(-xExtent, -yExtent, zExtent);
+			glVertex3f(-xExtent, yExtent, zExtent);
+			glVertex3f(-xExtent, yExtent, -zExtent);
+			glVertex3f(-xExtent, -yExtent, -zExtent);
 		}
 		glEnd();
+		//Right
 		glBegin(GL_QUADS);
 		{
-			glVertex3f(x - halfWidth, y + halfHeight, z + halfDepth);
-			glVertex3f(x - halfWidth, y - halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y - halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y + halfHeight, z + halfDepth);
+			glVertex3f(xExtent, -yExtent, zExtent);
+			glVertex3f(xExtent, yExtent, zExtent);
+			glVertex3f(xExtent, yExtent, -zExtent);
+			glVertex3f(xExtent, -yExtent, -zExtent);
 		}
 		glEnd();
+		//Bottom
 		glBegin(GL_QUADS);
 		{
-			glVertex3f(x - halfWidth, y + halfHeight, z - halfDepth);
-			glVertex3f(x - halfWidth, y - halfHeight, z - halfDepth);
-			glVertex3f(x + halfWidth, y - halfHeight, z - halfDepth);
-			glVertex3f(x + halfWidth, y + halfHeight, z - halfDepth);
+			glVertex3f(-xExtent, -yExtent, zExtent);
+			glVertex3f(-xExtent, -yExtent, -zExtent);
+			glVertex3f(xExtent, -yExtent, -zExtent);
+			glVertex3f(xExtent, -yExtent, zExtent);
 		}
 		glEnd();
+		//Top
 		glBegin(GL_QUADS);
 		{
-			glVertex3f(x - halfWidth, y + halfHeight, z - halfDepth);
-			glVertex3f(x - halfWidth, y + halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y + halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y + halfHeight, z - halfDepth);
+			glVertex3f(-xExtent, yExtent, zExtent);
+			glVertex3f(-xExtent, yExtent, -zExtent);
+			glVertex3f(xExtent, yExtent, -zExtent);
+			glVertex3f(xExtent, yExtent, zExtent);
 		}
 		glEnd();
+		//Front
 		glBegin(GL_QUADS);
 		{
-			glVertex3f(x - halfWidth, y - halfHeight, z - halfDepth);
-			glVertex3f(x - halfWidth, y - halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y - halfHeight, z + halfDepth);
-			glVertex3f(x + halfWidth, y - halfHeight, z - halfDepth);
+			glTexCoord2f(0, 0);
+			glVertex3f(-xExtent, -yExtent, zExtent);
+			glTexCoord2f(0, 1);
+			glVertex3f(-xExtent, yExtent, zExtent);
+			glTexCoord2f(1, 1);
+			glVertex3f(xExtent, yExtent, zExtent);
+			glTexCoord2f(1, 0);
+			glVertex3f(xExtent, -yExtent, zExtent);
 		}
 		glEnd();
 	}
 	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
+	glDeleteTextures(1, &tex);
 }

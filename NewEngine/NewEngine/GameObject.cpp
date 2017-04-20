@@ -7,24 +7,20 @@ using std::endl;
 GameObject::GameObject(btRigidBody * physicalBody, int red, int green, int blue, int alpha){
 	this->physicalBody = physicalBody;
 
-	this->halfWidth = halfWidth;
-	this->halfHeight = halfHeight;
-	this->halfDepth = halfDepth;
-
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
 	this->alpha = alpha;
 }
 
-GameObject::GameObject(btRigidBody * physicalBody, float halfWidth, float halfHeight, float halfDepth,
+GameObject::GameObject(btRigidBody * physicalBody, float width, float height, float depth,
 	int red, int green, int blue, int alpha){
 
 	this->physicalBody = physicalBody;
 
-	this->halfWidth = halfWidth;
-	this->halfHeight = halfHeight;
-	this->halfDepth = halfDepth;
+	this->width = width;
+	this->height = height;
+	this->depth = depth;
 
 	this->red = red;
 	this->green = green;
@@ -49,7 +45,7 @@ void GameObject::RenderObject(){
 				z = physicalBody->getCenterOfMassPosition().z();
 
 
-			GraphicsRenderer::RenderPlane(x, y, z, halfWidth, halfHeight, halfDepth, matrix);
+			GraphicsRenderer::RenderPlane(x, y, z, width, height, depth, matrix);
 			break;
 		}
 
@@ -61,7 +57,7 @@ void GameObject::RenderObject(){
 
 		case CYLINDER_SHAPE_PROXYTYPE: {
 			btVector3 extents = ((btCylinderShape*)shape)->getHalfExtentsWithoutMargin();
-			GraphicsRenderer::RenderCylinder(extents.x(), extents.y(), matrix,
+			GraphicsRenderer::RenderCylinder(extents.x(), extents.y()*2.0f, matrix,
 				red, green, blue, alpha);
 			break;
 		}
@@ -71,12 +67,9 @@ void GameObject::RenderObject(){
 			break;
 		}
 		case BOX_SHAPE_PROXYTYPE: { 
-			float x = physicalBody->getCenterOfMassPosition().x(),
-				y = physicalBody->getCenterOfMassPosition().y(),
-				z = physicalBody->getCenterOfMassPosition().z();
-
-
-			GraphicsRenderer::RenderBox(x, y, z, halfWidth, halfHeight, halfDepth, matrix,
+			btVector3 extents = ((btBoxShape*)shape)->getHalfExtentsWithoutMargin();
+			
+			GraphicsRenderer::RenderBox(extents.x(), extents.y(), extents.z(), matrix,
 				red, green, blue, alpha);
 			break;
 		}

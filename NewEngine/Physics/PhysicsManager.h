@@ -19,7 +19,7 @@ class PhysicsManager{
 		btRigidBody* AddPlane(float x, float y, float z, float mass);
 		btRigidBody* AddCylinder(float radius, float height, float x, float y, float z, float mass);
 		btRigidBody* AddCone(float radius, float height, float x, float y, float z, float mass);
-		btRigidBody* AddBox(float halfWidth, float halfHeight, float halfDepth, float x, float y, float z, float mass);
+		btRigidBody* AddBox(float width, float height, float depth, float x, float y, float z, float mass);
 
 
 		btRigidBody* GetWorldPlane() const{

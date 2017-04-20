@@ -1,0 +1,1 @@
+#define IMAGE_PATH "../Assets/Images/"
