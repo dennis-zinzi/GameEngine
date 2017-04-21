@@ -45,7 +45,8 @@ void GameObject::RenderObject(){
 				z = physicalBody->getCenterOfMassPosition().z();
 
 
-			GraphicsRenderer::RenderPlane(x, y, z, width, height, depth, matrix);
+			GraphicsRenderer::RenderPlane(x, y, z, width, height, depth, matrix,
+				red, green, blue, alpha);
 			break;
 		}
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 //#include <SDL_mixer.h>
 #include "../SDL2_mixer-2.0.1/include/SDL_mixer.h"
 
@@ -12,6 +13,12 @@
 using std::cout;
 using std::endl;
 using std::string;
+using std::vector;
+
+struct Effect{
+	std::string name;
+	Mix_Chunk *sound;
+};
 
 class AudioPlayer{
 	public:
@@ -38,8 +45,20 @@ class AudioPlayer{
 			Mix_PlayMusic(background, -1);
 		}
 
-		void LoadAudio(string filename, bool loop);
+		void LoadAudio(string filename, bool isSoundEffect);
+
+		void PlayEffect(string filename){
+			for(auto effect : soundEffects){
+				if(effect.name == filename){
+					Mix_PlayChannel(-1, effect.sound, 0);
+					return;
+				}
+			}
+			printf("Error: %s not found", filename);
+		}
 
 	private:
 		Mix_Music *background;
+		vector<Effect> soundEffects;
+		vector<Mix_Music*> songs;
 };

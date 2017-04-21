@@ -24,11 +24,12 @@ int main(int argc, char **argv){
 	//Create Audio environment
 	AudioPlayer player;//("notahero.wav");
 	player.PlayMusic();
+	player.LoadAudio("breakingglass.wav", true);
 
 	//Create Physics environment
 	PhysicsManager physics;
 	//Add floor
-	gameObjects.push_back(new GameObject(physics.GetWorldPlane(), 500.0f, 0.0f, 500.0f));
+	gameObjects.push_back(new GameObject(physics.GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 50));
 	
 	//Spheres
 	GameObject *sp1 = new GameObject(physics.AddSphere(1.0f, 0.0f, 20.0f, -20.0f, 1.0f));

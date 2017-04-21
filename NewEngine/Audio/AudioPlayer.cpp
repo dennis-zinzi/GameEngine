@@ -10,14 +10,42 @@ AudioPlayer::AudioPlayer(string background){
 
 	//Load background music
 	this->background = Mix_LoadMUS(audioPath.c_str());
-	if(this->background == nullptr){
+	if(!this->background){
 		printf("Error: %s", Mix_GetError());
+		return;
 	}
+	songs.push_back(this->background);
 }
 
 AudioPlayer::~AudioPlayer(){
 	Mix_HaltMusic();
-	Mix_FreeMusic(background);
-	background = nullptr;
+	for(auto song : songs){
+		Mix_FreeMusic(song);
+		song = nullptr;
+	}
+	for(auto effect : soundEffects){
+		Mix_FreeChunk(effect.sound);
+		effect.sound = nullptr;
+	}
 	Mix_Quit();
+}
+
+void AudioPlayer::LoadAudio(string filename, bool isSoundEffect){
+	string filePath = AUDIO_PATH + filename;
+	if(isSoundEffect){
+		Mix_Chunk *effect = Mix_LoadWAV(filePath.c_str());
+		if(!effect){
+			printf("Error: %s", Mix_GetError());
+			return;
+		}
+		Effect sound = {filename, effect};
+		soundEffects.push_back(sound);
+	}
+
+	Mix_Music *song = Mix_LoadMUS(filePath.c_str());
+	if(!song){
+		printf("Error: %s", Mix_GetError());
+		return;
+	}
+	songs.push_back(song);
 }
