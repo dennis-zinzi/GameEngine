@@ -15,6 +15,8 @@
 #include <string>
 #include <iostream>
 
+#include "Camera.h"
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -63,4 +65,5 @@ class GraphicsRenderer{
 		SDL_Renderer *renderer;
 		SDL_GLContext context;
 		GLUquadricObj *quadric;
+		Camera *camera;
 };

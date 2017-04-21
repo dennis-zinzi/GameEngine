@@ -1,11 +1,6 @@
 #include "GraphicsRenderer.h"
 
 
-#define FRAME_RATE 60
-#define WINDOW_HEIGHT 720
-#define WINDOW_WIDTH 1200
-
-
 GraphicsRenderer::GraphicsRenderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
 	screen = SDL_CreateWindow("SDL Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
@@ -13,6 +8,9 @@ GraphicsRenderer::GraphicsRenderer(){
 	context = SDL_GL_CreateContext(screen);
 	IMG_Init(IMG_INIT_JPG);
 	IMG_Init(IMG_INIT_PNG);
+
+	//Set up camera
+	camera = new Camera(screen);
 	
 	//Set OpenGL attribs
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -50,13 +48,29 @@ bool GraphicsRenderer::CheckStillRunning(){
 		switch(event.type){
 			case SDL_QUIT:
 				return false;
-			case SDL_KEYDOWN:
+			case SDL_KEYDOWN: {
 				switch(event.key.keysym.sym){
 					case SDLK_ESCAPE:
 						return false;
+
+					case SDLK_w:
+						camera->MoveCameraXZ(MOVE_VEL, 0.0f);
+						//camera->MoveCameraY(0.1f, 0.0f);
+						return true;
+					case SDLK_s:
+						camera->MoveCameraXZ(MOVE_VEL, 180.0f);
+						//camera->MoveCameraY(0.1f, 0.0f);
+						return true;
+					case SDLK_a:
+						camera->MoveCameraXZ(MOVE_VEL, 90.0f);
+						return true;
+					case SDLK_d:
+						camera->MoveCameraXZ(MOVE_VEL, 270.0f);
+						return true;
 					default:
 						return true;
 				}
+			}
 		}
 	}
 	return true;
@@ -68,14 +82,16 @@ void GraphicsRenderer::UpdateScene(float msec){
 
 	//SDL update render	
 	//SDL_RenderPresent(GraphicsRenderer);
-
 	SDL_GL_SwapWindow(screen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
+
 	if(1000 / FRAME_RATE > SDL_GetTicks() - msec){
 		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (SDL_GetTicks() - msec)));
 	}
+
+	camera->UpdateCamera();
 }
 
 

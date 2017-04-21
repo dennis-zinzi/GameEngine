@@ -5,8 +5,9 @@
 
 #include "common.h"
 
-#define NUM_BUFFERS 4
-#define BUFFER_SIZE 4096
+#define SOUND_FREQUENCY 44100
+#define SAMPLE_SIZE 4096
+#define CHANNELS 2
 
 using std::cout;
 using std::endl;
@@ -17,7 +18,7 @@ class AudioPlayer{
 		AudioPlayer(string backgroundFile = "uncharted.wav");
 		~AudioPlayer();
 
-		inline void PauseMusic(){
+		inline static void PauseMusic(){
 			Mix_PauseMusic();
 		}
 
@@ -32,6 +33,7 @@ class AudioPlayer{
 		inline void ChangeMusic(string music){
 			Mix_HaltMusic();
 			string audioPath = AUDIO_PATH + music;
+
 			background = Mix_LoadMUS(audioPath.c_str());
 			Mix_PlayMusic(background, -1);
 		}

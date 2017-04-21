@@ -2,11 +2,10 @@
 
 
 AudioPlayer::AudioPlayer(string background){
-	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0){
+	if(Mix_OpenAudio(SOUND_FREQUENCY, MIX_DEFAULT_FORMAT, CHANNELS, SAMPLE_SIZE) < 0){
 		printf("Error: %s", Mix_GetError());
 	}
 
-	
 	string audioPath = AUDIO_PATH + background;
 
 	//Load background music
