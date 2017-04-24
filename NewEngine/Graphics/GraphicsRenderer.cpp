@@ -1,5 +1,5 @@
 #include "GraphicsRenderer.h"
-
+GLuint GraphicsRenderer::tex = LoadTexture("chess_board.jpg");
 
 GraphicsRenderer::GraphicsRenderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -32,6 +32,7 @@ GraphicsRenderer::GraphicsRenderer(){
 
 	//Enable texture mapping
 	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 GraphicsRenderer::~GraphicsRenderer(){
@@ -78,10 +79,15 @@ bool GraphicsRenderer::CheckStillRunning(){
 
 void GraphicsRenderer::UpdateScene(float msec){
 	//SDL_SetRenderDrawColor(GraphicsRenderer, 79, 79, 79, 255);
-	//SDL_RenderClear(GraphicsRenderer);
-
+	//SDL_RenderClear(renderer);
+	
 	//SDL update render	
-	//SDL_RenderPresent(GraphicsRenderer);
+	SDL_RenderPresent(renderer);
+
+	for(auto ro : objectsToRender){
+		ro->Render();
+	}
+
 	SDL_GL_SwapWindow(screen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
@@ -190,17 +196,47 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	////Release image surface
 	//SDL_FreeSurface(image);
 
-	GLuint texID = SOIL_load_OGL_texture(imagePath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	glBindTexture(GL_TEXTURE_2D, texID);
+	//GLuint texID = SOIL_load_OGL_texture(imagePath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	////glBindTexture(GL_TEXTURE_2D, texID);
 
-	//Set filters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	////Set filters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	////glGenerateMipmap(GL_TEXTURE_2D);
+
+	//if(0 == texID){
+	//	cout << SOIL_last_result() << endl;
+	//}
+	//cout << SOIL_last_result() << endl;
+
+	//return texID;
+	
+	SDL_Surface *img = IMG_Load(imagePath.c_str());
+	if(img == NULL){
+		cout << "ERROR: " << imagename << " not found" << endl;
+		return -1;
+	}
+
+	SDL_Surface *img2 = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_RGBA8888, 0);
+	if(!img2){
+		cout << "ERROR: Couln't convert " << imagename << endl;
+		return -1;
+	}
+
+	unsigned int tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->w, img2->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img2->pixels);
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	
+	SDL_FreeSurface(img);
+	SDL_FreeSurface(img2);
 
-	return texID;
+	return tex;
 }
 
 
@@ -219,9 +255,11 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 	//glBindTexture(GL_TEXTURE_2D, tex);
 
 	//LoadTexture("chess_board.jpg");
-	GLuint tex = LoadTexture("chess_board.jpg");
-	if(tex == 0){ cout << SOIL_last_result() << endl; }
+	//GLuint tex = LoadTexture("chess_board.jpg");
+	//if(tex == 0){ cout << SOIL_last_result() << endl; }
 	glBindTexture(GL_TEXTURE_2D, tex);
+
+	//cout << tex << endl;
 
 	glPushMatrix();
 	{
@@ -243,7 +281,7 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 	glPopMatrix();
 
 	//SOIL_free_image_data(img);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void GraphicsRenderer::RenderSphere(float radius, float matrix[16], int red, int green, int blue, int alpha){

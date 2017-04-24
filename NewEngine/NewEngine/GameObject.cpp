@@ -4,16 +4,18 @@
 using std::cout;
 using std::endl;
 
-GameObject::GameObject(btRigidBody * physicalBody, int red, int green, int blue, int alpha){
+GameObject::GameObject(GraphicsRenderer &renderer, btRigidBody * physicalBody, int red, int green, int blue, int alpha){
 	this->physicalBody = physicalBody;
 
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
 	this->alpha = alpha;
+
+	renderer.AddRenderObject(this);
 }
 
-GameObject::GameObject(btRigidBody * physicalBody, float width, float height, float depth,
+GameObject::GameObject(GraphicsRenderer &renderer, btRigidBody * physicalBody, float width, float height, float depth,
 	int red, int green, int blue, int alpha){
 
 	this->physicalBody = physicalBody;
@@ -26,9 +28,63 @@ GameObject::GameObject(btRigidBody * physicalBody, float width, float height, fl
 	this->green = green;
 	this->blue = blue;
 	this->alpha = alpha;
+
+	renderer.AddRenderObject(this);
 }
 
-void GameObject::RenderObject(){
+
+GameObject::GameObject(GraphicsRenderer &renderer, int red, int green, int blue, int alpha){
+
+	this->red = red;
+	this->green = green;
+	this->blue = blue;
+	this->alpha = alpha;
+
+	renderer.AddRenderObject(this);
+}
+
+
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, float x, float y, float z, float mass, float radius, float height,
+	int red, int green, int blue, int alpha) : GameObject(renderer, red, green, blue, alpha){
+	
+	switch(shape){
+		case Plane:
+			physicalBody = physics.AddPlane(x, y, z, mass);
+			break;
+		case Sphere:
+			physicalBody = physics.AddSphere(radius, x, y, z, mass);
+			break;
+		case Cylinder:
+			physicalBody = physics.AddCylinder(radius, height, x, y, z, mass);
+			break;
+		case Cone:
+			physicalBody = physics.AddCone(radius, height, x, y, z, mass);
+			break;
+	}
+
+	this->radius = radius;
+	this->height = height;
+}
+
+
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, float x, float y, float z, float mass, float width, float height, float depth,
+	int red, int green, int blue, int alpha) : GameObject(renderer, red, green, blue, alpha){
+	
+	switch(shape){
+		case Plane:
+			physicalBody = physics.AddPlane(x, y, z, mass);
+			break;
+		case Box:
+			physicalBody = physics.AddBox(width, height, depth, x, y, z, mass);
+			break;
+	}
+
+	this->width = width;
+	this->height = height;
+	this->depth = depth;
+}
+
+void GameObject::Render(){
 	//Get physical properties
 	btCollisionShape *shape = physicalBody->getCollisionShape();
 

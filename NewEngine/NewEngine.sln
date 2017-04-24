@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NewEngine", "NewEngine\NewEngine.vcxproj", "{890DF80E-16F3-4BFA-8567-C03EE13BF34B}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinearMath", "bullet3-2.86.1\build3\vs2010\LinearMath.vcxproj", "{D4985540-8EDF-EB42-BAFB-EE555B2754D2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "Audio\Audio.vcxproj", "{1D5CDDF4-6489-4DBE-8BC8-2A4DAE88960B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileIO", "FileIO\FileIO.vcxproj", "{00C00120-0BE7-42B2-98B3-C0F98201D70D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,14 @@ Global
 		{1D5CDDF4-6489-4DBE-8BC8-2A4DAE88960B}.Release|Win32.ActiveCfg = Release|Win32
 		{1D5CDDF4-6489-4DBE-8BC8-2A4DAE88960B}.Release|Win32.Build.0 = Release|Win32
 		{1D5CDDF4-6489-4DBE-8BC8-2A4DAE88960B}.Release|x64.ActiveCfg = Release|Win32
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Debug|Win32.Build.0 = Debug|Win32
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Debug|x64.ActiveCfg = Debug|x64
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Debug|x64.Build.0 = Debug|x64
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Release|Win32.ActiveCfg = Release|Win32
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Release|Win32.Build.0 = Release|Win32
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Release|x64.ActiveCfg = Release|x64
+		{00C00120-0BE7-42B2-98B3-C0F98201D70D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

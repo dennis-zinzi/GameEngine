@@ -29,6 +29,11 @@ class Camera{
 		void MoveCameraY(float dist, float direction);
 		void ControlCamera();
 
+		inline float* GetCameraPos(){
+			float pos[3] = {x, y, z};
+			return pos;
+		}
+
 	private:
 		float x, y, z;
 		float yaw, pitch;

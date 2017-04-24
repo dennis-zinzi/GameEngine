@@ -1,3 +1,5 @@
+#pragma once
+
 //#include <SDL.h>
 #include "../SDL2-2.0.5/include/SDL.h"
 #include "../SDL2-2.0.5/SDL2_ttf-2.0.14/include/SDL_ttf.h"
@@ -14,10 +16,13 @@
 #include "common.h"
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include "Camera.h"
+#include "RenderObject.h"
 
 using std::string;
+using std::vector;
 using std::cout;
 using std::endl;
 
@@ -38,6 +43,18 @@ class GraphicsRenderer{
 		inline int GetTime() const{
 			return SDL_GetTicks();
 		}
+
+		inline Camera* GetCamera(){
+			return camera;
+		}
+
+		inline void AddRenderObject(RenderObject *ro){
+			objectsToRender.push_back(ro);
+		}
+
+		//inline void RemoveRenderObject(RenderObject *ro){
+		//	objectsToRender.erase(ro);
+		//}
 
 		/** Shape Rendering functions **/
 		//Renders plane
@@ -66,4 +83,7 @@ class GraphicsRenderer{
 		SDL_GLContext context;
 		GLUquadricObj *quadric;
 		Camera *camera;
+		static GLuint GraphicsRenderer::tex;
+		vector<RenderObject*> objectsToRender;
+
 };
