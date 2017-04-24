@@ -31,6 +31,10 @@ class GameObject : public RenderObject{
 
 		virtual void Render();
 
+		inline btRigidBody* GetPhysicalObj() const{
+			return physicalBody;
+		}
+
 	protected:
 		btRigidBody *physicalBody;
 		float radius;

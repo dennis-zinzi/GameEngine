@@ -40,6 +40,9 @@ bool InputManager::CheckForInputs(){
 					case SDLK_SPACE:
 						Player->Jump();
 						break;
+					case SDLK_1:
+						Player->Shoot();
+						break;
 				}
 			}
 		}

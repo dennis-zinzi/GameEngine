@@ -34,4 +34,6 @@ class Player : public GameObject, public InputPlayer{
 
 	private:
 		Camera *camera;
+		GraphicsRenderer *renderer;
+		PhysicsManager *physics;
 };
