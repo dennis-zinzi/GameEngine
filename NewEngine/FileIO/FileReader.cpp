@@ -44,7 +44,6 @@ vector<vector<string>> FileReader::ReadObjectInfo(string filename){
 		}
 
 		fullData.push_back(data);
-		//cout << line << endl;
 	}
 
 	return fullData;

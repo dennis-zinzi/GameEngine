@@ -41,48 +41,12 @@ GraphicsRenderer::~GraphicsRenderer(){
 }
 
 
-bool GraphicsRenderer::CheckStillRunning(){
-	SDL_Event event;
-
-	//Runs whilst any event being queued
-	while(SDL_PollEvent(&event)){
-		switch(event.type){
-			case SDL_QUIT:
-				return false;
-			case SDL_KEYDOWN: {
-				switch(event.key.keysym.sym){
-					case SDLK_ESCAPE:
-						return false;
-
-					case SDLK_w:
-						camera->MoveCameraXZ(MOVE_VEL, 0.0f);
-						//camera->MoveCameraY(0.1f, 0.0f);
-						return true;
-					case SDLK_s:
-						camera->MoveCameraXZ(MOVE_VEL, 180.0f);
-						//camera->MoveCameraY(0.1f, 0.0f);
-						return true;
-					case SDLK_a:
-						camera->MoveCameraXZ(MOVE_VEL, 90.0f);
-						return true;
-					case SDLK_d:
-						camera->MoveCameraXZ(MOVE_VEL, 270.0f);
-						return true;
-					default:
-						return true;
-				}
-			}
-		}
-	}
-	return true;
-}
-
 void GraphicsRenderer::UpdateScene(float msec){
 	//SDL_SetRenderDrawColor(GraphicsRenderer, 79, 79, 79, 255);
 	//SDL_RenderClear(renderer);
 	
 	//SDL update render	
-	SDL_RenderPresent(renderer);
+	//SDL_RenderPresent(renderer);
 
 	for(auto ro : objectsToRender){
 		ro->Render();

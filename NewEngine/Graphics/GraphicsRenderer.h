@@ -31,9 +31,6 @@ class GraphicsRenderer{
 		GraphicsRenderer();
 		~GraphicsRenderer();
 
-		void OpenGLUpdate();
-
-		bool CheckStillRunning();
 		void UpdateScene(float msec);
 		void Draw2DRect(int x, int y, int height, int width, int red, int green, int blue, int alpha);
 		void DrawTextLabel();

@@ -2,3 +2,4 @@
 #
 # Shape,	x,	y,	z,	mass,	width,	height,	depth,	red,	green,	blue,	alpha
 Box	0.0	5.0	-20.0	100.0	2.2	2.2	2.2	10	65	0	255
+Box	0.0	5.0	-20.0	0.0	2.2	2.2	2.2	12	44	190	255
