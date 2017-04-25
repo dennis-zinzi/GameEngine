@@ -80,6 +80,9 @@
     <ProjectReference Include="..\InitShutdown\InitShutdown.vcxproj">
       <Project>{eb9d296b-264e-469b-810c-029318ea2368}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Profiler\Profiler.vcxproj">
+      <Project>{c3b48f19-abf4-4738-a722-e04f83b34a66}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\ResourceManager\ResourceManager.vcxproj">
       <Project>{49b4e8fd-d309-4f87-bee4-bdd3df5cea5c}</Project>
     </ProjectReference>

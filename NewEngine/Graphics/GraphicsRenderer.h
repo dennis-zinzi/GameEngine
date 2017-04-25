@@ -1,16 +1,16 @@
+/**
+* Main class responsible for rendering objects on screen
+* @author: Dennis Zinzi (130301136)
+*/
 #pragma once
 
-//#include <SDL.h>
 #include "../SDL2-2.0.5/include/SDL.h"
 #include "../SDL2-2.0.5/SDL2_ttf-2.0.14/include/SDL_ttf.h"
 #include "../SDL2-2.0.5/SDL2_image-2.0.1/include/SDL_image.h"
 #include "../SOIL/SOIL.h"
 
-//OpenGL
-//#include <GL/glew.h>
+//OpenGL includes
 #include "../glew-2.0.0/include/GL/glew.h"
-
-//#include <GL/freeglut.h>
 #include "../freeglut/include/GL/freeglut.h"
 
 #include "common.h"
@@ -26,6 +26,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
+//Representation of Text Font
 struct Font{
 	std::string name;
 	int size;
@@ -37,20 +38,31 @@ class GraphicsRenderer{
 		GraphicsRenderer();
 		~GraphicsRenderer();
 
+		//Main function in charge of updating all objects on screen
 		void UpdateScene(float msec);
+
+		//Draws 2D rectangluar shape using SDL
 		void Draw2DRect(int x, int y, int height, int width, int red, int green, int blue, int alpha);
+		//Draws label with given text using SDL
 		void DrawTextLabel(string message, string fontname, int fontSize, int x, int y, int width, int height, int red, int green, int blue);
 
+		//Loads OpenGL texture
 		static unsigned int LoadTexture(string imagename);
 
-		inline int GetTime() const{
-			return SDL_GetTicks();
+
+		//Get current execution time since SDL environment initialized
+		inline float GetTime() const{
+			//cout << SDL_GetTicks() << endl << SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency() << endl << endl;
+			//return SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
+			return (float)SDL_GetTicks();
 		}
 
+		//Game camera getter
 		inline Camera* GetCamera(){
 			return camera;
 		}
 
+		//Adds RenderObject to list to be rendered each frame
 		inline void AddRenderObject(RenderObject *ro){
 			objectsToRender.push_back(ro);
 		}
@@ -65,6 +77,7 @@ class GraphicsRenderer{
 			}
 		}
 
+		//Render in SDL environment to show info screens (OpenGL usually)
 		inline void SDLRender(){
 			SDL_RenderPresent(renderer);
 			SDL_RenderClear(renderer);
@@ -104,10 +117,10 @@ class GraphicsRenderer{
 		SDL_GLContext context;
 		GLUquadricObj *quadric;
 		Camera *camera;
-		static GLuint GraphicsRenderer::tex;
 		vector<RenderObject*> objectsToRender;
 		vector<Font> fonts;
 
+		//Retrieves text font resource if found/loaded
 		inline TTF_Font* GetFont(string filename, int fontsize){
 			for(auto font : fonts){
 				if(font.name == filename && font.size == fontsize){

@@ -1,3 +1,9 @@
+/**
+ * Main class responsible for the loading and unloading of common game resources
+ * @author: Dennis Zinzi (130301136)
+ */
+
+
 #pragma once
 
 //Graphics includes
@@ -21,11 +27,18 @@
 class ResourceManager{
 	public:
 		ResourceManager(FileReader *reader, AudioPlayer *player, GraphicsRenderer *renderer);
+
+		//Load all resources to memory
 		void LoadResources();
+		
+		//Unload all resources from memory
 		void UnloadResources();
 
 	private:
+		//Load every audio file
 		void LoadAudioFiles();
+
+		//Load every font file
 		void LoadFontFiles();
 	
 		FileReader *reader;

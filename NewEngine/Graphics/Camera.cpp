@@ -78,5 +78,5 @@ void Camera::UpdateCamera(){
 	UpdatePitchYaw();
 	glTranslatef(-x, -y, -z);
 
-	SDL_Delay((Uint32)(1000 / (FRAME_RATE * 8)));
+	SDL_Delay((Uint32)(1000 / (FRAME_RATE * 9)));
 }

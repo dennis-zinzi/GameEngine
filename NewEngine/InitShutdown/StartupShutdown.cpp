@@ -5,6 +5,7 @@ StartupShutdown::StartupShutdown(){
 }
 
 bool StartupShutdown::Start(){
+	//Initialize every subsystem
 	renderer = new GraphicsRenderer();
 	physics = new PhysicsManager();
 	reader = new FileReader();
@@ -13,6 +14,7 @@ bool StartupShutdown::Start(){
 
 	bool correct = true;
 
+	//Check every subsystem initialized correctly
 	if(!renderer){
 		cout << "ERROR: failed to initialized Renderer" << endl;
 		correct = false;
@@ -42,6 +44,7 @@ bool StartupShutdown::Start(){
 }
 
 bool StartupShutdown::Shutdown(){
+	//Clean every subsystem
 	delete reader;
 	delete player;
 	delete input;

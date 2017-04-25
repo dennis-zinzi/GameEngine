@@ -37,16 +37,19 @@ void ResourceManager::LoadAudioFiles(){
 
 
 void ResourceManager::LoadFontFiles(){
+	//Get the sizes to load the fonts for
 	vector<string> fontsizesString = reader->ReadFile("font_sizes.txt");
 	vector<int> intSizes;
+
+	//As reading from files gives back string, convert results to int
 	for(auto size : fontsizesString){
 		intSizes.push_back(stoi(size));
 	}
 
+	//Load all fonts at the needed sizes
 	vector<string> fonts = reader->GetDirFiles(FONT_PATH, "ttf");
 	for(auto font : fonts){
 		for(auto size : intSizes){
-			cout << size << endl;
 			renderer->LoadFont(font, size);
 		}
 	}

@@ -82,11 +82,11 @@ void Player::Render(){
 
 
 void Player::MovePhysicObj(float x1, float x2, float y1, float y2, float z1, float z2){
-	cout << "p= X1: " << physicalBody->getCenterOfMassPosition().x() << ", Y1: " << physicalBody->getCenterOfMassPosition().y()
-			<< ", Z1: " << physicalBody->getCenterOfMassPosition().z() << endl;
+	//cout << "p= X1: " << physicalBody->getCenterOfMassPosition().x() << ", Y1: " << physicalBody->getCenterOfMassPosition().y()
+	//		<< ", Z1: " << physicalBody->getCenterOfMassPosition().z() << endl;
 
-	cout << x2 << "," << x1 << endl;
-	cout << x2 << "," << x1 << endl;
+	//cout << x2 << "," << x1 << endl;
+	//cout << x2 << "," << x1 << endl;
 	btVector3 moved(x2 - x1, y2 - y1, z2 - z1);
 	//btVector3 look = btVector3(camera->GetCameraLookVect()[0] + 0.0f, camera->GetCameraLookVect()[1] + 0.0f, camera->GetCameraLookVect()[2] + 0.0f);
 
@@ -99,8 +99,8 @@ void Player::MovePhysicObj(float x1, float x2, float y1, float y2, float z1, flo
 		(camera->GetCameraLookVect()[2] + 0.0f)) * (3.0f + moved.z()));*/
 	//physicalBody->translate(btVector3);
 	
-	cout << "p= X2: " << physicalBody->getCenterOfMassPosition().x() << ", Y2: " << physicalBody->getCenterOfMassPosition().y()
-			<< ", Z2: " << physicalBody->getCenterOfMassPosition().z() << endl << endl;
+	//cout << "p= X2: " << physicalBody->getCenterOfMassPosition().x() << ", Y2: " << physicalBody->getCenterOfMassPosition().y()
+	//		<< ", Z2: " << physicalBody->getCenterOfMassPosition().z() << endl << endl;
 
 	//btTransform transform;
 	//transform.setIdentity();// = physicalBody->getCenterOfMassTransform();

@@ -7,6 +7,7 @@ vector<string> FileReader::ReadFile(string filename){
 	string filePath = FILE_PATH + filename;
 	ifstream file(filePath);
 
+	//Check file exists
 	if(!file.good()){
 		cout << "Error: file " << filename << " not found, check name" << endl;
 	}
@@ -19,6 +20,7 @@ vector<string> FileReader::ReadFile(string filename){
 			continue;
 		}
 
+		//Else store line containing data in vector
 		fileData.push_back(line);
 	}
 
@@ -29,10 +31,12 @@ vector<string> FileReader::ReadFile(string filename){
 vector<vector<string>> FileReader::ReadObjectInfo(string filename){
 	string filePath = FILE_PATH + filename;
 
+	//Vector representing a list of renderobjects
 	vector<vector<string>> fullData;
 
 	ifstream file(filePath);
 
+	//Check file exists
 	if(!file.good()){
 		cout << "Error: file " << filename << " not found, check name" << endl;
 		return fullData;
@@ -49,10 +53,12 @@ vector<vector<string>> FileReader::ReadObjectInfo(string filename){
 		vector<string> data;
 		string value;
 
+		//Split each line up by "tab" key
 		while(getline(iss, value, '\t')){
 			data.push_back(value);
 		}
 
+		//Store object detatils in list
 		fullData.push_back(data);
 	}
 

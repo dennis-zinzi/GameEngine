@@ -1,5 +1,4 @@
 #include "GraphicsRenderer.h"
-GLuint GraphicsRenderer::tex = LoadTexture("chess_board.jpg");
 
 GraphicsRenderer::GraphicsRenderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -61,9 +60,8 @@ void GraphicsRenderer::UpdateScene(float msec){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-
-	if(1000 / FRAME_RATE > SDL_GetTicks() - msec){
-		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (SDL_GetTicks() - msec)));
+	if(1000 / FRAME_RATE > GetTime() - msec){
+		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (GetTime() - msec)));
 	}
 
 	camera->UpdateCamera();
@@ -114,28 +112,13 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	//Get full image path
 	string imagePath = IMAGE_PATH + imagename;
 	
-	SDL_Surface *img = IMG_Load(imagePath.c_str());
-	if(img == NULL){
-		cout << "ERROR: " << imagename << " not found" << endl;
-		return -1;
-	}
-
-	SDL_Surface *img2 = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_RGBA8888, 0);
-	if(!img2){
-		cout << "ERROR: Couln't convert " << imagename << endl;
-		return -1;
-	}
-
-	unsigned int tex;
+	unsigned int tex = SOIL_load_OGL_texture(imagePath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);;
 	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->w, img2->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img2->pixels);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	
-	SDL_FreeSurface(img);
-	SDL_FreeSurface(img2);
+
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	return tex;
 }
@@ -150,15 +133,8 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 		halfHeight = height / 2.0f,
 		halfDepth = depth / 2.0f;
 
-	//GLuint tex = LoadTexture("chess_board.jpg");
-	//GLuint tex = SOIL_load_OGL_texture(IMAGE_PATH"chessboard.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	//glGenTextures(1, &tex);
+	GLuint tex = LoadTexture("chess_board.jpg");
 	//glBindTexture(GL_TEXTURE_2D, tex);
-
-	//LoadTexture("chess_board.jpg");
-	//GLuint tex = LoadTexture("chess_board.jpg");
-	//if(tex == 0){ cout << SOIL_last_result() << endl; }
-	glBindTexture(GL_TEXTURE_2D, tex);
 
 	//cout << tex << endl;
 

@@ -1,3 +1,9 @@
+/**
+ * Class that handles the initialization and closing of the game engine
+ * @author: Dennis Zinzi (130301136)
+ */
+
+
 #pragma once
 
 //Graphics includes
@@ -24,8 +30,11 @@
 class StartupShutdown{
 	public:
 		StartupShutdown();
+
+		//Perform startup tasks
 		bool Start();
 
+		//Perform shutdown tasks
 		bool Shutdown();
 
 		inline AudioPlayer* GetAudioPlayer(){

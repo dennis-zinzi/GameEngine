@@ -1,3 +1,7 @@
+/**
+ * Pure abstract class representing actions a game player is able to perform
+ * @author: Dennis Zinzi (130301136)
+ */
 #pragma once
 
 class InputPlayer{

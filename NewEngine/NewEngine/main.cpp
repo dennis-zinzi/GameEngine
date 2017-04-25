@@ -4,6 +4,9 @@
 #include "../ResourceManager/ResourceManager.h"
 #pragma comment(lib, "ResourceManager.lib")
 
+#include "../Profiler/Profiler.h"
+#pragma comment(lib, "Profiler.lib")
+
 #include "GameObject.h"
 #include "Player.h"
 #include "GameLoader.h"
@@ -60,15 +63,24 @@ int main(int argc, char **argv){
 	//Status of excecution
 	bool running = true;
 	//Time in msec
-	int time = 0;
+	float time = 0;
 
+	Profiler profiler;
 
 	//Excecution loop
 	while(running){
 		time = renderer->GetTime();
-		physics->UpdatePhysics((float)time);
-		renderer->UpdateScene((float)time);
+
+		profiler.ResetTime(time);
+		physics->UpdatePhysics(time);
+		profiler.UpdateTime(System::Physics, renderer->GetTime());
+		renderer->UpdateScene(time);
+		profiler.UpdateTime(System::Graphics, renderer->GetTime());
 		running = input->CheckForInputs();
+		profiler.UpdateTime(System::Input, renderer->GetTime());
+
+		//Show loop execution stats
+		profiler.ShowStats();
 	}
 
 

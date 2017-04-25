@@ -12,6 +12,7 @@ PhysicsManager::PhysicsManager(){
 	//Add world plane (floor)
 	AddPlane(0.0f, -2.0f, -10.0f, 0.0f);
 
+	//Set collision callback function (not working)
 	//gContactAddedCallback = CollisionFunc;
 }
 
@@ -31,6 +32,9 @@ PhysicsManager::~PhysicsManager(){
 	delete world;
 }
 
+/**
+ * Add new Sphere physics object to world
+ */
 btRigidBody* PhysicsManager::AddSphere(float radius, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
@@ -52,6 +56,10 @@ btRigidBody* PhysicsManager::AddSphere(float radius, float x, float y, float z, 
 	return body;
 }
 
+
+/**
+* Add new Infinite plane physics object to world
+*/
 btRigidBody * PhysicsManager::AddPlane(float x, float y, float z, float mass)
 {
 	btTransform t;
@@ -73,6 +81,10 @@ btRigidBody * PhysicsManager::AddPlane(float x, float y, float z, float mass)
 	return planeBod;
 }
 
+
+/**
+* Add new Cylinder physics object to world
+*/
 btRigidBody * PhysicsManager::AddCylinder(float radius, float height, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
@@ -94,6 +106,10 @@ btRigidBody * PhysicsManager::AddCylinder(float radius, float height, float x, f
 	return cylinderBod;
 }
 
+
+/**
+* Add new Cone physics object to world
+*/
 btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
@@ -115,6 +131,10 @@ btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float
 	return coneBod;
 }
 
+
+/**
+* Add new Box physics object to world
+*/
 btRigidBody * PhysicsManager::AddBox(float width, float height, float depth, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
@@ -139,7 +159,7 @@ btRigidBody * PhysicsManager::AddBox(float width, float height, float depth, flo
 //Collision callback function
 bool PhysicsManager::CollisionFunc(btManifoldPoint &collisionPoint, const btCollisionObject *obj1, int id1, int index1,
 	const btCollisionObject *obj2, int id2, int index2){
-	printf("LOOOL");
+	printf("Collision happened\n");
 
 	return false;
 }
