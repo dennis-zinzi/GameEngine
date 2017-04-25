@@ -33,7 +33,7 @@ class GraphicsRenderer{
 
 		void UpdateScene(float msec);
 		void Draw2DRect(int x, int y, int height, int width, int red, int green, int blue, int alpha);
-		void DrawTextLabel();
+		void DrawTextLabel(string message, int fontSize, int x, int y, int width, int height, int red, int green, int blue);
 
 		static unsigned int LoadTexture(string imagename);
 
@@ -52,6 +52,13 @@ class GraphicsRenderer{
 		//inline void RemoveRenderObject(RenderObject *ro){
 		//	objectsToRender.erase(ro);
 		//}
+
+		inline void SDLRender(){
+			SDL_RenderPresent(renderer);
+			SDL_RenderClear(renderer);
+		}
+
+		void ShowControlsScreen();
 
 		/** Shape Rendering functions **/
 		//Renders plane

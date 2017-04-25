@@ -27,7 +27,7 @@ class Camera{
 		
 		void MoveCameraXZ(float dist, float direction);
 		void MoveCameraY(float dist, float direction);
-		void ControlCamera();
+		
 
 		inline float* GetCameraPos(){
 			float pos[3] = {x, y, z};
@@ -35,20 +35,11 @@ class Camera{
 		}
 
 		inline float* GetCameraLookVect(){
-			////Calculate direction looking at in radians
-			//float radAngle = ((yaw) * PI_VAL) / 180.0f;
-
-			//if(pitch != MAX_PITCH && pitch != MIN_PITCH){
-			//	float tempx = x - sin(radAngle);
-			//	float tempz = z - cos(radAngle);
-
-			//	float pos[3] = {tempx, y, tempz};
-			//	return pos;
-			//}
+			//Calculate direction looking at in radians
 			float look[3];
-			look[0] = -cos(pitch * M_PI / 180.0) * sin(yaw * M_PI / 180.0);
-			look[1] = sin(pitch * M_PI / 180.0);
-			look[2] = -cos(pitch * M_PI / 180.0) * cos(yaw * M_PI / 180.0);
+			look[0] = -cos(pitch * PI_VAL / 180.0) * sin(yaw * PI_VAL / 180.0);
+			look[1] = sin(pitch * PI_VAL / 180.0);
+			look[2] = -cos(pitch * PI_VAL / 180.0) * cos(yaw * PI_VAL / 180.0);
 			
 			return look;
 		}
@@ -59,4 +50,5 @@ class Camera{
 		SDL_Window *window;
 
 		void LockCamera();
+		void UpdatePitchYaw();
 };

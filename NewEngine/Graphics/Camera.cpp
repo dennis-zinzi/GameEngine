@@ -52,7 +52,7 @@ void Camera::MoveCameraY(float dist, float direction){
 }
 
 
-void Camera::ControlCamera(){
+void Camera::UpdatePitchYaw(){
 	int windowCenterX = WINDOW_WIDTH / 2,
 		windowCenterY = WINDOW_HEIGHT / 2;
 
@@ -75,7 +75,7 @@ void Camera::ControlCamera(){
 
 
 void Camera::UpdateCamera(){
-	ControlCamera();
+	UpdatePitchYaw();
 	glTranslatef(-x, -y, -z);
 
 	SDL_Delay((Uint32)(1000 / (FRAME_RATE * 8)));

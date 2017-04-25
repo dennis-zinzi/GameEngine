@@ -9,4 +9,5 @@ class InputPlayer{
 		virtual void Jump() = 0;
 		virtual void Shoot() = 0;
 		virtual void NoMovement() = 0;
+		virtual void ShowControls() = 0;
 };

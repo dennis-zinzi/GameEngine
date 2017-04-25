@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -20,9 +22,14 @@ struct Effect{
 	Mix_Chunk *sound;
 };
 
+struct Song{
+	std::string name;
+	Mix_Music *sound;
+};
+
 class AudioPlayer{
 	public:
-		AudioPlayer(string backgroundFile = "uncharted.wav");
+		AudioPlayer();
 		~AudioPlayer();
 
 		inline static void PauseMusic(){
@@ -33,21 +40,20 @@ class AudioPlayer{
 			Mix_ResumeMusic();
 		}
 
-		inline void PlayMusic(){
-			Mix_PlayMusic(background, -1);
-		}
-
 		inline void ChangeMusic(string music){
 			Mix_HaltMusic();
-			string audioPath = AUDIO_PATH + music;
-
-			background = Mix_LoadMUS(audioPath.c_str());
-			Mix_PlayMusic(background, -1);
+			for(auto song : songs){
+				if(song.name == music){
+					Mix_PlayMusic(song.sound, -1);
+					return;
+				}
+			}
+			printf("Error: %s not found", music);
 		}
 
 		void LoadAudio(string filename, bool isSoundEffect);
 
-		void PlayEffect(string filename){
+		inline void PlayEffect(string filename){
 			for(auto effect : soundEffects){
 				if(effect.name == filename){
 					Mix_PlayChannel(-1, effect.sound, 0);
@@ -58,7 +64,6 @@ class AudioPlayer{
 		}
 
 	private:
-		Mix_Music *background;
 		vector<Effect> soundEffects;
-		vector<Mix_Music*> songs;
+		vector<Song> songs;
 };

@@ -33,6 +33,10 @@ GraphicsRenderer::GraphicsRenderer(){
 	//Enable texture mapping
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	//Show at start up
+	DrawTextLabel("Loading Engine... please wait", 180, 150, 0, 900, 150, 66, 244, 217);
+	ShowControlsScreen();
 }
 
 GraphicsRenderer::~GraphicsRenderer(){
@@ -79,103 +83,32 @@ void GraphicsRenderer::Draw2DRect(int x, int y, int height, int width,
 }
 
 
-void GraphicsRenderer::DrawTextLabel(){
+void GraphicsRenderer::DrawTextLabel(string message, int fontSize, int x, int y, int width, int height, int red, int green, int blue){
 	TTF_Init();
 
-	TTF_Font *font = TTF_OpenFont("../Assets/Fonts/UnifrakturCook-Bold.ttf", 200);
+	//TTF_Font *font = TTF_OpenFont("../Assets/Fonts/UnifrakturCook-Bold.ttf", 180);
+	TTF_Font *font = TTF_OpenFont("../Assets/Fonts/Invasion2000.ttf", fontSize);
 
-	SDL_Color textColor = {66, 244, 217};
-	SDL_Surface *text = TTF_RenderText_Solid(font, "Welcome to the game engine", textColor);
-	SDL_Texture *message = SDL_CreateTextureFromSurface(renderer, text);
+	SDL_Color textColor = {red, blue, green};
+	SDL_Surface *text = TTF_RenderText_Solid(font, message.c_str(), textColor);
+	SDL_Texture *messageTex = SDL_CreateTextureFromSurface(renderer, text);
 
 	SDL_Rect textRect;
-	textRect.x = 200;
-	textRect.y = 200;
-	textRect.h = 250;
-	textRect.w = 720;
+	textRect.x = x;
+	textRect.y = y;
+	textRect.h = height;
+	textRect.w = width;
 
-	SDL_RenderCopy(renderer, message, nullptr, &textRect);
-
-	//SDL_SetRenderDrawColor(GraphicsRenderer, 66, 244, 217, 255);
-
-	//SDL_BlitSurface(text, nullptr, SDL_GetWindowSurface(screen), nullptr);
+	SDL_RenderCopy(renderer, messageTex, nullptr, &textRect);
 
 	TTF_CloseFont(font);
+	SDL_FreeSurface(text);
 }
 
 
 unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	//Get full image path
 	string imagePath = IMAGE_PATH + imagename;
-
-	//SDL_Surface *image = IMG_Load(imagePath.c_str());
-	//if(!image){
-	//	cout << "Error loading image: " << IMG_GetError() << endl;
-	//	//cout << imagePath << " not found, check path" << endl;
-	//	return -1;
-	//}
-
-	//unsigned int texID = 0;
-	//glGenTextures(1, &texID);
-	//glBindTexture(GL_TEXTURE_2D, texID);
-
-
-	//int mode = GL_RGB;
-	//if(image->format->BytesPerPixel == 4){
-	//	if(image->format->Rmask == 0x000000ff){
-	//		cout << "4yay" << endl;
-	//		mode = GL_RGBA;
-	//	}
-	//	else{
-	//		cout << "4b" << endl;
-	//		mode = GL_BGRA;
-	//	}
-	//}
-	//else if(image->format->BytesPerPixel == 3){
-	//	if(image->format->Rmask == 0x000000ff){
-	//		cout << "3yay" << endl;
-	//		mode = GL_RGB;
-	//	}
-	//	else{
-	//		cout << "3b" << endl;
-	//		mode = GL_BGR;
-	//	}
-	//}
-
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, mode, GL_UNSIGNED_BYTE, image->pixels);
-
-	//if(glGetError() == GL_NO_ERROR){ cout << "Nice" << endl; }
-	//if(glGetError() != GL_NO_ERROR){
-	//	cout << "Error: " << gluErrorString(glGetError()) << endl;
-	//}
-
-	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-	////glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	////glGenerateMipmap(GL_TEXTURE_2D);
-
-	////Release image surface
-	//SDL_FreeSurface(image);
-
-	//GLuint texID = SOIL_load_OGL_texture(imagePath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	////glBindTexture(GL_TEXTURE_2D, texID);
-
-	////Set filters
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	////glGenerateMipmap(GL_TEXTURE_2D);
-
-	//if(0 == texID){
-	//	cout << SOIL_last_result() << endl;
-	//}
-	//cout << SOIL_last_result() << endl;
-
-	//return texID;
 	
 	SDL_Surface *img = IMG_Load(imagePath.c_str());
 	if(img == NULL){
@@ -376,4 +309,30 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 
 	glDisable(GL_TEXTURE_2D);
 	glDeleteTextures(1, &tex);
+}
+
+
+void GraphicsRenderer::ShowControlsScreen(){
+	DrawTextLabel("Controls", 100, WINDOW_WIDTH / 2 - 130, 125, 300, 150, 100, 200, 100);
+
+	DrawTextLabel("Movement:", 75, 300, 275, 200, 50, 100, 200, 100);
+	DrawTextLabel("W A S D", 50, 700, 275, 200, 50, 100, 200, 100);
+
+	DrawTextLabel("Camera:", 75, 300, 350, 200, 50, 100, 200, 100);
+	DrawTextLabel("Mouse", 50, 700, 350, 200, 50, 100, 200, 100);
+
+	DrawTextLabel("Shoot:", 75, 300, 425, 200, 50, 100, 200, 100);
+	DrawTextLabel("Click", 50, 700, 425, 200, 50, 100, 200, 100);
+
+	DrawTextLabel("Jump:", 75, 300, 500, 200, 50, 100, 200, 100);
+	DrawTextLabel("Space", 50, 700, 500, 200, 50, 100, 200, 100);
+
+	DrawTextLabel("Show Controls:", 75, 300, 575, 200, 50, 100, 200, 100);
+	DrawTextLabel("  P  ", 50, 700, 575, 200, 50, 100, 200, 100);
+
+	DrawTextLabel("Exit:", 75, 300, 650, 200, 50, 100, 200, 100);
+	DrawTextLabel(" Esc ", 50, 700, 650, 200, 50, 100, 200, 100);
+
+	SDLRender();
+	SDL_Delay(500);
 }

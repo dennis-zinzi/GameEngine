@@ -27,38 +27,41 @@
 int main(int argc, char **argv){
 	//Create Graphics environment
 	GraphicsRenderer renderer;
-
-	//Create Audio environment
-	AudioPlayer player("notahero.wav");
-	player.PlayMusic();
-	player.LoadAudio("breakingglass.wav", true);
-
-	FileReader reader;
-
+	
 	//Create Physics environment
 	PhysicsManager physics;
+
+	//Create Audio environment
+	AudioPlayer player;
+
+	//Get File reader/parser
+	FileReader reader;
+	
+	//InputPlayer *gamePlayer = new Player(renderer, physics, player, 0.5f);
+	//InputPlayer *gamePlayer = new Player(renderer, physics, player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125);
+
+	DataLoader loader(renderer, physics, reader, player);
 	//Add floor
-	RenderObject *plane = new GameObject(renderer, physics.GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
-
-	InputPlayer *gamePlayer = new Player(renderer, physics, 0.5f);
-	//InputPlayer *gamePlayer = new Player(renderer, physics, 1.0f, 1.0f, 0.5f, 5.0f);
-
-	DataLoader loader(renderer, physics, reader);
+	loader.LoadGameFloor();
 	loader.LoadRadWorldObjects();
 	loader.LoadFlatWorldObjects();
+	loader.LoadMusicAndSounds();
+	loader.LoadGameSettings();
 
-	InputManager input(gamePlayer);
+	InputManager input(new Player(renderer, physics, player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125));
+
+	SDL_Delay(1500);
+
 
 	bool running = true;
-
 	//Time in msec
 	int time = 0;
 
 	while(running){
 		time = renderer.GetTime();
-		running = input.CheckForInputs();
 		physics.UpdatePhysics((float)time);
 		renderer.UpdateScene((float)time);
+		running = input.CheckForInputs();
 	}
 
 	return 0;

@@ -8,7 +8,7 @@ InputManager::InputManager(InputPlayer *Player){
 bool InputManager::CheckForInputs(){
 	SDL_Event event;
 
-	//Runs whilst any event being queued
+	//Runs whilst there is an event being queued
 	while(SDL_PollEvent(&event)){
 		switch(event.type){
 			case SDL_QUIT:
@@ -30,23 +30,32 @@ bool InputManager::CheckForInputs(){
 					case SDLK_d:
 						Player->MoveRight();
 						break;
+					case SDLK_p:
+						Player->ShowControls();
+						break;
 					default:
-						Player->NoMovement();
 						break;
 				}
+				break;
 			}
 			case SDL_KEYUP:{
 				switch(event.key.keysym.sym){
 					case SDLK_SPACE:
 						Player->Jump();
 						break;
-					case SDLK_1:
-						Player->Shoot();
+					default:
 						break;
 				}
+				break;
+			}
+			case SDL_MOUSEBUTTONDOWN: {
+				Player->Shoot();
+				break;
 			}
 		}
 	}
+
+	//Player->NoMovement();
 
 	return true;
 }

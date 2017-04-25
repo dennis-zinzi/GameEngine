@@ -11,6 +11,8 @@ PhysicsManager::PhysicsManager(){
 
 	//Add world plane (floor)
 	AddPlane(0.0f, -2.0f, -10.0f, 0.0f);
+
+	//gContactAddedCallback = CollisionFunc;
 }
 
 
@@ -132,4 +134,12 @@ btRigidBody * PhysicsManager::AddBox(float width, float height, float depth, flo
 	physicsObjects.push_back(boxBod);
 
 	return boxBod;
+}
+
+//Collision callback function
+bool PhysicsManager::CollisionFunc(btManifoldPoint &collisionPoint, const btCollisionObject *obj1, int id1, int index1,
+	const btCollisionObject *obj2, int id2, int index2){
+	printf("LOOOL");
+
+	return false;
 }

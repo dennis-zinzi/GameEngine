@@ -7,3 +7,5 @@
 
 #define FRAME_RATE 60
 #define MOVE_VEL 0.2f
+
+#define JUMP_VEL 0.4f
