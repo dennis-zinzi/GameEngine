@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HumanInterface", "HumanInte
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InitShutdown", "InitShutdown\InitShutdown.vcxproj", "{EB9D296B-264E-469B-810C-029318EA2368}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceManager", "ResourceManager\ResourceManager.vcxproj", "{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -101,6 +103,14 @@ Global
 		{EB9D296B-264E-469B-810C-029318EA2368}.Release|Win32.Build.0 = Release|Win32
 		{EB9D296B-264E-469B-810C-029318EA2368}.Release|x64.ActiveCfg = Release|x64
 		{EB9D296B-264E-469B-810C-029318EA2368}.Release|x64.Build.0 = Release|x64
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Debug|Win32.Build.0 = Debug|Win32
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Debug|x64.ActiveCfg = Debug|x64
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Debug|x64.Build.0 = Debug|x64
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Release|Win32.ActiveCfg = Release|Win32
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Release|Win32.Build.0 = Release|Win32
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Release|x64.ActiveCfg = Release|x64
+		{49B4E8FD-D309-4F87-BEE4-BDD3DF5CEA5C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

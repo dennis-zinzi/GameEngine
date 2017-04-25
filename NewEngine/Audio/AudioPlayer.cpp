@@ -8,15 +8,6 @@ AudioPlayer::AudioPlayer(){
 }
 
 AudioPlayer::~AudioPlayer(){
-	Mix_HaltMusic();
-	for(auto song : songs){
-		Mix_FreeMusic(song.sound);
-		song.sound = nullptr;
-	}
-	for(auto effect : soundEffects){
-		Mix_FreeChunk(effect.sound);
-		effect.sound = nullptr;
-	}
 	Mix_Quit();
 }
 
@@ -41,4 +32,20 @@ void AudioPlayer::LoadAudio(string filename, bool isSoundEffect){
 	}
 	Song track = {filename, song};
 	songs.push_back(track);
+}
+
+void AudioPlayer::UnloadAudio(){
+	//Stop whatever music is playing in the background
+	Mix_HaltMusic();
+
+	//Free music resources
+	for(auto song : songs){
+		Mix_FreeMusic(song.sound);
+		song.sound = nullptr;
+	}
+	//Free sound effects resources
+	for(auto effect : soundEffects){
+		Mix_FreeChunk(effect.sound);
+		effect.sound = nullptr;
+	}
 }

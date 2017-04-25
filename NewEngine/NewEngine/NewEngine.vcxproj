@@ -71,33 +71,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataLoader.cpp" />
+    <ClCompile Include="GameLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Audio\Audio.vcxproj">
-      <Project>{1d5cddf4-6489-4dbe-8bc8-2a4dae88960b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\FileIO\FileIO.vcxproj">
-      <Project>{00c00120-0be7-42b2-98b3-c0f98201d70d}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
-      <Project>{3d23a848-7e3c-47c4-bc02-983982f73c40}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\HumanInterface\HumanInterface.vcxproj">
-      <Project>{191dabd4-9730-4934-a1ed-07c37a8d2e15}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\InitShutdown\InitShutdown.vcxproj">
       <Project>{eb9d296b-264e-469b-810c-029318ea2368}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Physics\Physics.vcxproj">
-      <Project>{eb7e2c60-1881-4a48-b8fd-f1a3fc7a64c4}</Project>
+    <ProjectReference Include="..\ResourceManager\ResourceManager.vcxproj">
+      <Project>{49b4e8fd-d309-4f87-bee4-bdd3df5cea5c}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataLoader.h" />
+    <ClInclude Include="GameLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>

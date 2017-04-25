@@ -1,9 +1,12 @@
 #include "../InitShutdown/StartupShutdown.h"
 #pragma comment(lib, "InitShutdown.lib")
 
+#include "../ResourceManager/ResourceManager.h"
+#pragma comment(lib, "ResourceManager.lib")
+
 #include "GameObject.h"
 #include "Player.h"
-#include "DataLoader.h"
+#include "GameLoader.h"
 
 
 int main(int argc, char **argv){
@@ -27,30 +30,46 @@ int main(int argc, char **argv){
 	//Get File reader/parser
 	FileReader *reader = onoff.GetFileReader();
 
-	DataLoader loader(renderer, physics, reader, player);
+	//Load assets
+	ResourceManager resourcer(reader, player, renderer);
+	resourcer.LoadResources();
+
+	//Load game specific attributes
+	GameLoader loader(renderer, physics, reader, player);
 	//Add floor
 	loader.LoadGameFloor();
+	//Load circular objects
 	loader.LoadRadWorldObjects();
+	//load rectangular objects
 	loader.LoadFlatWorldObjects();
-	loader.LoadMusicAndSounds();
+	//load general game settings
 	loader.LoadGameSettings();
 
+	//Set up game player & controls
 	InputManager *input = onoff.GetInputManager();
 	input->SetInputPlayer(new Player(*renderer, *physics, *player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125));
 
+	//Allow time for everything to be set up correctly, and give player time to learn controls
 	SDL_Delay(2500);
 
 
+	//Status of excecution
 	bool running = true;
 	//Time in msec
 	int time = 0;
 
+
+	//Excecution loop
 	while(running){
 		time = renderer->GetTime();
 		physics->UpdatePhysics((float)time);
 		renderer->UpdateScene((float)time);
 		running = input->CheckForInputs();
 	}
+
+
+	//Unload any used resource
+	resourcer.UnloadResources();
 
 	//Destroy subsystems to avoid memory leaks
 	if(!onoff.Shutdown()){

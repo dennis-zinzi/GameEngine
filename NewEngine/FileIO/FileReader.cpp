@@ -35,6 +35,7 @@ vector<vector<string>> FileReader::ReadObjectInfo(string filename){
 
 	if(!file.good()){
 		cout << "Error: file " << filename << " not found, check name" << endl;
+		return fullData;
 	}
 
 	for(string line; getline(file, line);){
@@ -58,6 +59,11 @@ vector<vector<string>> FileReader::ReadObjectInfo(string filename){
 	return fullData;
 }
 
+
+/**
+ * Gets vector list of files in given directory
+ * Adapted from http://forums.devarticles.com/c-c-help-52/c-opening-all-txt-files-in-a-folder-one-by-150745.html
+ */
 vector<string> FileReader::GetDirFiles(string directory, string fileextension){
 	string searchPattern = "*." + fileextension;
 	string fullSearchPath = directory + searchPattern;
@@ -78,7 +84,6 @@ vector<string> FileReader::GetDirFiles(string directory, string fileextension){
 		string filePath = directory + FindData.cFileName;
 		ifstream in(filePath.c_str());
 		if(in){
-			//cout << "Loading " << FindData.cFileName << endl;
 			files.push_back(FindData.cFileName);
 		}
 		else{

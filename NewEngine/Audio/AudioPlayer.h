@@ -53,6 +53,8 @@ class AudioPlayer{
 
 		void LoadAudio(string filename, bool isSoundEffect);
 
+		void UnloadAudio();
+
 		inline void PlayEffect(string filename){
 			for(auto effect : soundEffects){
 				if(effect.name == filename){

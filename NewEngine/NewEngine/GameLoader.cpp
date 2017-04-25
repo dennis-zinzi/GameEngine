@@ -1,18 +1,18 @@
-#include "DataLoader.h"
+#include "GameLoader.h"
 
-DataLoader::DataLoader(GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player){
+GameLoader::GameLoader(GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player){
 	this->renderer = renderer;
 	this->physics = physics;
 	this->reader = reader;
 	this->player = player;
 }
 
-void DataLoader::LoadGameFloor(){
+void GameLoader::LoadGameFloor(){
 	new GameObject(*renderer, physics->GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
 }
 
 
-void DataLoader::LoadRadWorldObjects(){
+void GameLoader::LoadRadWorldObjects(){
 	vector<vector<string>> allData = reader->ReadObjectInfo("radius_objects.txt");
 	for(auto data : allData){
 		Shape shape;
@@ -32,7 +32,7 @@ void DataLoader::LoadRadWorldObjects(){
 	}
 }
 
-void DataLoader::LoadFlatWorldObjects(){
+void GameLoader::LoadFlatWorldObjects(){
 	vector<vector<string>> allData = reader->ReadObjectInfo("flat_objects.txt");
 	for(auto data : allData){
 		Shape shape;
@@ -50,20 +50,8 @@ void DataLoader::LoadFlatWorldObjects(){
 	}
 }
 
-void DataLoader::LoadMusicAndSounds(){
-	vector<string> music = reader->GetDirFiles(MUSIC_PATH, "wav");
 
-	for(auto track : music){
-		player->LoadAudio(track, false);
-	}
-
-	vector<string> sounds = reader->GetDirFiles(EFFECTS_PATH, "wav");
-	for(auto effect : sounds){
-		player->LoadAudio(effect, true);
-	}
-}
-
-void DataLoader::LoadGameSettings(){
+void GameLoader::LoadGameSettings(){
 	vector<string> gameData = reader->ReadFile("game_settings.txt");
 
 	//Set background music

@@ -41,6 +41,10 @@ GraphicsRenderer::GraphicsRenderer(){
 }
 
 GraphicsRenderer::~GraphicsRenderer(){
+	for(auto ro : objectsToRender){
+		delete ro;
+	}
+
 	glDisable(GL_TEXTURE_2D);
 	SDL_Quit();
 }
