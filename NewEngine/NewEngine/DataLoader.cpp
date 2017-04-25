@@ -1,10 +1,10 @@
 #include "DataLoader.h"
 
-DataLoader::DataLoader(GraphicsRenderer &renderer, PhysicsManager &physics, FileReader &reader, AudioPlayer &player){
-	this->renderer = &renderer;
-	this->physics = &physics;
-	this->reader = &reader;
-	this->player = &player;
+DataLoader::DataLoader(GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player){
+	this->renderer = renderer;
+	this->physics = physics;
+	this->reader = reader;
+	this->player = player;
 }
 
 void DataLoader::LoadGameFloor(){

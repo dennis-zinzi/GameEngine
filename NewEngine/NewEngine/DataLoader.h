@@ -25,7 +25,7 @@ using std::string;
 
 class DataLoader{
 	public:
-		DataLoader(GraphicsRenderer &renderer, PhysicsManager &physics, FileReader &reader, AudioPlayer &player);
+		DataLoader(GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player);
 		void LoadGameFloor();
 		void LoadRadWorldObjects();
 		void LoadFlatWorldObjects();

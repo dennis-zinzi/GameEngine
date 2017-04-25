@@ -1,23 +1,5 @@
-//Graphics includes
-#include "../Graphics/GraphicsRenderer.h"
-#include "../Graphics/RenderObject.h"
-#pragma comment(lib, "Graphics.lib")
-
-//Physics includes
-#include "../Physics/PhysicsManager.h"
-#pragma comment(lib, "Physics.lib")
-
-//Audio includes
-#include "../Audio/AudioPlayer.h"
-#pragma comment(lib, "Audio.lib")
-
-//FileIO
-#include "../FileIO/FileReader.h"
-#pragma comment(lib, "FileIO.lib")
-
-//Input
-#include "../HumanInterface/InputManager.h"
-#pragma comment(lib, "HumanInterface.lib")
+#include "../InitShutdown/StartupShutdown.h"
+#pragma comment(lib, "InitShutdown.lib")
 
 #include "GameObject.h"
 #include "Player.h"
@@ -25,20 +7,25 @@
 
 
 int main(int argc, char **argv){
+	StartupShutdown onoff;
+	
+	//Init Engine subsystems
+	if(!onoff.Start()){
+		//Quit if initialization error
+		return -1;
+	}
+
 	//Create Graphics environment
-	GraphicsRenderer renderer;
+	GraphicsRenderer *renderer = onoff.GetGraphicsRenderer();
 	
 	//Create Physics environment
-	PhysicsManager physics;
+	PhysicsManager *physics = onoff.GetPhysicsManager();
 
 	//Create Audio environment
-	AudioPlayer player;
+	AudioPlayer *player = onoff.GetAudioPlayer();
 
 	//Get File reader/parser
-	FileReader reader;
-	
-	//InputPlayer *gamePlayer = new Player(renderer, physics, player, 0.5f);
-	//InputPlayer *gamePlayer = new Player(renderer, physics, player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125);
+	FileReader *reader = onoff.GetFileReader();
 
 	DataLoader loader(renderer, physics, reader, player);
 	//Add floor
@@ -48,9 +35,10 @@ int main(int argc, char **argv){
 	loader.LoadMusicAndSounds();
 	loader.LoadGameSettings();
 
-	InputManager input(new Player(renderer, physics, player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125));
+	InputManager *input = onoff.GetInputManager();
+	input->SetInputPlayer(new Player(*renderer, *physics, *player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125));
 
-	SDL_Delay(1500);
+	SDL_Delay(2500);
 
 
 	bool running = true;
@@ -58,10 +46,15 @@ int main(int argc, char **argv){
 	int time = 0;
 
 	while(running){
-		time = renderer.GetTime();
-		physics.UpdatePhysics((float)time);
-		renderer.UpdateScene((float)time);
-		running = input.CheckForInputs();
+		time = renderer->GetTime();
+		physics->UpdatePhysics((float)time);
+		renderer->UpdateScene((float)time);
+		running = input->CheckForInputs();
+	}
+
+	//Destroy subsystems to avoid memory leaks
+	if(!onoff.Shutdown()){
+		return -1;
 	}
 
 	return 0;

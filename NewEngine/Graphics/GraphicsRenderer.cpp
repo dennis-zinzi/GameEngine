@@ -8,6 +8,7 @@ GraphicsRenderer::GraphicsRenderer(){
 	context = SDL_GL_CreateContext(screen);
 	IMG_Init(IMG_INIT_JPG);
 	IMG_Init(IMG_INIT_PNG);
+	TTF_Init();
 
 	//Set up camera
 	camera = new Camera(screen);
@@ -84,8 +85,6 @@ void GraphicsRenderer::Draw2DRect(int x, int y, int height, int width,
 
 
 void GraphicsRenderer::DrawTextLabel(string message, int fontSize, int x, int y, int width, int height, int red, int green, int blue){
-	TTF_Init();
-
 	//TTF_Font *font = TTF_OpenFont("../Assets/Fonts/UnifrakturCook-Bold.ttf", 180);
 	TTF_Font *font = TTF_OpenFont("../Assets/Fonts/Invasion2000.ttf", fontSize);
 

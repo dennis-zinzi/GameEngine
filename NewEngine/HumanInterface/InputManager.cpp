@@ -1,5 +1,10 @@
 #include "InputManager.h"
 
+InputManager::InputManager(){
+
+}
+
+
 InputManager::InputManager(InputPlayer *Player){
 	this->Player = Player;
 }
