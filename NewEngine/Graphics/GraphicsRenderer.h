@@ -26,6 +26,12 @@ using std::vector;
 using std::cout;
 using std::endl;
 
+struct Font{
+	std::string name;
+	int size;
+	TTF_Font *font;
+};
+
 class GraphicsRenderer{
 	public:
 		GraphicsRenderer();
@@ -33,7 +39,7 @@ class GraphicsRenderer{
 
 		void UpdateScene(float msec);
 		void Draw2DRect(int x, int y, int height, int width, int red, int green, int blue, int alpha);
-		void DrawTextLabel(string message, int fontSize, int x, int y, int width, int height, int red, int green, int blue);
+		void DrawTextLabel(string message, string fontname, int fontSize, int x, int y, int width, int height, int red, int green, int blue);
 
 		static unsigned int LoadTexture(string imagename);
 
@@ -49,16 +55,26 @@ class GraphicsRenderer{
 			objectsToRender.push_back(ro);
 		}
 
-		//inline void RemoveRenderObject(RenderObject *ro){
-		//	objectsToRender.erase(ro);
-		//}
+		//Handle loading of fonts
+		void LoadFont(string filename, int fontsize);
+		
+		//Handle unloading of fonts
+		inline void UnloadFonts(){
+			for(auto font : fonts){
+				TTF_CloseFont(font.font);
+			}
+		}
 
 		inline void SDLRender(){
 			SDL_RenderPresent(renderer);
 			SDL_RenderClear(renderer);
 		}
 
+
+		//Info screens
+		void ShowLaunchScreen();
 		void ShowControlsScreen();
+
 
 		/** Shape Rendering functions **/
 		//Renders plane
@@ -81,6 +97,7 @@ class GraphicsRenderer{
 		static void RenderBox(float xExtent, float yExtent, float zExtent, float matrix[16],
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
+
 	private:
 		SDL_Window *screen;
 		SDL_Renderer *renderer;
@@ -89,5 +106,15 @@ class GraphicsRenderer{
 		Camera *camera;
 		static GLuint GraphicsRenderer::tex;
 		vector<RenderObject*> objectsToRender;
+		vector<Font> fonts;
 
+		inline TTF_Font* GetFont(string filename, int fontsize){
+			for(auto font : fonts){
+				if(font.name == filename && font.size == fontsize){
+					return font.font;
+				}
+			}
+			cout << "Error: font "<< filename << " with size " << fontsize << " not found" << endl;
+			return nullptr;
+		}
 };

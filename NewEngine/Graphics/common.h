@@ -1,4 +1,5 @@
 #define IMAGE_PATH "../Assets/Images/"
+#define FONT_PATH "../Assets/Fonts/"
 
 #define PI_VAL 3.1415926535f
 

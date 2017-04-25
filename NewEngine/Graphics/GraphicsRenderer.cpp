@@ -34,10 +34,6 @@ GraphicsRenderer::GraphicsRenderer(){
 	//Enable texture mapping
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-	//Show at start up
-	DrawTextLabel("Loading Engine... please wait", 180, 150, 0, 900, 150, 66, 244, 217);
-	ShowControlsScreen();
 }
 
 GraphicsRenderer::~GraphicsRenderer(){
@@ -88,9 +84,13 @@ void GraphicsRenderer::Draw2DRect(int x, int y, int height, int width,
 }
 
 
-void GraphicsRenderer::DrawTextLabel(string message, int fontSize, int x, int y, int width, int height, int red, int green, int blue){
+void GraphicsRenderer::DrawTextLabel(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue){
 	//TTF_Font *font = TTF_OpenFont("../Assets/Fonts/UnifrakturCook-Bold.ttf", 180);
-	TTF_Font *font = TTF_OpenFont("../Assets/Fonts/Invasion2000.ttf", fontSize);
+	TTF_Font *font = GetFont(fontname, fontsize);//TTF_OpenFont("../Assets/Fonts/Invasion2000.ttf", fontSize);
+	if(!font){
+		return;
+	}
+
 
 	SDL_Color textColor = {red, blue, green};
 	SDL_Surface *text = TTF_RenderText_Solid(font, message.c_str(), textColor);
@@ -104,8 +104,9 @@ void GraphicsRenderer::DrawTextLabel(string message, int fontSize, int x, int y,
 
 	SDL_RenderCopy(renderer, messageTex, nullptr, &textRect);
 
-	TTF_CloseFont(font);
+	//TTF_CloseFont(font);
 	SDL_FreeSurface(text);
+	SDL_DestroyTexture(messageTex);
 }
 
 
@@ -315,27 +316,48 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 }
 
 
+void GraphicsRenderer::ShowLaunchScreen(){
+	//Show at start up
+	DrawTextLabel("Loading Engine... please wait", "Invasion2000.TTF", 180, 150, 0, 900, 150, 66, 244, 217);
+	ShowControlsScreen();
+}
+
+
 void GraphicsRenderer::ShowControlsScreen(){
-	DrawTextLabel("Controls", 100, WINDOW_WIDTH / 2 - 130, 125, 300, 150, 100, 200, 100);
+	DrawTextLabel("Controls", "Invasion2000.TTF", 100, WINDOW_WIDTH / 2 - 130, 125, 300, 150, 100, 200, 100);
 
-	DrawTextLabel("Movement:", 75, 300, 275, 200, 50, 100, 200, 100);
-	DrawTextLabel("W A S D", 50, 700, 275, 200, 50, 100, 200, 100);
+	DrawTextLabel("Movement:", "Invasion2000.TTF", 75, 300, 275, 200, 50, 100, 200, 100);
+	DrawTextLabel("W A S D", "Invasion2000.TTF", 50, 700, 275, 200, 50, 100, 200, 100);
 
-	DrawTextLabel("Camera:", 75, 300, 350, 200, 50, 100, 200, 100);
-	DrawTextLabel("Mouse", 50, 700, 350, 200, 50, 100, 200, 100);
+	DrawTextLabel("Camera:", "Invasion2000.TTF", 75, 300, 350, 200, 50, 100, 200, 100);
+	DrawTextLabel("Mouse", "Invasion2000.TTF", 50, 700, 350, 200, 50, 100, 200, 100);
 
-	DrawTextLabel("Shoot:", 75, 300, 425, 200, 50, 100, 200, 100);
-	DrawTextLabel("Click", 50, 700, 425, 200, 50, 100, 200, 100);
+	DrawTextLabel("Shoot:", "Invasion2000.TTF", 75, 300, 425, 200, 50, 100, 200, 100);
+	DrawTextLabel("Click", "Invasion2000.TTF", 50, 700, 425, 200, 50, 100, 200, 100);
 
-	DrawTextLabel("Jump:", 75, 300, 500, 200, 50, 100, 200, 100);
-	DrawTextLabel("Space", 50, 700, 500, 200, 50, 100, 200, 100);
+	DrawTextLabel("Jump:", "Invasion2000.TTF", 75, 300, 500, 200, 50, 100, 200, 100);
+	DrawTextLabel("Space", "Invasion2000.TTF", 50, 700, 500, 200, 50, 100, 200, 100);
 
-	DrawTextLabel("Show Controls:", 75, 300, 575, 200, 50, 100, 200, 100);
-	DrawTextLabel("  P  ", 50, 700, 575, 200, 50, 100, 200, 100);
+	DrawTextLabel("Show Controls:", "Invasion2000.TTF", 75, 300, 575, 200, 50, 100, 200, 100);
+	DrawTextLabel("  P  ", "Invasion2000.TTF", 50, 700, 575, 200, 50, 100, 200, 100);
 
-	DrawTextLabel("Exit:", 75, 300, 650, 200, 50, 100, 200, 100);
-	DrawTextLabel(" Esc ", 50, 700, 650, 200, 50, 100, 200, 100);
+	DrawTextLabel("Exit:", "Invasion2000.TTF", 75, 300, 650, 200, 50, 100, 200, 100);
+	DrawTextLabel(" Esc ", "Invasion2000.TTF", 50, 700, 650, 200, 50, 100, 200, 100);
 
 	SDLRender();
 	SDL_Delay(500);
+}
+
+
+void GraphicsRenderer::LoadFont(string filename, int fontsize){
+	string filePath = FONT_PATH + filename;
+
+	TTF_Font *font = TTF_OpenFont(filePath.c_str(), fontsize);
+	if(!font){
+		cout << "ERROR: could not find font " << filename << endl;
+		return;
+	}
+
+	Font f = {filename, fontsize, font};
+	fonts.push_back(f);
 }

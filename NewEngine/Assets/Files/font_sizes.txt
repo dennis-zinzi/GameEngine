@@ -1,0 +1,5 @@
+# Include here the font sizes your game will use (need to be known at compile time for pre-loading)
+180
+100
+75
+50

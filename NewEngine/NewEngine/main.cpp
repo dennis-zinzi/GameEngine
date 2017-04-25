@@ -34,6 +34,10 @@ int main(int argc, char **argv){
 	ResourceManager resourcer(reader, player, renderer);
 	resourcer.LoadResources();
 
+
+	//Show launch screen
+	renderer->ShowLaunchScreen();
+
 	//Load game specific attributes
 	GameLoader loader(renderer, physics, reader, player);
 	//Add floor

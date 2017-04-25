@@ -9,14 +9,15 @@ ResourceManager::ResourceManager(FileReader *reader, AudioPlayer *player, Graphi
 //Loads game assets
 void ResourceManager::LoadResources(){
 	LoadAudioFiles();
+	LoadFontFiles();
 	//LoadImages();
-	//LoadFonts();
 }
 
 
 //Frees game assets
 void ResourceManager::UnloadResources(){
 	player->UnloadAudio();
+	renderer->UnloadFonts();
 }
 
 
@@ -31,5 +32,22 @@ void ResourceManager::LoadAudioFiles(){
 	vector<string> sounds = reader->GetDirFiles(EFFECTS_PATH, "wav");
 	for(auto effect : sounds){
 		player->LoadAudio(effect, true);
+	}
+}
+
+
+void ResourceManager::LoadFontFiles(){
+	vector<string> fontsizesString = reader->ReadFile("font_sizes.txt");
+	vector<int> intSizes;
+	for(auto size : fontsizesString){
+		intSizes.push_back(stoi(size));
+	}
+
+	vector<string> fonts = reader->GetDirFiles(FONT_PATH, "ttf");
+	for(auto font : fonts){
+		for(auto size : intSizes){
+			cout << size << endl;
+			renderer->LoadFont(font, size);
+		}
 	}
 }

@@ -26,6 +26,7 @@ class ResourceManager{
 
 	private:
 		void LoadAudioFiles();
+		void LoadFontFiles();
 	
 		FileReader *reader;
 		AudioPlayer *player;
