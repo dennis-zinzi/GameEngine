@@ -22,7 +22,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -68,12 +68,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)SDL2-2.0.5\include;$(SolutionDir)glew-2.0.0\include;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\include;$(SolutionDir)freeglut\include;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\include;$(SolutionDir)SOIL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2.lib;$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2main.lib;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\lib\$(PlatformShortName)\SDL2_ttf.lib;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\lib\$(PlatformShortName)\SDL2_image.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32s.lib;$(SolutionDir)freeglut\lib\freeglut.lib;$(SolutionDir)SOIL\$(Configuration)\SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2.lib;$(SolutionDir)SDL2-2.0.5\lib\$(PlatformShortName)\SDL2main.lib;$(SolutionDir)SDL2-2.0.5\SDL2_ttf-2.0.14\lib\$(PlatformShortName)\SDL2_ttf.lib;$(SolutionDir)SDL2-2.0.5\SDL2_image-2.0.1\lib\$(PlatformShortName)\SDL2_image.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32.lib;$(SolutionDir)glew-2.0.0\lib\$(Configuration)\$(PlatformName)\glew32s.lib;$(SolutionDir)freeglut\lib\freeglut.lib;$(SolutionDir)SOIL\$(Configuration)\SOIL.lib</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />

@@ -29,6 +29,7 @@ GraphicsRenderer::GraphicsRenderer(){
 	
 	//Enable depth test (Causes z-fighting)
 	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 
 	//Enable texture mapping
 	glEnable(GL_TEXTURE_2D);
@@ -52,9 +53,61 @@ void GraphicsRenderer::UpdateScene(float msec){
 	//SDL update render	
 	//SDL_RenderPresent(renderer);
 
-	for(auto ro : objectsToRender){
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1.0, -1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	LoadSDLText("Score: 10000", "Invasion2000.TTF", 50, 10, 800, 100, 50, 0, 255, 0);
+
+	//if you want to keep your previus matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	camera->UpdateCamera();
+	glPushMatrix();
+
+
+	for (auto ro : objectsToRender){
 		ro->Render();
 	}
+
+	glPopMatrix();
+
+	// Restore old ortho
+	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_MODELVIEW);
+
+	//glEnable(GL_DEPTH_TEST);
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//gluPerspective(45.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//for(auto ro : objectsToRender){
+	//	ro->Render();
+	//}
+
+	
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//gluOrtho2D(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+
+	//glClear(GL_DEPTH_BUFFER_BIT);
+
+	//LoadSDLText("Hello test", "Invasion2000.TTF", 50, 10, 20, 100, 50, 0, 255, 0);
+
 
 	SDL_GL_SwapWindow(screen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -64,7 +117,7 @@ void GraphicsRenderer::UpdateScene(float msec){
 		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (GetTime() - msec)));
 	}
 
-	camera->UpdateCamera();
+	//camera->UpdateCamera();
 }
 
 
@@ -90,7 +143,7 @@ void GraphicsRenderer::DrawTextLabel(string message, string fontname, int fontsi
 	}
 
 
-	SDL_Color textColor = {red, blue, green};
+	SDL_Color textColor = {red, green, blue};
 	SDL_Surface *text = TTF_RenderText_Solid(font, message.c_str(), textColor);
 	SDL_Texture *messageTex = SDL_CreateTextureFromSurface(renderer, text);
 
@@ -112,15 +165,76 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	//Get full image path
 	string imagePath = IMAGE_PATH + imagename;
 	
+	
 	unsigned int tex = SOIL_load_OGL_texture(imagePath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);;
-	glGenTextures(1, &tex);
-
+	//glGenTextures(1, &tex);
+	
+	
+	//glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
+
 
 	return tex;
+}
+
+SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue){
+	TTF_Font *font = GetFont(fontname, fontsize);//TTF_OpenFont("../Assets/Fonts/Invasion2000.ttf", fontSize);
+	if (!font){
+		return nullptr;
+	}
+
+
+	SDL_Color textColor = {red, green, blue};
+	SDL_Surface *surface;
+
+	//Render font to a SDL_Surface
+	if ((surface = TTF_RenderText_Blended(font, message.c_str(), textColor)) == nullptr) {
+		TTF_CloseFont(font);
+		std::cout << "TTF_RenderText error: " << std::endl;
+		return nullptr;
+	}
+
+	GLuint texId;
+
+	//Generate OpenGL texture
+	glEnable(GL_TEXTURE_2D);
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_2D, texId);
+
+	//Avoid mipmap filtering
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	//Find the first power of two for OpenGL image 
+	int w = power_two_floor(surface->w) * 2;
+	int h = power_two_floor(surface->h) * 2;
+
+	//Create a surface to the correct size in RGB format, and copy the old image
+	SDL_Surface * s = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_BlitSurface(surface, NULL, s, NULL);
+
+	//Copy the created image into OpenGL format
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, s->pixels);
+
+	//Draw the OpenGL texture as a Quad
+	glBegin(GL_QUADS);
+	{
+		glTexCoord2d(0, 1); glVertex3f(0, 0, 0);
+		glTexCoord2d(1, 1); glVertex3f(0 + surface->w, 0, 0);
+		glTexCoord2d(1, 0); glVertex3f(0 + surface->w, 0 + surface->h, 0);
+		glTexCoord2d(0, 0); glVertex3f(0, 0 + surface->h, 0);
+	} glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+	//Cleanup
+	//SDL_FreeSurface(s);
+	//SDL_FreeSurface(surface);
+	//glDeleteTextures(1, &texId);
+
+	return nullptr;
 }
 
 
@@ -136,27 +250,28 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 	GLuint tex = LoadTexture("chess_board.jpg");
 	//glBindTexture(GL_TEXTURE_2D, tex);
 
-	//cout << tex << endl;
+	cout << tex << endl;
 
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	{
 		glMultMatrixf(matrix);
 		glBegin(GL_QUADS);
 		{
 			//TODO - Need to think about this
-			glTexCoord2f(0, 0);
+			glTexCoord2f(0, 10);
 			glVertex3f(x - halfWidth, y + halfHeight, z + halfDepth);
-			glTexCoord2f(0, 1);
+			glTexCoord2f(0, 10);
 			glVertex3f(x - halfWidth, y + halfHeight, z - halfDepth);
-			glTexCoord2f(1, 1);
+			glTexCoord2f(10, 10);
 			glVertex3f(x + halfWidth, y - halfHeight, z - halfDepth);
-			glTexCoord2f(1, 0);
+			glTexCoord2f(10, 0);
 			glVertex3f(x + halfWidth, y - halfHeight, z + halfDepth);
 		}
 		glEnd();
 	}
 	glPopMatrix();
-
+	glDisable(GL_TEXTURE_2D);
 	//SOIL_free_image_data(img);
 	//glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -217,7 +332,7 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 	int red, int green, int blue, int alpha){
 
 	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
-
+	
 	//unsigned int tex = LoadTexture("chess_board.jpg");
 	GLuint tex = SOIL_load_OGL_texture(IMAGE_PATH"chessboard.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	glBindTexture(GL_TEXTURE_2D, tex);

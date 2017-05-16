@@ -33,6 +33,12 @@ struct Font{
 	TTF_Font *font;
 };
 
+//Representation of Texture
+struct Texture{
+	std::string name;
+	SDL_Texture *texture;
+};
+
 class GraphicsRenderer{
 	public:
 		GraphicsRenderer();
@@ -48,7 +54,8 @@ class GraphicsRenderer{
 
 		//Loads OpenGL texture
 		static unsigned int LoadTexture(string imagename);
-
+		//Loads SDL texture
+		SDL_Texture* LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue);
 
 		//Get current execution time since SDL environment initialized
 		inline float GetTime() const{
@@ -119,6 +126,7 @@ class GraphicsRenderer{
 		Camera *camera;
 		vector<RenderObject*> objectsToRender;
 		vector<Font> fonts;
+		vector<Texture> textures;
 
 		//Retrieves text font resource if found/loaded
 		inline TTF_Font* GetFont(string filename, int fontsize){
@@ -129,5 +137,23 @@ class GraphicsRenderer{
 			}
 			cout << "Error: font "<< filename << " with size " << fontsize << " not found" << endl;
 			return nullptr;
+		}
+
+		//Retrieves texture resource if found/loaded
+		inline SDL_Texture* GetTexture(string filename){
+			for (auto tex : textures){
+				if (tex.name == filename){
+					return tex.texture;
+				}
+			}
+			cout << "Error: texture " << filename << " not found" << endl;
+			return nullptr;
+		}
+
+		inline unsigned int power_two_floor(unsigned int val) {
+			unsigned int power = 2, nextVal = power * 2;
+			while ((nextVal *= 2) <= val)
+				power *= 2;
+			return power * 2;
 		}
 };

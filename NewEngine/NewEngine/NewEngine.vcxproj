@@ -68,6 +68,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(SolutionDir)freeglut\lib\freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -77,8 +80,14 @@
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Audio\Audio.vcxproj">
+      <Project>{1d5cddf4-6489-4dbe-8bc8-2a4dae88960b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\InitShutdown\InitShutdown.vcxproj">
       <Project>{eb9d296b-264e-469b-810c-029318ea2368}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Physics\Physics.vcxproj">
+      <Project>{eb7e2c60-1881-4a48-b8fd-f1a3fc7a64c4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Profiler\Profiler.vcxproj">
       <Project>{c3b48f19-abf4-4738-a722-e04f83b34a66}</Project>

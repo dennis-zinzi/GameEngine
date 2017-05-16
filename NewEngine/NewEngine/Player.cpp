@@ -34,7 +34,7 @@ Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer 
 void Player::Render(){
 	if(isJumping){
 		camera->MoveCameraY(JUMP_VEL, 90);
-		camera->MoveCameraXZ(0.1, 0.0f);
+		//camera->MoveCameraXZ(0.1, 0.0f);
 
 		if(jumpNum > 10){
 			isJumping = false;
@@ -49,7 +49,7 @@ void Player::Render(){
 	
 	if(isFalling){
 		camera->MoveCameraY(JUMP_VEL, -90.0f);
-		camera->MoveCameraXZ(0.1, 0.0f);
+		//camera->MoveCameraXZ(0.1, 0.0f);
 
 		if(jumpNum > 10){
 			isFalling = false;
@@ -75,9 +75,9 @@ void Player::Render(){
 	
 	//GraphicsRenderer::RenderSphere(radius, matrix, red, green, blue, alpha);
 
-	btVector3 extents = ((btBoxShape*)physicalBody->getCollisionShape())->getHalfExtentsWithoutMargin();
-	GraphicsRenderer::RenderBox(extents.x(), extents.y(), extents.z(), matrix,
-		red, green, blue, alpha);
+	//btVector3 extents = ((btBoxShape*)physicalBody->getCollisionShape())->getHalfExtentsWithoutMargin();
+	//GraphicsRenderer::RenderBox(extents.x(), extents.y(), extents.z(), matrix,
+	//	red, green, blue, alpha);
 }
 
 
