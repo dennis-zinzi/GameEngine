@@ -22,6 +22,7 @@
 #include "RenderObject.h"
 
 using std::string;
+using std::to_string;
 using std::vector;
 using std::cout;
 using std::endl;
@@ -36,7 +37,7 @@ struct Font{
 //Representation of Texture
 struct Texture{
 	std::string name;
-	SDL_Texture *texture;
+	GLuint texture;
 };
 
 class GraphicsRenderer{
@@ -53,7 +54,7 @@ class GraphicsRenderer{
 		void DrawTextLabel(string message, string fontname, int fontSize, int x, int y, int width, int height, int red, int green, int blue);
 
 		//Loads OpenGL texture
-		static unsigned int LoadTexture(string imagename);
+		unsigned int LoadTexture(string imagename);
 		//Loads SDL texture
 		SDL_Texture* LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue);
 
@@ -126,7 +127,7 @@ class GraphicsRenderer{
 		Camera *camera;
 		vector<RenderObject*> objectsToRender;
 		vector<Font> fonts;
-		vector<Texture> textures;
+		static vector<Texture> textures;
 
 		//Retrieves text font resource if found/loaded
 		inline TTF_Font* GetFont(string filename, int fontsize){
@@ -140,14 +141,17 @@ class GraphicsRenderer{
 		}
 
 		//Retrieves texture resource if found/loaded
-		inline SDL_Texture* GetTexture(string filename){
-			for (auto tex : textures){
+		inline static GLuint GetTexture(string filename){
+			for(auto tex : textures){
 				if (tex.name == filename){
+					glBindTexture(GL_TEXTURE_2D, tex.texture);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 					return tex.texture;
 				}
 			}
 			cout << "Error: texture " << filename << " not found" << endl;
-			return nullptr;
+			return -1;
 		}
 
 		inline unsigned int power_two_floor(unsigned int val) {

@@ -10,7 +10,7 @@ ResourceManager::ResourceManager(FileReader *reader, AudioPlayer *player, Graphi
 void ResourceManager::LoadResources(){
 	LoadAudioFiles();
 	LoadFontFiles();
-	//LoadImages();
+	LoadImages();
 }
 
 
@@ -52,5 +52,21 @@ void ResourceManager::LoadFontFiles(){
 		for(auto size : intSizes){
 			renderer->LoadFont(font, size);
 		}
+	}
+}
+
+
+void ResourceManager::LoadImages(){
+	//Load all pngs in image directory
+	vector<string> pngs = reader->GetDirFiles(IMAGE_PATH, "png");
+	for(auto png : pngs){
+		renderer->LoadTexture(png);
+	}
+
+
+	//Load all jpgs in image directory
+	vector<string> jpgs = reader->GetDirFiles(IMAGE_PATH, "jpg");
+	for(auto jpg : jpgs){
+		renderer->LoadTexture(jpg);
 	}
 }

@@ -40,6 +40,9 @@ class ResourceManager{
 
 		//Load every font file
 		void LoadFontFiles();
+
+		//Load every image file
+		void LoadImages();
 	
 		FileReader *reader;
 		AudioPlayer *player;

@@ -1,5 +1,7 @@
 #include "GraphicsRenderer.h"
 
+vector<Texture> GraphicsRenderer::textures;
+
 GraphicsRenderer::GraphicsRenderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
 	screen = SDL_CreateWindow("SDL Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
@@ -59,8 +61,9 @@ void GraphicsRenderer::UpdateScene(float msec){
 	glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1.0, -1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	LoadSDLText("Score: 10000", "Invasion2000.TTF", 50, 10, 800, 100, 50, 0, 255, 0);
+	
+	string score = "Score: " + to_string(msec);
+	LoadSDLText(score, "Invasion2000.TTF", 50, 10, 800, 100, 50, 0, 255, 0);
 
 	//if you want to keep your previus matrix
 	glMatrixMode(GL_PROJECTION);
@@ -162,6 +165,11 @@ void GraphicsRenderer::DrawTextLabel(string message, string fontname, int fontsi
 
 
 unsigned int GraphicsRenderer::LoadTexture(string imagename){
+	unsigned int t = GetTexture(imagename);
+	if(t != -1){
+		return t;
+	}
+
 	//Get full image path
 	string imagePath = IMAGE_PATH + imagename;
 	
@@ -172,10 +180,11 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	
 	//glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-
+	Texture texture = {imagename, tex};
+	textures.push_back(texture);
 
 	return tex;
 }
@@ -191,8 +200,8 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 	SDL_Surface *surface;
 
 	//Render font to a SDL_Surface
-	if ((surface = TTF_RenderText_Blended(font, message.c_str(), textColor)) == nullptr) {
-		TTF_CloseFont(font);
+	if(!(surface = TTF_RenderText_Blended(font, message.c_str(), textColor))){
+		//TTF_CloseFont(font);
 		std::cout << "TTF_RenderText error: " << std::endl;
 		return nullptr;
 	}
@@ -247,10 +256,11 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 		halfHeight = height / 2.0f,
 		halfDepth = depth / 2.0f;
 
-	GLuint tex = LoadTexture("chess_board.jpg");
-	//glBindTexture(GL_TEXTURE_2D, tex);
+	GLuint tex = GetTexture("chess_board.jpg");//GetTexture("checkerboardSmall.jpg");// //LoadTexture("chess_board.jpg");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	cout << tex << endl;
+	//cout << tex << endl;
 
 	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
@@ -259,14 +269,14 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 		glBegin(GL_QUADS);
 		{
 			//TODO - Need to think about this
-			glTexCoord2f(0, 10);
-			glVertex3f(x - halfWidth, y + halfHeight, z + halfDepth);
-			glTexCoord2f(0, 10);
-			glVertex3f(x - halfWidth, y + halfHeight, z - halfDepth);
-			glTexCoord2f(10, 10);
-			glVertex3f(x + halfWidth, y - halfHeight, z - halfDepth);
-			glTexCoord2f(10, 0);
-			glVertex3f(x + halfWidth, y - halfHeight, z + halfDepth);
+			glTexCoord2f(0, 30);
+			glVertex3f(x - halfWidth, 0.0f, z + halfDepth);
+			glTexCoord2f(0, 0);
+			glVertex3f(x - halfWidth, 0.0f, z - halfDepth);
+			glTexCoord2f(30, 0);
+			glVertex3f(x + halfWidth, 0.0f, z - halfDepth);
+			glTexCoord2f(30, 30);
+			glVertex3f(x + halfWidth, 0.0f, z + halfDepth);
 		}
 		glEnd();
 	}
