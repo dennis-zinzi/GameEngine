@@ -184,7 +184,7 @@ void Player::Jump(){
 
 
 void Player::Shoot(){
-	RenderObject *bullet = new GameObject(*renderer, *physics, Shape::Sphere, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.1f, 0.0f, 255, 255, 255);
+	RenderObject *bullet = new GameObject(*renderer, *physics, Shape::Sphere, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
 
 	float *camLook = camera->GetCameraLookVect();
 	((GameObject*)bullet)->GetPhysicalObj()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));

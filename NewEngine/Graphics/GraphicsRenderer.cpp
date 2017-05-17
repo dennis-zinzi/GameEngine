@@ -55,28 +55,61 @@ void GraphicsRenderer::UpdateScene(float msec){
 	//SDL update render	
 	//SDL_RenderPresent(renderer);
 
-
+	//Switch to orthographic to render HUD
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1.0, -1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glDepthMask(GL_FALSE);
 	
-	string score = "Score: " + to_string(msec);
-	LoadSDLText(score, "Invasion2000.TTF", 50, 10, 800, 100, 50, 0, 255, 0);
+	//glTranslatef(10, 100, 0);
 
-	//if you want to keep your previus matrix
+	string score = "Score: " + to_string(msec*.1f);
+	LoadSDLText(score, "Invasion2000.TTF", 50, 50, 650, 100, 50, 0, 255, 0);
+
+	//Draw aim assist
+	glLoadIdentity();
+	//glColor4f(42 / 255.0f, 166 / 255.0f, 137 / 255.0f, 255 / 255.0f);
+	glTranslatef((WINDOW_WIDTH / 2.0f) - 30.0f, (WINDOW_HEIGHT / 2.0f) - 30.0f, 0);
+	GetTexture("aimassist.png");
+
+	glPushMatrix();
+	{
+		//glMultMatrixf(matrix);
+		glEnable(GL_TEXTURE_2D);
+		glBegin(GL_QUADS);
+		{
+			//TODO - Need to think about this
+			glTexCoord2f(0, 1);
+			glVertex3f(0, 60, 0);
+			glTexCoord2f(0, 0);
+			glVertex3f(0, 0, 0);
+			glTexCoord2f(1, 0);
+			glVertex3f(60, 0, 0);
+			glTexCoord2f(1, 1);
+			glVertex3f(60, 60, 0);
+		}
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+	}
+	glPopMatrix();
+
+
+
+	//Go back to perspective
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(90, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glDepthMask(GL_TRUE);
 
 	camera->UpdateCamera();
 	glPushMatrix();
 
 
-	for (auto ro : objectsToRender){
+	for(auto ro : objectsToRender){
 		ro->Render();
 	}
 
@@ -85,31 +118,6 @@ void GraphicsRenderer::UpdateScene(float msec){
 	// Restore old ortho
 	glMatrixMode(GL_PROJECTION);
 	glMatrixMode(GL_MODELVIEW);
-
-	//glEnable(GL_DEPTH_TEST);
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//gluPerspective(45.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//for(auto ro : objectsToRender){
-	//	ro->Render();
-	//}
-
-	
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//gluOrtho2D(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//glDisable(GL_DEPTH_TEST);
-
-	//glClear(GL_DEPTH_BUFFER_BIT);
-
-	//LoadSDLText("Hello test", "Invasion2000.TTF", 50, 10, 20, 100, 50, 0, 255, 0);
 
 
 	SDL_GL_SwapWindow(screen);
@@ -186,6 +194,8 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	Texture texture = {imagename, tex};
 	textures.push_back(texture);
 
+	cout << "Loaded texture: " << imagename << endl;
+
 	return tex;
 }
 
@@ -197,19 +207,20 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 
 
 	SDL_Color textColor = {red, green, blue};
-	SDL_Surface *surface;
+	SDL_Surface *surface = TTF_RenderText_Blended(font, message.c_str(), textColor);
 
 	//Render font to a SDL_Surface
-	if(!(surface = TTF_RenderText_Blended(font, message.c_str(), textColor))){
+	if(!surface){
 		//TTF_CloseFont(font);
 		std::cout << "TTF_RenderText error: " << std::endl;
 		return nullptr;
 	}
 
+	glTranslatef(x, y, 0);
+
 	GLuint texId;
 
 	//Generate OpenGL texture
-	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 
@@ -229,6 +240,7 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, s->pixels);
 
 	//Draw the OpenGL texture as a Quad
+	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	{
 		glTexCoord2d(0, 1); glVertex3f(0, 0, 0);
@@ -269,13 +281,13 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 		glBegin(GL_QUADS);
 		{
 			//TODO - Need to think about this
-			glTexCoord2f(0, 30);
+			glTexCoord2f(0, 40);
 			glVertex3f(x - halfWidth, 0.0f, z + halfDepth);
 			glTexCoord2f(0, 0);
 			glVertex3f(x - halfWidth, 0.0f, z - halfDepth);
-			glTexCoord2f(30, 0);
+			glTexCoord2f(40, 0);
 			glVertex3f(x + halfWidth, 0.0f, z - halfDepth);
-			glTexCoord2f(30, 30);
+			glTexCoord2f(40, 40);
 			glVertex3f(x + halfWidth, 0.0f, z + halfDepth);
 		}
 		glEnd();
@@ -289,13 +301,20 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 void GraphicsRenderer::RenderSphere(float radius, float matrix[16], int red, int green, int blue, int alpha){
 	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
 
+	GLuint tex = GetTexture("metal.jpg");
+
 	GLUquadricObj *quadr = gluNewQuadric();
+	gluQuadricNormals(quadr, GLU_SMOOTH);
+	gluQuadricTexture(quadr, GL_TRUE);
+
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	{
 		glMultMatrixf(matrix); //translation + rotation
 		gluSphere(quadr, radius, 100.0f, 100.0f);
 	}
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 
 	gluDeleteQuadric(quadr);
 }
@@ -314,6 +333,22 @@ void GraphicsRenderer::RenderCylinder(float radius, float height, float matrix[1
 		gluCylinder(quadr, radius, radius, height, 100.0f, 100.0f);
 	}
 	glPopMatrix();
+
+	//int i;
+	//int triangleAmount = 20; //# of triangles used to draw circle
+
+	//						 //GLfloat radius = 0.8f; //radius
+	//GLfloat twicePi = 2.0f * PI_VAL;
+
+	//glBegin(GL_TRIANGLE_FAN);
+	//glVertex2f(radius, height); // center of circle
+	//for(i = 0; i <= triangleAmount; i++) {
+	//	glVertex2f(
+	//		radius + (radius * cos(i *  twicePi / triangleAmount)),
+	//		height + (radius * sin(i * twicePi / triangleAmount))
+	//		);
+	//}
+	//glEnd();
 
 	gluDeleteQuadric(quadr);
 }
@@ -341,25 +376,34 @@ void GraphicsRenderer::RenderCone(float radius, float height, float matrix[16],
 void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, float matrix[16],
 	int red, int green, int blue, int alpha){
 
-	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
-	
+	//glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
+	glColor4f(255, 255, 255, 255);
+
 	//unsigned int tex = LoadTexture("chess_board.jpg");
-	GLuint tex = SOIL_load_OGL_texture(IMAGE_PATH"chessboard.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glEnable(GL_TEXTURE_2D);
+	//GLuint tex = GetTexture("checkerboardSmall.jpg");
+	GLuint tex = GetTexture("target.png");
+	if(tex == -1){ cout << "NO TEX" << endl; }
+	//glBindTexture(GL_TEXTURE_2D, tex);
+	//glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
 	{
 		glMultMatrixf(matrix);
 		//Back
+		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
 		{
+			glTexCoord2f(0, 0);
 			glVertex3f(-xExtent, -yExtent, -zExtent);
+			glTexCoord2f(0, 1);
 			glVertex3f(-xExtent, yExtent, -zExtent);
+			glTexCoord2f(1, 1);
 			glVertex3f(xExtent, yExtent, -zExtent);
+			glTexCoord2f(1, 0);
 			glVertex3f(xExtent, -yExtent, -zExtent);
 		}
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
 		//Left
 		glBegin(GL_QUADS);
 		{
@@ -397,6 +441,7 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 		}
 		glEnd();
 		//Front
+		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
 		{
 			glTexCoord2f(0, 0);
@@ -409,11 +454,10 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 			glVertex3f(xExtent, -yExtent, zExtent);
 		}
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
 	}
 	glPopMatrix();
 
-	glDisable(GL_TEXTURE_2D);
-	glDeleteTextures(1, &tex);
 }
 
 
