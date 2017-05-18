@@ -30,6 +30,7 @@ enum Shape{
 
 enum Type{
 	Target,
+	NonTarget,
 	Bullet,
 	PLAYER,
 	Floor,
@@ -51,7 +52,7 @@ class GameObject : public RenderObject, public PhysicsObject{
 			int red = 127, int green = 127, int blue = 127, int alpha = 255);
 		//Rectangular shape constructor
 		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
-			int red = 127, int green = 127, int blue = 127, int alpha = 255);
+			int red = 127, int green = 127, int blue = 127, int alpha = 255, string texture = "none");
 
 		//Shape specific render function
 		virtual void Render() override;
@@ -73,6 +74,7 @@ class GameObject : public RenderObject, public PhysicsObject{
 		float radius;
 		float width, height, depth;
 		int red, green, blue, alpha;
+		string texture;
 		Type objType;
 
 		GraphicsRenderer *renderer;

@@ -8,8 +8,23 @@ GameLoader::GameLoader(GameLevel *game, GraphicsRenderer *renderer, PhysicsManag
 	this->player = player;
 }
 
+void GameLoader::LoadGame(){
+	//Clear any existing objects
+	physics->ClearPhysicsObjects();
+	renderer->ClearRenderObjects();
+
+	LoadGameFloor();
+	LoadRadWorldObjects();
+	LoadFlatWorldObjects();
+	LoadGameSettings();
+
+	renderer->ClearHUDObjects();
+	LoadGameHUD();
+}
+
+
 void GameLoader::LoadGameFloor(){
-	new GameObject(renderer, physics, player, physics->GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
+	new GameObject(renderer, physics, player, physics->AddPlane(0.0f, -2.0f, -10.0f, 0.0f), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
 }
 
 
@@ -32,6 +47,9 @@ void GameLoader::LoadRadWorldObjects(){
 
 		if(data[1] == "Target"){
 			type = Type::Target;
+		}
+		else if(data[1] == "NonTarget"){
+			type = Type::NonTarget;
 		}
 		else if(data[1] == "Bullet"){
 			type = Type::Bullet;
@@ -68,6 +86,9 @@ void GameLoader::LoadFlatWorldObjects(){
 		if(data[1] == "Target"){
 			type = Type::Target;
 		}
+		else if(data[1] == "NonTarget"){
+			type = Type::NonTarget;
+		}
 		else if(data[1] == "Bullet"){
 			type = Type::Bullet;
 		}
@@ -83,7 +104,7 @@ void GameLoader::LoadFlatWorldObjects(){
 
 		new GameObject(renderer, physics, player, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]),
 			stof(data[6]), stof(data[7]), stof(data[8]),
-			stoi(data[9]), stoi(data[10]), stoi(data[11]), stoi(data[12]));
+			stoi(data[9]), stoi(data[10]), stoi(data[11]), stoi(data[12]), data[13]);
 	}
 }
 

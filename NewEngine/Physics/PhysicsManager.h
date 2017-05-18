@@ -39,21 +39,8 @@ class PhysicsManager{
 					continue;
 				}
 				
-				//printf("%i collided with %i\n", ((PhysicsObject*)obA->getUserPointer())->GetID(), ((PhysicsObject*)obB->getUserPointer())->GetID());
 				((PhysicsObject*)obA->getUserPointer())->HandleHit((PhysicsObject*)obB->getUserPointer());
 				((PhysicsObject*)obB->getUserPointer())->HandleHit((PhysicsObject*)obA->getUserPointer());
-
-				//contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
-				//int numContacts = contactManifold->getNumContacts();
-				////printf("Contacts: %i\n", numContacts);
-				////For each contact point in that manifold
-				//for(int j = 0; j < numContacts; j++){
-				//	//Get the contact information
-				//	btManifoldPoint &pt = contactManifold->getContactPoint(j);
-				//	btVector3 ptA = pt.getPositionWorldOnA();
-				//	btVector3 ptB = pt.getPositionWorldOnB();
-				//	float ptdist = pt.getDistance();
-				//}
 			}
 		}
 
@@ -64,26 +51,20 @@ class PhysicsManager{
 		btRigidBody* AddCone(float radius, float height, float x, float y, float z, float mass);
 		btRigidBody* AddBox(float width, float height, float depth, float x, float y, float z, float mass);
 
-		//Get physical floor of the world
-		btRigidBody* GetWorldPlane() const{
-			return wFloor;
-		}
-
 		//Collision callback function (not working)
 		bool CollisionFunc(btManifoldPoint &collisionPoint, const btCollisionObject *obj1, int id1, int index1, 
 			const btCollisionObject *obj2, int id2, int index2);
 
-		//inline PhysicsObject* addPhysicsObj(btRigidBody *body){
-		//	PhysicsObject *obj = new PhysicsObject(ID, body);
-		//	body->setUserPointer(obj);
-		//	physicsObjects.push_back(obj);
-		//	ID++;
+		inline void ClearPhysicsObjects(){
+			for(auto obj : physicsObjects){
+				world->removeCollisionObject(obj->GetBody());
+			}
 
-		//	return obj;
-		//}
+			physicsObjects.clear();
+		}
 
 		//Adds PhysicsObject to list to be rendered each frame
-		inline void addPhysicsObj(PhysicsObject *obj){
+		inline void AddPhysicsObj(PhysicsObject *obj){
 			obj->GetBody()->setUserPointer(obj);
 			physicsObjects.push_back(obj);
 		}
@@ -101,7 +82,6 @@ class PhysicsManager{
 		}
 
 	private:
-		btRigidBody *wFloor;
 		vector<PhysicsObject*> physicsObjects;
 		btDynamicsWorld *world;
 		btDispatcher *dispatcher;

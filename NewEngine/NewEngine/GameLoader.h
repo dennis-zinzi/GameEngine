@@ -28,11 +28,7 @@ using std::string;
 class GameLoader{
 	public:
 		GameLoader(GameLevel *game, GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player);
-		void LoadGameFloor();
-		void LoadRadWorldObjects();
-		void LoadFlatWorldObjects();
-		void LoadGameSettings();
-		void LoadGameHUD();
+		void LoadGame();
 
 	private:
 		GraphicsRenderer *renderer;
@@ -40,4 +36,10 @@ class GameLoader{
 		FileReader *reader;
 		AudioPlayer *player;
 		GameLevel *game;
+
+		void LoadGameFloor();
+		void LoadRadWorldObjects();
+		void LoadFlatWorldObjects();
+		void LoadGameSettings();
+		void LoadGameHUD();
 };

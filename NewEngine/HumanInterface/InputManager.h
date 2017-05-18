@@ -2,6 +2,7 @@
  * Class that responds to game input by performing the relevant actions 
  * @author: Dennis Zinzi (130301136)
  */
+#pragma once
 
 #include "../SDL2-2.0.5/include/SDL.h"
 #include "InputPlayer.h"
@@ -23,6 +24,9 @@ class InputManager{
 
 		//Check for inputs and initiate apropriate action
 		bool CheckForInputs();
+
+		//Check for restart key pressed
+		bool CheckForRestart();
 
 	private:
 		InputPlayer *Player;

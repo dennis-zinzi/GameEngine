@@ -15,6 +15,13 @@ AudioPlayer::~AudioPlayer(){
 
 void AudioPlayer::LoadAudio(string filename, bool isSoundEffect){
 	if(isSoundEffect){
+		for (auto effect : soundEffects) {
+			if (effect.name == filename) {
+				printf("Warning: %s already loaded, skipping.\n", filename.c_str());
+				return;
+			}
+		}
+
 		string filePath = EFFECTS_PATH + filename;
 		Mix_Chunk *effect = Mix_LoadWAV(filePath.c_str());
 
@@ -28,6 +35,13 @@ void AudioPlayer::LoadAudio(string filename, bool isSoundEffect){
 		Effect sound = {filename, effect};
 		soundEffects.push_back(sound);
 		return;
+	}
+
+	for(auto song : songs){
+		if(song.name == filename){
+			printf("Warning: %s already loaded, skipping.\n", filename.c_str());
+			return;
+		}
 	}
 
 	string filePath = MUSIC_PATH + filename;

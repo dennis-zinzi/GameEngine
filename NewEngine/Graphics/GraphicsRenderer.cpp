@@ -47,8 +47,10 @@ GraphicsRenderer::~GraphicsRenderer(){
 	for(auto ro : objectsToRender){
 		delete ro;
 	}
+	for(auto hud : hudObjects){
+		delete hud;
+	}
 
-	glDisable(GL_TEXTURE_2D);
 	SDL_Quit();
 }
 
@@ -353,15 +355,17 @@ void GraphicsRenderer::RenderCone(float radius, float height, float matrix[16],
 
 
 void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, float matrix[16],
-	int red, int green, int blue, int alpha){
+	int red, int green, int blue, int alpha, string texname){
 
 	//glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
 	glColor4f(255, 255, 255, 255);
 
 	//unsigned int tex = LoadTexture("chess_board.jpg");
 	//GLuint tex = GetTexture("checkerboardSmall.jpg");
-	GLuint tex = GetTexture("target.png");
-	if(tex == -1){ cout << "NO TEX" << endl; }
+	if(texname != "none"){
+		GLuint tex = GetTexture(texname);
+		if (tex == -1) { cout << "NO TEX" << endl; }
+	}
 	//glBindTexture(GL_TEXTURE_2D, tex);
 	//glEnable(GL_TEXTURE_2D);
 
@@ -532,11 +536,41 @@ void GraphicsRenderer::ShowControlsScreen(){
 	SDL_Delay(500);
 }
 
+void GraphicsRenderer::ShowGameOverScreen(vector<int> scores){
+	DrawTextLabel("Highscores", "Invasion2000.TTF", 180, 150, 0, 900, 150, 66, 244, 217);
+
+	bool restart = false;
+	int y = 200;
+	int x = 550;
+
+	sort(scores.begin(), scores.end());
+	reverse(scores.begin(), scores.end());
+
+	for(auto score : scores){
+		string s = to_string(score);
+
+		DrawTextLabel(s, "Invasion2000.TTF", 35, x, y, 75, 50, 100, 200, 100);
+		y += 50;
+	}
+
+	DrawTextLabel("Press 'R' to play again", "Invasion2000.TTF", 50, 150, 650, 400, 70, 209, 197, 29);
+	DrawTextLabel("or 'Esc' to quit", "Invasion2000.TTF", 50, 700, 650, 400, 70, 29, 86, 209);
+
+	SDLRender();
+	SDL_Delay(500);
+}
+
 
 void GraphicsRenderer::LoadFont(string filename, int fontsize){
+	TTF_Font *font = GetFont(filename, fontsize);
+	if(font){
+		cout << "Warning: font already loaded, skipping." << filename << endl;
+		return;
+	}
+
 	string filePath = FONT_PATH + filename;
 
-	TTF_Font *font = TTF_OpenFont(filePath.c_str(), fontsize);
+	font = TTF_OpenFont(filePath.c_str(), fontsize);
 	if(!font){
 		cout << "ERROR: could not find font " << filename << endl;
 		return;

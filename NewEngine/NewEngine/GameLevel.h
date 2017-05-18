@@ -4,6 +4,16 @@
 #include "../Graphics/HUDObject.h"
 #pragma comment(lib, "Graphics.lib")
 
+#include <vector>
+
+using std::vector;
+
+enum GameState{
+	Running,
+	Done
+};
+
+
 class GameLevel{
 	public:
 		GameLevel(GraphicsRenderer *renderer);
@@ -27,14 +37,23 @@ class GameLevel{
 		}
 
 
-		void UpdateGame(int time);
+		inline GameState GetState(){
+			return state;
+		}
 
+
+		void UpdateGame(int time);
+		void RestartLevel();
+		void HandleGameFinish();
 
 	private:
 		static int score;
 		static int timeLeft;
 		int startTime;
 		int gameTime;
+		GameState state;
 
 		GraphicsRenderer *renderer;
+
+		vector<int> scores;
 };

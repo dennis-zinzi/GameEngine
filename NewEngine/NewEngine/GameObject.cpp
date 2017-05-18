@@ -34,7 +34,7 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 	SetID(GetObjID());
 	SetBody(body);
 
-	physics->addPhysicsObj(this);
+	physics->AddPhysicsObj(this);
 }
 
 
@@ -78,12 +78,12 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 	this->radius = radius;
 	this->height = height;
 
-	physics->addPhysicsObj(this);
+	physics->AddPhysicsObj(this);
 }
 
 
 GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
-	int red, int green, int blue, int alpha) : GameObject(renderer, physics, audio, type, red, green, blue, alpha){
+	int red, int green, int blue, int alpha, string texture) : GameObject(renderer, physics, audio, type, red, green, blue, alpha){
 	
 	switch(shape){
 		case Plane:
@@ -98,7 +98,9 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 	this->height = height;
 	this->depth = depth;
 
-	physics->addPhysicsObj(this);
+	this->texture = texture;
+
+	physics->AddPhysicsObj(this);
 }
 
 void GameObject::Render(){
@@ -145,7 +147,7 @@ void GameObject::Render(){
 			btVector3 extents = ((btBoxShape*)shape)->getHalfExtentsWithoutMargin();
 			
 			GraphicsRenderer::RenderBox(extents.x(), extents.y(), extents.z(), matrix,
-				red, green, blue, alpha);
+				red, green, blue, alpha, texture);
 			break;
 		}
 
@@ -157,12 +159,21 @@ void GameObject::HandleHit(PhysicsObject *Other){
 		cout << "BULLET HIT Target" << endl;
 		audio->PlayEffect("mario_coin.wav");
 		GameLevel::UpdateScore(15);
-		cout << "Score: " << GameLevel::GetScore() << endl;
+		//cout << "Score: " << GameLevel::GetScore() << endl;
 
 		renderer->RemoveRenderObj(this);
 		physics->RemovePhysicsObj(this);
 	}
 
+	if(objType == Type::Bullet && ((GameObject*)Other)->objType == Type::NonTarget){
+		cout << "BULLET HIT nonTarget" << endl;
+		audio->PlayEffect("mario_coin.wav");
+		GameLevel::UpdateScore(-15);
+		//cout << "Score: " << GameLevel::GetScore() << endl;
+
+		renderer->RemoveRenderObj(this);
+		physics->RemovePhysicsObj(this);
+	}
 	//if(objType == Type::Target && ((GameObject*)Other)->objType == Type::Bullet){
 	//	cout << "Target HIT bullet" << endl;
 	//}

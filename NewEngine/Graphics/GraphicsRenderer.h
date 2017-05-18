@@ -24,6 +24,9 @@
 #include "HUDObject.h"
 
 using std::string;
+using std::to_string;
+using std::sort;
+using std::reverse;
 using std::vector;
 using std::cout;
 using std::endl;
@@ -103,7 +106,7 @@ class GraphicsRenderer{
 		//Info screens
 		void ShowLaunchScreen();
 		void ShowControlsScreen();
-		void ShowGameOverScreen();
+		void ShowGameOverScreen(vector<int> scores);
 
 		/** Shape Rendering functions **/
 		//Renders plane
@@ -124,7 +127,7 @@ class GraphicsRenderer{
 
 		//Renders box objects
 		static void RenderBox(float xExtent, float yExtent, float zExtent, float matrix[16],
-			int red = 45, int green = 85, int blue = 235, int alpha = 255);
+			int red = 45, int green = 85, int blue = 235, int alpha = 255, string texname = "none");
 
 
 		static void RenderHUDImage(float x, float y, float width, float height, string texname);
@@ -136,6 +139,15 @@ class GraphicsRenderer{
 				auto index = distance(objectsToRender.begin(), it);
 				objectsToRender.erase(it);
 			}
+		}
+
+
+		inline void ClearRenderObjects(){
+			objectsToRender.clear();
+		}
+
+		inline void ClearHUDObjects(){
+			hudObjects.clear();
 		}
 
 	private:

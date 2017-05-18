@@ -47,16 +47,8 @@ int main(int argc, char **argv){
 
 	//Load game specific attributes
 	GameLoader loader(game, renderer, physics, reader, player);
-	//Add floor
-	loader.LoadGameFloor();
-	//Load circular objects
-	loader.LoadRadWorldObjects();
-	//load rectangular objects
-	loader.LoadFlatWorldObjects();
-	//load HUD
-	loader.LoadGameHUD();
-	//load general game settings
-	loader.LoadGameSettings();
+	//Load game data
+	loader.LoadGame();
 
 	//Set up game player & controls
 	InputManager *input = onoff.GetInputManager();
@@ -91,6 +83,19 @@ int main(int argc, char **argv){
 
 		//Show loop execution stats
 		profiler.ShowStats();
+
+
+		//Check for game state
+		if(game->GetState() == GameState::Done){
+			bool restart = false;
+			while(!restart){
+				game->HandleGameFinish();
+				restart = input->CheckForRestart();
+			}
+
+			loader.LoadGame();
+			game->RestartLevel();
+		}
 	}
 
 

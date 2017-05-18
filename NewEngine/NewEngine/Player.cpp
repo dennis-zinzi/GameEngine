@@ -44,7 +44,7 @@ void Player::Render(){
 
 
 		jumpNum++;
-		SDL_Delay(20);
+		SDL_Delay(10);
 	}
 	
 	if(isFalling){
@@ -61,16 +61,16 @@ void Player::Render(){
 		}
 
 		jumpNum++;
-		SDL_Delay(20);
+		SDL_Delay(10);
 	}
 
 
-	btTransform t;
-	//physicalBody->getMotionState()->getWorldTransform(t);
-	t = GetBody()->getWorldTransform();
+	//btTransform t;
+	////physicalBody->getMotionState()->getWorldTransform(t);
+	//t = GetBody()->getWorldTransform();
 
-	float matrix[16];
-	t.getOpenGLMatrix(matrix);
+	//float matrix[16];
+	//t.getOpenGLMatrix(matrix);
 	
 	
 	//GraphicsRenderer::RenderSphere(radius, matrix, red, green, blue, alpha);
@@ -95,23 +95,6 @@ void Player::MovePhysicObj(float x1, float x2, float y1, float y2, float z1, flo
 	btVector3 vel(moved.x() * MOVE_VEL / dist, moved.y() * MOVE_VEL / dist, moved.z() * MOVE_VEL / dist);
 
 	GetBody()->setLinearVelocity(vel);
-	/*physicalBody->setLinearVelocity(btVector3((camera->GetCameraLookVect()[0] + 0.0f) * (3.0f + moved.x()), (camera->GetCameraLookVect()[1] + 0.0f) * (3.0f + moved.y()),
-		(camera->GetCameraLookVect()[2] + 0.0f)) * (3.0f + moved.z()));*/
-	//physicalBody->translate(btVector3);
-	
-	//cout << "p= X2: " << physicalBody->getCenterOfMassPosition().x() << ", Y2: " << physicalBody->getCenterOfMassPosition().y()
-	//		<< ", Z2: " << physicalBody->getCenterOfMassPosition().z() << endl << endl;
-
-	//btTransform transform;
-	//transform.setIdentity();// = physicalBody->getCenterOfMassTransform();
-	//transform.setOrigin(btVector3(camera->GetCameraLookVect()[0] - 0.0f, camera->GetCameraLookVect()[1] - 0.0f, camera->GetCameraLookVect()[2] - 5.0f));
-	//physicalBody->setCenterOfMassTransform(transform);
-	//physicalBody->getMotionState()->setWorldTransform(transform);
-
-	//cout << "LOOK= X: " << camera->GetCameraLookVect()[0] << ", Y: " << camera->GetCameraLookVect()[1] << ", Z: " << camera->GetCameraLookVect()[2] << endl;
-
-	//cout << "p= X: " << physicalBody->getCenterOfMassPosition().x() << ", Y: " << physicalBody->getCenterOfMassPosition().y() 
-	//	<< ", Z: " << physicalBody->getCenterOfMassPosition().z() << endl;
 }
 
 

@@ -8,12 +8,6 @@ PhysicsManager::PhysicsManager(){
 
 	world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
 	world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
-
-	//Add world plane (floor)
-	wFloor = AddPlane(0.0f, -2.0f, -10.0f, 0.0f);
-
-	//Set collision callback function (not working)
-	//gContactAddedCallback = CollisionFunc;
 }
 
 

@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "InputManager.h"
 
 InputManager::InputManager(){
 
@@ -94,4 +95,23 @@ bool InputManager::CheckForInputs(){
 	//Player->NoMovement();
 
 	return true;
+}
+
+bool InputManager::CheckForRestart(){
+	SDL_Event event;
+
+	//Runs whilst there is an event being queued
+	while(SDL_PollEvent(&event)){
+		switch(event.type){
+			case SDL_KEYDOWN:
+			{
+				switch(event.key.keysym.sym){
+					case SDLK_r:
+						return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
