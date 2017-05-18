@@ -1,13 +1,13 @@
 #include "Player.h"
 
-Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer &player, float radius, float mass,
+Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float radius, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, Shape::Sphere, Type::PLAYER, renderer.GetCamera()->GetCameraPos()[0], renderer.GetCamera()->GetCameraPos()[1], renderer.GetCamera()->GetCameraPos()[2] - 5.0f, mass, radius, 0.0f, red, green, blue, alpha){
+	: GameObject(renderer, physics, player, Shape::Sphere, Type::PLAYER, renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f, mass, radius, 0.0f, red, green, blue, alpha){
 
-	camera = renderer.GetCamera();
-	this->renderer = &renderer;
-	this->physics = &physics;
-	this->player = &player;
+	camera = renderer->GetCamera();
+	this->renderer = renderer;
+	this->physics = physics;
+	this->player = player;
 
 	jumpNum = 0;
 	isJumping = false;
@@ -15,15 +15,15 @@ Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer 
 }
 
 
-Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer &player, float width, float height, float depth, float mass,
+Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float width, float height, float depth, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, Shape::Box, Type::PLAYER, renderer.GetCamera()->GetCameraPos()[0], renderer.GetCamera()->GetCameraPos()[1], renderer.GetCamera()->GetCameraPos()[2] - 5.0f, mass, width, height, depth,
+	: GameObject(renderer, physics, player, Shape::Box, Type::PLAYER, renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f, mass, width, height, depth,
 		red, green, blue, alpha){
 
-	camera = renderer.GetCamera();
-	this->renderer = &renderer;
-	this->physics = &physics;
-	this->player = &player;
+	camera = renderer->GetCamera();
+	this->renderer = renderer;
+	this->physics = physics;
+	this->player = player;
 
 	jumpNum = 0;
 	isJumping = false;
@@ -184,7 +184,7 @@ void Player::Jump(){
 
 
 void Player::Shoot(){
-	RenderObject *bullet = new GameObject(*renderer, *physics, Shape::Sphere, Type::Bullet, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
+	RenderObject *bullet = new GameObject(renderer, physics, player, Shape::Sphere, Type::Bullet, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
 
 	float *camLook = camera->GetCameraLookVect();
 	((GameObject*)bullet)->GetBody()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));

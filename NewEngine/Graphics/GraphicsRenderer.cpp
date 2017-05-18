@@ -1,6 +1,7 @@
 #include "GraphicsRenderer.h"
 
 vector<Texture> GraphicsRenderer::textures;
+vector<Font> GraphicsRenderer::fonts;
 
 GraphicsRenderer::GraphicsRenderer(){
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -67,51 +68,11 @@ void GraphicsRenderer::UpdateScene(float msec){
 	glLoadIdentity();
 	glDepthMask(GL_FALSE);
 	
-	//glTranslatef(10, 100, 0);
-
-	string score = "Score: " + to_string(msec*.1f);
-	LoadSDLText(score, "Invasion2000.TTF", 50, 50, 650, 100, 50, 0, 255, 0);
-
-	glLoadIdentity();
-	
-	stringstream minsstream;
-	minsstream << setw(2) << setfill('0') << to_string(gameTime / 60);
-	string mins = minsstream.str();
-
-	stringstream secsstream;
-	secsstream << setw(2) << setfill('0') << to_string(gameTime % 60);
-	string secs = secsstream.str();
-
-	string time = mins + ":" + secs;
-	LoadSDLText(time, "Invasion2000.TTF", 50, 600, 600, 100, 50, 0, 150, 200);
-
-	//Draw aim assist
-	glLoadIdentity();
-	//glColor4f(42 / 255.0f, 166 / 255.0f, 137 / 255.0f, 255 / 255.0f);
-	glTranslatef((WINDOW_WIDTH / 2.0f) - 30.0f, (WINDOW_HEIGHT / 2.0f) - 30.0f, 0);
-	GetTexture("aimassist.png");
-
-	glPushMatrix();
-	{
-		//glMultMatrixf(matrix);
-		glEnable(GL_TEXTURE_2D);
-		glBegin(GL_QUADS);
-		{
-			//TODO - Need to think about this
-			glTexCoord2f(0, 1);
-			glVertex3f(0, 60, 0);
-			glTexCoord2f(0, 0);
-			glVertex3f(0, 0, 0);
-			glTexCoord2f(1, 0);
-			glVertex3f(60, 0, 0);
-			glTexCoord2f(1, 1);
-			glVertex3f(60, 60, 0);
-		}
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
+	//Draw the HUD
+	for(auto hudElem : hudObjects){
+		hudElem->Render();
+		glLoadIdentity();
 	}
-	glPopMatrix();
-
 
 
 	//Go back to perspective
@@ -422,42 +383,71 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 		}
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
+
 		//Left
+		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
 		{
+			glTexCoord2f(0, 1);
 			glVertex3f(-xExtent, -yExtent, zExtent);
+			glTexCoord2f(1, 1);
 			glVertex3f(-xExtent, yExtent, zExtent);
+			glTexCoord2f(1, 0);
 			glVertex3f(-xExtent, yExtent, -zExtent);
+			glTexCoord2f(0, 0);
 			glVertex3f(-xExtent, -yExtent, -zExtent);
 		}
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+
 		//Right
+		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
 		{
+			glTexCoord2f(0, 0);
 			glVertex3f(xExtent, -yExtent, zExtent);
+			glTexCoord2f(1, 0);
 			glVertex3f(xExtent, yExtent, zExtent);
+			glTexCoord2f(1, 1);
 			glVertex3f(xExtent, yExtent, -zExtent);
+			glTexCoord2f(0, 1);
 			glVertex3f(xExtent, -yExtent, -zExtent);
 		}
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+
 		//Bottom
+		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
 		{
+			glTexCoord2f(0, 0);
 			glVertex3f(-xExtent, -yExtent, zExtent);
+			glTexCoord2f(0, 1);
 			glVertex3f(-xExtent, -yExtent, -zExtent);
+			glTexCoord2f(1, 1);
 			glVertex3f(xExtent, -yExtent, -zExtent);
+			glTexCoord2f(1, 0);
 			glVertex3f(xExtent, -yExtent, zExtent);
 		}
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+
 		//Top
+		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
 		{
+			glTexCoord2f(0, 0);
 			glVertex3f(-xExtent, yExtent, zExtent);
+			glTexCoord2f(0, 1);
 			glVertex3f(-xExtent, yExtent, -zExtent);
+			glTexCoord2f(1, 1);
 			glVertex3f(xExtent, yExtent, -zExtent);
+			glTexCoord2f(1, 0);
 			glVertex3f(xExtent, yExtent, zExtent);
 		}
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+
 		//Front
 		glEnable(GL_TEXTURE_2D);
 		glBegin(GL_QUADS);
@@ -476,6 +466,37 @@ void GraphicsRenderer::RenderBox(float xExtent, float yExtent, float zExtent, fl
 	}
 	glPopMatrix();
 
+}
+
+void GraphicsRenderer::RenderHUDImage(float x, float y, float width, float height, string texname){
+	glTranslatef(x, y, 0);
+	GLuint tex = GetTexture(texname);
+	
+	if(tex == -1){
+		cout << "Error: HUD texture " << texname << " not found." << endl;
+		return;
+	}
+
+	glPushMatrix();
+	{
+		//glMultMatrixf(matrix);
+		glEnable(GL_TEXTURE_2D);
+		glBegin(GL_QUADS);
+		{
+			//TODO - Need to think about this
+			glTexCoord2f(0, 1);
+			glVertex3f(0, height, 0);
+			glTexCoord2f(0, 0);
+			glVertex3f(0, 0, 0);
+			glTexCoord2f(1, 0);
+			glVertex3f(width, 0, 0);
+			glTexCoord2f(1, 1);
+			glVertex3f(width, height, 0);
+		}
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+	}
+	glPopMatrix();
 }
 
 

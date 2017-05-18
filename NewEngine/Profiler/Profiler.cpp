@@ -34,7 +34,7 @@ void Profiler::ResetTime(float time){
 	this->time = time;
 
 	if(time - startTime > 1000){
-		cout << time - startTime << endl;
+		//cout << time - startTime << endl;
 		update = true;
 	}
 	else{

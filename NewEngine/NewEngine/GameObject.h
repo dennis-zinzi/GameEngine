@@ -14,6 +14,11 @@
 #include "../Graphics/RenderObject.h"
 #pragma comment(lib, "Graphics.lib")
 
+#include "../Audio/AudioPlayer.h"
+#pragma comment(lib, "Audio.lib")
+
+#include "GameLevel.h"
+
 //Represent allowed shapes to be drawn
 enum Shape{
 	Plane,
@@ -34,18 +39,18 @@ enum Type{
 class GameObject : public RenderObject, public PhysicsObject{
 	public:
 		/* GameObject constructors */
-		GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, int red = 127, int green = 127, int blue = 127, int alpha = 255);
-		GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, btRigidBody *body, float width, float height, float depth,
+		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, int red = 127, int green = 127, int blue = 127, int alpha = 255);
+		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, btRigidBody *body, float width, float height, float depth,
 			int red = 127, int green = 127, int blue = 127, int alpha = 255);
 
 		//Base constructor
-		GameObject(GraphicsRenderer &renderer, Type type, int red = 127, int green = 127, int blue = 127, int alpha = 255);
+		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Type type, int red = 127, int green = 127, int blue = 127, int alpha = 255);
 
 		//Spherical shape constructor
-		GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height = 0.0f,
+		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height = 0.0f,
 			int red = 127, int green = 127, int blue = 127, int alpha = 255);
 		//Rectangular shape constructor
-		GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
+		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
 			int red = 127, int green = 127, int blue = 127, int alpha = 255);
 
 		//Shape specific render function
@@ -65,11 +70,14 @@ class GameObject : public RenderObject, public PhysicsObject{
 		//}
 
 	protected:
-		btRigidBody *physicalObj;
 		float radius;
 		float width, height, depth;
 		int red, green, blue, alpha;
 		Type objType;
+
+		GraphicsRenderer *renderer;
+		PhysicsManager *physics;
+		AudioPlayer *audio;
 		
 		static int ID;
 

@@ -15,22 +15,20 @@
 
 #include "common.h"
 #include <string>
-#include <iomanip>
-#include <sstream>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "Camera.h"
 #include "RenderObject.h"
+#include "HUDObject.h"
 
 using std::string;
-using std::to_string;
-using std::setw;
-using std::setfill;
-using std::stringstream;
 using std::vector;
 using std::cout;
 using std::endl;
+using std::find;
+using std::distance;
 
 //Representation of Text Font
 struct Font{
@@ -61,7 +59,7 @@ class GraphicsRenderer{
 		//Loads OpenGL texture
 		unsigned int LoadTexture(string imagename);
 		//Loads SDL texture
-		SDL_Texture* LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue);
+		static SDL_Texture* LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue);
 
 		//Get current execution time since SDL environment initialized
 		inline float GetTime() const{
@@ -78,6 +76,11 @@ class GraphicsRenderer{
 		//Adds RenderObject to list to be rendered each frame
 		inline void AddRenderObject(RenderObject *ro){
 			objectsToRender.push_back(ro);
+		}
+
+		//Adds HUDObject to list to be rendered each frame
+		inline void AddHUDObject(HUDObject *hud){
+			hudObjects.push_back(hud);
 		}
 
 		//Handle loading of fonts
@@ -100,7 +103,7 @@ class GraphicsRenderer{
 		//Info screens
 		void ShowLaunchScreen();
 		void ShowControlsScreen();
-
+		void ShowGameOverScreen();
 
 		/** Shape Rendering functions **/
 		//Renders plane
@@ -124,6 +127,17 @@ class GraphicsRenderer{
 			int red = 45, int green = 85, int blue = 235, int alpha = 255);
 
 
+		static void RenderHUDImage(float x, float y, float width, float height, string texname);
+
+		inline void RemoveRenderObj(RenderObject *obj){
+			//Remove object from render list
+			auto it = find(objectsToRender.begin(), objectsToRender.end(), obj);
+			if(it != objectsToRender.end()){
+				auto index = distance(objectsToRender.begin(), it);
+				objectsToRender.erase(it);
+			}
+		}
+
 	private:
 		SDL_Window *screen;
 		SDL_Renderer *renderer;
@@ -131,13 +145,14 @@ class GraphicsRenderer{
 		GLUquadricObj *quadric;
 		Camera *camera;
 		vector<RenderObject*> objectsToRender;
-		vector<Font> fonts;
+		vector<HUDObject*> hudObjects;
+		static vector<Font> fonts;
 		static vector<Texture> textures;
 		int gameTime;
 		int startTime;
 
 		//Retrieves text font resource if found/loaded
-		inline TTF_Font* GetFont(string filename, int fontsize){
+		inline static TTF_Font* GetFont(string filename, int fontsize){
 			for(auto font : fonts){
 				if(font.name == filename && font.size == fontsize){
 					return font.font;
@@ -161,7 +176,7 @@ class GraphicsRenderer{
 			return -1;
 		}
 
-		inline unsigned int power_two_floor(unsigned int val) {
+		inline static unsigned int power_two_floor(unsigned int val) {
 			unsigned int power = 2, nextVal = power * 2;
 			while ((nextVal *= 2) <= val)
 				power *= 2;

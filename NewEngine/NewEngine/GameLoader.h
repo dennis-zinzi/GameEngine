@@ -16,6 +16,8 @@
 #pragma comment(lib, "Audio.lib")
 
 #include "GameObject.h"
+#include "GameHUDObject.h"
+#include "GameLevel.h"
 #include <vector>
 
 using std::stof;
@@ -25,15 +27,17 @@ using std::string;
 
 class GameLoader{
 	public:
-		GameLoader(GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player);
+		GameLoader(GameLevel *game, GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player);
 		void LoadGameFloor();
 		void LoadRadWorldObjects();
 		void LoadFlatWorldObjects();
 		void LoadGameSettings();
+		void LoadGameHUD();
 
 	private:
 		GraphicsRenderer *renderer;
 		PhysicsManager *physics;
 		FileReader *reader;
 		AudioPlayer *player;
+		GameLevel *game;
 };

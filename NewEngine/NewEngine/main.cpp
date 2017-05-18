@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "GameLoader.h"
+#include "GameLevel.h"
 
 
 int main(int argc, char **argv){
@@ -41,20 +42,25 @@ int main(int argc, char **argv){
 	//Show launch screen
 	renderer->ShowLaunchScreen();
 
+	//Create level instance
+	GameLevel *game = new GameLevel(renderer);
+
 	//Load game specific attributes
-	GameLoader loader(renderer, physics, reader, player);
+	GameLoader loader(game, renderer, physics, reader, player);
 	//Add floor
 	loader.LoadGameFloor();
 	//Load circular objects
 	loader.LoadRadWorldObjects();
 	//load rectangular objects
 	loader.LoadFlatWorldObjects();
+	//load HUD
+	loader.LoadGameHUD();
 	//load general game settings
 	loader.LoadGameSettings();
 
 	//Set up game player & controls
 	InputManager *input = onoff.GetInputManager();
-	input->SetInputPlayer(new Player(*renderer, *physics, *player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125));
+	input->SetInputPlayer(new Player(renderer, physics, player, 1.0f, 1.0f, 1.0f, 5.0f, 68, 195, 18, 125));
 
 	//Allow time for everything to be set up correctly, and give player time to learn controls
 	SDL_Delay(2500);
@@ -67,6 +73,7 @@ int main(int argc, char **argv){
 
 	Profiler profiler;
 
+
 	//Excecution loop
 	while(running){
 		time = renderer->GetTime();
@@ -78,6 +85,9 @@ int main(int argc, char **argv){
 		profiler.UpdateTime(System::Graphics, renderer->GetTime());
 		running = input->CheckForInputs();
 		profiler.UpdateTime(System::Input, renderer->GetTime());
+
+		//Update level specific environment
+		game->UpdateGame(time);
 
 		//Show loop execution stats
 		profiler.ShowStats();

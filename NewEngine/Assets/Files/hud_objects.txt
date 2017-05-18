@@ -1,0 +1,9 @@
+#HUD element will be loaded from here with the format:
+#Type,	purpose(score,time,etc..),	Font/Image,	x,	y,	width,	height,	red,	green,	blue,	fontsize
+#
+#Score
+text	score	Invasion2000.TTF	50	650	100	50	0	255	0	50
+#Time left
+text	time	Invasion2000.TTF	550	600	100	50	0	150	200	50
+#Aim assist
+image	aimassist.png	570	330	60	60

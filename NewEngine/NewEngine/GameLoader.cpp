@@ -1,6 +1,7 @@
 #include "GameLoader.h"
 
-GameLoader::GameLoader(GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player){
+GameLoader::GameLoader(GameLevel *game, GraphicsRenderer *renderer, PhysicsManager *physics, FileReader *reader, AudioPlayer *player){
+	this->game = game;
 	this->renderer = renderer;
 	this->physics = physics;
 	this->reader = reader;
@@ -8,7 +9,7 @@ GameLoader::GameLoader(GraphicsRenderer *renderer, PhysicsManager *physics, File
 }
 
 void GameLoader::LoadGameFloor(){
-	new GameObject(*renderer, *physics, physics->GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
+	new GameObject(renderer, physics, player, physics->GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
 }
 
 
@@ -45,7 +46,7 @@ void GameLoader::LoadRadWorldObjects(){
 			type = Type::Other;
 		}
 
-		new GameObject(*renderer, *physics, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]), stof(data[6]),
+		new GameObject(renderer, physics, player, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]), stof(data[6]),
 			stof(data[7]), stoi(data[8]), stoi(data[9]), stoi(data[10]), stoi(data[11]));
 	}
 }
@@ -80,7 +81,7 @@ void GameLoader::LoadFlatWorldObjects(){
 			type = Type::Other;
 		}
 
-		new GameObject(*renderer, *physics, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]),
+		new GameObject(renderer, physics, player, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]),
 			stof(data[6]), stof(data[7]), stof(data[8]),
 			stoi(data[9]), stoi(data[10]), stoi(data[11]), stoi(data[12]));
 	}
@@ -92,4 +93,31 @@ void GameLoader::LoadGameSettings(){
 
 	//Set background music
 	player->ChangeMusic(gameData[0]);
+
+	//Set level play time
+	game->SetGameTime(stoi(gameData[1]));
+}
+
+void GameLoader::LoadGameHUD(){
+	vector<vector<string>> HUDData = reader->ReadObjectInfo("hud_objects.txt");
+
+	for(auto hud : HUDData){
+		if(hud[0] == "text"){
+			Purpose p;
+			if(hud[1] == "score"){
+				p = Purpose::Score;
+			}
+			else if(hud[1] == "time"){
+				p = Purpose::Time;
+			}
+			else{ continue; }
+
+			new GameHUDObject(renderer, p, hud[2], stof(hud[3]), stof(hud[4]), stof(hud[5]), stof(hud[6]), stoi(hud[7]), stoi(hud[8]), stoi(hud[9]), stoi(hud[10]));
+		}
+
+		//HUD image
+		else if(hud[0] == "image"){
+			new GameHUDObject(renderer, hud[1], stof(hud[2]), stof(hud[3]), stof(hud[4]), stof(hud[5]));
+		}
+	}
 }

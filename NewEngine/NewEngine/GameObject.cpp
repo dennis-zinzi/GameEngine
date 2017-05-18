@@ -7,25 +7,18 @@ using std::endl;
 int GameObject::ID = 0;
 
 //NOT CURRENTLY USED
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, int red, int green, int blue, int alpha){
+GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, int red, int green, int blue, int alpha){
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
 	this->alpha = alpha;
 
-	renderer.AddRenderObject(this);
-
-	SetID(GetObjID());
-	SetBody(physicalObj);
-
-	physics.addPhysicsObj(this);
+	renderer->AddRenderObject(this);
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, btRigidBody *body, float width, float height, float depth,
+GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, btRigidBody *body, float width, float height, float depth,
 	int red, int green, int blue, int alpha){
-
-	this->physicalObj = body;
 
 	this->width = width;
 	this->height = height;
@@ -36,16 +29,16 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, btRi
 	this->blue = blue;
 	this->alpha = alpha;
 
-	renderer.AddRenderObject(this);
+	renderer->AddRenderObject(this);
 
 	SetID(GetObjID());
-	SetBody(this->physicalObj);
+	SetBody(body);
 
-	physics.addPhysicsObj(this);
+	physics->addPhysicsObj(this);
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, Type type, int red, int green, int blue, int alpha){
+GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Type type, int red, int green, int blue, int alpha){
 
 	objType = type;
 	this->red = red;
@@ -53,47 +46,51 @@ GameObject::GameObject(GraphicsRenderer &renderer, Type type, int red, int green
 	this->blue = blue;
 	this->alpha = alpha;
 
-	renderer.AddRenderObject(this);
+	this->audio = audio;
+	this->physics = physics;
+	this->renderer = renderer;
+
+	renderer->AddRenderObject(this);
+
+
+	SetID(GetObjID());
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height,
-	int red, int green, int blue, int alpha) : GameObject(renderer, type, red, green, blue, alpha){
+GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height,
+	int red, int green, int blue, int alpha) : GameObject(renderer, physics, audio, type, red, green, blue, alpha){
 	
 	switch(shape){
 		case Plane:
-			physicalObj = physics.AddPlane(x, y, z, mass);
+			SetBody(physics->AddPlane(x, y, z, mass));
 			break;
 		case Sphere:
-			physicalObj = physics.AddSphere(radius, x, y, z, mass);
+			SetBody(physics->AddSphere(radius, x, y, z, mass));
 			break;
 		case Cylinder:
-			physicalObj = physics.AddCylinder(radius, height, x, y, z, mass);
+			SetBody(physics->AddCylinder(radius, height, x, y, z, mass));
 			break;
 		case Cone:
-			physicalObj = physics.AddCone(radius, height, x, y, z, mass);
+			SetBody(physics->AddCone(radius, height, x, y, z, mass));
 			break;
 	}
 	
 	this->radius = radius;
 	this->height = height;
 
-	SetID(GetObjID());
-	SetBody(physicalObj);
-
-	physics.addPhysicsObj(this);
+	physics->addPhysicsObj(this);
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
-	int red, int green, int blue, int alpha) : GameObject(renderer, type, red, green, blue, alpha){
+GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
+	int red, int green, int blue, int alpha) : GameObject(renderer, physics, audio, type, red, green, blue, alpha){
 	
 	switch(shape){
 		case Plane:
-			physicalObj = physics.AddPlane(x, y, z, mass);
+			SetBody(physics->AddPlane(x, y, z, mass));
 			break;
 		case Box:
-			physicalObj = physics.AddBox(width, height, depth, x, y, z, mass);
+			SetBody(physics->AddBox(width, height, depth, x, y, z, mass));
 			break;
 	}
 
@@ -101,10 +98,7 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shap
 	this->height = height;
 	this->depth = depth;
 
-	SetID(GetObjID());
-	SetBody(physicalObj);
-
-	physics.addPhysicsObj(this);
+	physics->addPhysicsObj(this);
 }
 
 void GameObject::Render(){
@@ -161,9 +155,15 @@ void GameObject::Render(){
 void GameObject::HandleHit(PhysicsObject *Other){
 	if(objType == Type::Bullet && ((GameObject*)Other)->objType == Type::Target){
 		cout << "BULLET HIT Target" << endl;
+		audio->PlayEffect("mario_coin.wav");
+		GameLevel::UpdateScore(15);
+		cout << "Score: " << GameLevel::GetScore() << endl;
+
+		renderer->RemoveRenderObj(this);
+		physics->RemovePhysicsObj(this);
 	}
 
-	if(objType == Type::Target && ((GameObject*)Other)->objType == Type::Bullet){
-		cout << "Target HIT bullet" << endl;
-	}
+	//if(objType == Type::Target && ((GameObject*)Other)->objType == Type::Bullet){
+	//	cout << "Target HIT bullet" << endl;
+	//}
 }

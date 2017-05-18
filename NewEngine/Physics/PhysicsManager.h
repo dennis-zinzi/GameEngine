@@ -6,11 +6,15 @@
  */
 
 #include <vector>
+#include <iostream>
+#include <algorithm>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 #include "PhysicsObject.h"
 
 using std::vector;
+using std::find;
+using std::distance;
 
 class PhysicsManager{
 	public:
@@ -82,6 +86,18 @@ class PhysicsManager{
 		inline void addPhysicsObj(PhysicsObject *obj){
 			obj->GetBody()->setUserPointer(obj);
 			physicsObjects.push_back(obj);
+		}
+
+		inline void RemovePhysicsObj(PhysicsObject *obj){
+			//std::cout << "Size: " << physicsObjects.size() << std::endl;
+			world->removeCollisionObject(obj->GetBody());
+
+			//Remove object from physics list
+			auto it = find(physicsObjects.begin(), physicsObjects.end(), obj);
+			if(it != physicsObjects.end()){
+				auto index = distance(physicsObjects.begin(), it);
+				physicsObjects.erase(it);
+			}
 		}
 
 	private:
