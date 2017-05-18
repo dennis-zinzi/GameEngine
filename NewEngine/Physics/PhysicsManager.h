@@ -29,12 +29,15 @@ class PhysicsManager{
 				btCollisionObject *obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 				btCollisionObject *obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
 
+				//Ignore floor collisions
 				if (obA->getCollisionShape()->getShapeType() == STATIC_PLANE_PROXYTYPE
 					|| obB->getCollisionShape()->getShapeType() == STATIC_PLANE_PROXYTYPE){
 					continue;
 				}
 				
-				printf("%i collided with %i\n", ((PhysicsObject*)obA->getUserPointer())->GetID(), ((PhysicsObject*)obB->getUserPointer())->GetID());
+				//printf("%i collided with %i\n", ((PhysicsObject*)obA->getUserPointer())->GetID(), ((PhysicsObject*)obB->getUserPointer())->GetID());
+				((PhysicsObject*)obA->getUserPointer())->HandleHit((PhysicsObject*)obB->getUserPointer());
+				((PhysicsObject*)obB->getUserPointer())->HandleHit((PhysicsObject*)obA->getUserPointer());
 
 				//contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
 				//int numContacts = contactManifold->getNumContacts();
@@ -51,36 +54,42 @@ class PhysicsManager{
 		}
 
 		/* Add new physical representation of game object */
-		PhysicsObject* AddSphere(float radius, float x, float y, float z, float mass);
-		PhysicsObject* AddPlane(float x, float y, float z, float mass);
-		PhysicsObject* AddCylinder(float radius, float height, float x, float y, float z, float mass);
-		PhysicsObject* AddCone(float radius, float height, float x, float y, float z, float mass);
-		PhysicsObject* AddBox(float width, float height, float depth, float x, float y, float z, float mass);
+		btRigidBody* AddSphere(float radius, float x, float y, float z, float mass);
+		btRigidBody* AddPlane(float x, float y, float z, float mass);
+		btRigidBody* AddCylinder(float radius, float height, float x, float y, float z, float mass);
+		btRigidBody* AddCone(float radius, float height, float x, float y, float z, float mass);
+		btRigidBody* AddBox(float width, float height, float depth, float x, float y, float z, float mass);
 
 		//Get physical floor of the world
-		PhysicsObject* GetWorldPlane() const{
-			return physicsObjects[0];
+		btRigidBody* GetWorldPlane() const{
+			return wFloor;
 		}
 
 		//Collision callback function (not working)
 		bool CollisionFunc(btManifoldPoint &collisionPoint, const btCollisionObject *obj1, int id1, int index1, 
 			const btCollisionObject *obj2, int id2, int index2);
 
-		inline PhysicsObject* addPhysicsObj(btRigidBody *body){
-			PhysicsObject *obj = new PhysicsObject(ID, body);
-			body->setUserPointer(obj);
-			physicsObjects.push_back(obj);
-			ID++;
+		//inline PhysicsObject* addPhysicsObj(btRigidBody *body){
+		//	PhysicsObject *obj = new PhysicsObject(ID, body);
+		//	body->setUserPointer(obj);
+		//	physicsObjects.push_back(obj);
+		//	ID++;
 
-			return obj;
+		//	return obj;
+		//}
+
+		//Adds PhysicsObject to list to be rendered each frame
+		inline void addPhysicsObj(PhysicsObject *obj){
+			obj->GetBody()->setUserPointer(obj);
+			physicsObjects.push_back(obj);
 		}
 
 	private:
+		btRigidBody *wFloor;
 		vector<PhysicsObject*> physicsObjects;
 		btDynamicsWorld *world;
 		btDispatcher *dispatcher;
 		btCollisionConfiguration *collisionConfig;
 		btBroadphaseInterface *broadphase;
 		btConstraintSolver *solver;
-		static int ID;
 };

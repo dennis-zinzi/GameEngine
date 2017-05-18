@@ -5,6 +5,7 @@
 
 class PhysicsObject{
 	public:
+		PhysicsObject(){};
 		PhysicsObject(int ID, btRigidBody *body){
 			this->ID = ID;
 			this->body = body;
@@ -13,6 +14,9 @@ class PhysicsObject{
 
 		inline int GetID() const{
 			return ID;
+		}
+		inline void SetID(int ID){
+			this->ID = ID;
 		}
 		
 
@@ -27,6 +31,11 @@ class PhysicsObject{
 		inline btRigidBody* GetBody() const{
 			return body;
 		}
+		inline void SetBody(btRigidBody *body){
+			this->body = body;
+		}
+
+		virtual void HandleHit(PhysicsObject *Other) = 0;
 
 	private:
 		int ID;

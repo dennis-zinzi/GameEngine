@@ -83,7 +83,7 @@ void GraphicsRenderer::UpdateScene(float msec){
 	string secs = secsstream.str();
 
 	string time = mins + ":" + secs;
-	LoadSDLText(time, "Invasion2000.TTF", 50, 650, 600, 100, 50, 0, 150, 200);
+	LoadSDLText(time, "Invasion2000.TTF", 50, 600, 600, 100, 50, 0, 150, 200);
 
 	//Draw aim assist
 	glLoadIdentity();

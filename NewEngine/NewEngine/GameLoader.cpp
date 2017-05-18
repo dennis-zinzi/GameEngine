@@ -8,7 +8,7 @@ GameLoader::GameLoader(GraphicsRenderer *renderer, PhysicsManager *physics, File
 }
 
 void GameLoader::LoadGameFloor(){
-	new GameObject(*renderer, physics->GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
+	new GameObject(*renderer, *physics, physics->GetWorldPlane(), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
 }
 
 
@@ -26,9 +26,27 @@ void GameLoader::LoadRadWorldObjects(){
 		else if(data[0] == "Cone"){
 			shape = Shape::Cone;
 		}
+		
+		Type type;
 
-		new GameObject(*renderer, *physics, shape, stof(data[1]), stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]),
-			stof(data[6]), stoi(data[7]), stoi(data[8]), stoi(data[9]), stoi(data[10]));
+		if(data[1] == "Target"){
+			type = Type::Target;
+		}
+		else if(data[1] == "Bullet"){
+			type = Type::Bullet;
+		}
+		else if(data[1] == "Player"){
+			type = Type::PLAYER;
+		}
+		else if(data[1] == "Floor"){
+			type = Type::Floor;
+		}
+		else if(data[1] == "Other"){
+			type = Type::Other;
+		}
+
+		new GameObject(*renderer, *physics, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]), stof(data[6]),
+			stof(data[7]), stoi(data[8]), stoi(data[9]), stoi(data[10]), stoi(data[11]));
 	}
 }
 
@@ -44,9 +62,27 @@ void GameLoader::LoadFlatWorldObjects(){
 			shape = Shape::Box;
 		}
 
-		new GameObject(*renderer, *physics, shape, stof(data[1]), stof(data[2]), stof(data[3]), stof(data[4]),
-			stof(data[5]), stof(data[6]), stof(data[7]),
-			stoi(data[8]), stoi(data[9]), stoi(data[10]), stoi(data[11]));
+		Type type;
+
+		if(data[1] == "Target"){
+			type = Type::Target;
+		}
+		else if(data[1] == "Bullet"){
+			type = Type::Bullet;
+		}
+		else if(data[1] == "Player"){
+			type = Type::PLAYER;
+		}
+		else if(data[1] == "Floor"){
+			type = Type::Floor;
+		}
+		else if(data[1] == "Other"){
+			type = Type::Other;
+		}
+
+		new GameObject(*renderer, *physics, shape, type, stof(data[2]), stof(data[3]), stof(data[4]), stof(data[5]),
+			stof(data[6]), stof(data[7]), stof(data[8]),
+			stoi(data[9]), stoi(data[10]), stoi(data[11]), stoi(data[12]));
 	}
 }
 

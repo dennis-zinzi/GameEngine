@@ -2,7 +2,7 @@
 
 Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer &player, float radius, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, Shape::Sphere, renderer.GetCamera()->GetCameraPos()[0], renderer.GetCamera()->GetCameraPos()[1], renderer.GetCamera()->GetCameraPos()[2] - 5.0f, mass, radius, 0.0f, red, green, blue, alpha){
+	: GameObject(renderer, physics, Shape::Sphere, Type::PLAYER, renderer.GetCamera()->GetCameraPos()[0], renderer.GetCamera()->GetCameraPos()[1], renderer.GetCamera()->GetCameraPos()[2] - 5.0f, mass, radius, 0.0f, red, green, blue, alpha){
 
 	camera = renderer.GetCamera();
 	this->renderer = &renderer;
@@ -17,7 +17,7 @@ Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer 
 
 Player::Player(GraphicsRenderer &renderer, PhysicsManager &physics, AudioPlayer &player, float width, float height, float depth, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, Shape::Box, renderer.GetCamera()->GetCameraPos()[0], renderer.GetCamera()->GetCameraPos()[1], renderer.GetCamera()->GetCameraPos()[2] - 5.0f, mass, width, height, depth,
+	: GameObject(renderer, physics, Shape::Box, Type::PLAYER, renderer.GetCamera()->GetCameraPos()[0], renderer.GetCamera()->GetCameraPos()[1], renderer.GetCamera()->GetCameraPos()[2] - 5.0f, mass, width, height, depth,
 		red, green, blue, alpha){
 
 	camera = renderer.GetCamera();
@@ -67,7 +67,7 @@ void Player::Render(){
 
 	btTransform t;
 	//physicalBody->getMotionState()->getWorldTransform(t);
-	t = physicalObj->GetBody()->getWorldTransform();
+	t = GetBody()->getWorldTransform();
 
 	float matrix[16];
 	t.getOpenGLMatrix(matrix);
@@ -94,7 +94,7 @@ void Player::MovePhysicObj(float x1, float x2, float y1, float y2, float z1, flo
 
 	btVector3 vel(moved.x() * MOVE_VEL / dist, moved.y() * MOVE_VEL / dist, moved.z() * MOVE_VEL / dist);
 
-	physicalObj->GetBody()->setLinearVelocity(vel);
+	GetBody()->setLinearVelocity(vel);
 	/*physicalBody->setLinearVelocity(btVector3((camera->GetCameraLookVect()[0] + 0.0f) * (3.0f + moved.x()), (camera->GetCameraLookVect()[1] + 0.0f) * (3.0f + moved.y()),
 		(camera->GetCameraLookVect()[2] + 0.0f)) * (3.0f + moved.z()));*/
 	//physicalBody->translate(btVector3);
@@ -184,10 +184,10 @@ void Player::Jump(){
 
 
 void Player::Shoot(){
-	RenderObject *bullet = new GameObject(*renderer, *physics, Shape::Sphere, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
+	RenderObject *bullet = new GameObject(*renderer, *physics, Shape::Sphere, Type::Bullet, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
 
 	float *camLook = camera->GetCameraLookVect();
-	((GameObject*)bullet)->GetPhysicalObj()->GetBody()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));
+	((GameObject*)bullet)->GetBody()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));
 
 	player->PlayEffect("throw_sound.wav");
 }
@@ -200,5 +200,5 @@ void Player::ShowControls(){
 
 void Player::NoMovement(){
 	//cout << "NO MOVE" << endl;
-	physicalObj->GetBody()->setLinearVelocity(btVector3(0, 0, 0));
+	GetBody()->setLinearVelocity(btVector3(0, 0, 0));
 }

@@ -4,21 +4,28 @@
 using std::cout;
 using std::endl;
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, int red, int green, int blue, int alpha){
-	this->physicalObj = physicalObj;
+int GameObject::ID = 0;
 
+//NOT CURRENTLY USED
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, int red, int green, int blue, int alpha){
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
 	this->alpha = alpha;
 
 	renderer.AddRenderObject(this);
+
+	SetID(GetObjID());
+	SetBody(physicalObj);
+
+	physics.addPhysicsObj(this);
 }
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, float width, float height, float depth,
+
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, btRigidBody *body, float width, float height, float depth,
 	int red, int green, int blue, int alpha){
 
-	this->physicalObj = physicalObj;
+	this->physicalObj = body;
 
 	this->width = width;
 	this->height = height;
@@ -30,11 +37,17 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, f
 	this->alpha = alpha;
 
 	renderer.AddRenderObject(this);
+
+	SetID(GetObjID());
+	SetBody(this->physicalObj);
+
+	physics.addPhysicsObj(this);
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, int red, int green, int blue, int alpha){
+GameObject::GameObject(GraphicsRenderer &renderer, Type type, int red, int green, int blue, int alpha){
 
+	objType = type;
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
@@ -44,8 +57,8 @@ GameObject::GameObject(GraphicsRenderer &renderer, int red, int green, int blue,
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, float x, float y, float z, float mass, float radius, float height,
-	int red, int green, int blue, int alpha) : GameObject(renderer, red, green, blue, alpha){
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height,
+	int red, int green, int blue, int alpha) : GameObject(renderer, type, red, green, blue, alpha){
 	
 	switch(shape){
 		case Plane:
@@ -61,14 +74,19 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shap
 			physicalObj = physics.AddCone(radius, height, x, y, z, mass);
 			break;
 	}
-
+	
 	this->radius = radius;
 	this->height = height;
+
+	SetID(GetObjID());
+	SetBody(physicalObj);
+
+	physics.addPhysicsObj(this);
 }
 
 
-GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, float x, float y, float z, float mass, float width, float height, float depth,
-	int red, int green, int blue, int alpha) : GameObject(renderer, red, green, blue, alpha){
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
+	int red, int green, int blue, int alpha) : GameObject(renderer, type, red, green, blue, alpha){
 	
 	switch(shape){
 		case Plane:
@@ -82,11 +100,16 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shap
 	this->width = width;
 	this->height = height;
 	this->depth = depth;
+
+	SetID(GetObjID());
+	SetBody(physicalObj);
+
+	physics.addPhysicsObj(this);
 }
 
 void GameObject::Render(){
 	//Get physical properties
-	btRigidBody *bod = physicalObj->GetBody();
+	btRigidBody *bod = GetBody();
 	btCollisionShape *shape = bod->getCollisionShape();
 
 	//Get model matrix
@@ -132,5 +155,15 @@ void GameObject::Render(){
 			break;
 		}
 
+	}
+}
+
+void GameObject::HandleHit(PhysicsObject *Other){
+	if(objType == Type::Bullet && ((GameObject*)Other)->objType == Type::Target){
+		cout << "BULLET HIT Target" << endl;
+	}
+
+	if(objType == Type::Target && ((GameObject*)Other)->objType == Type::Bullet){
+		cout << "Target HIT bullet" << endl;
 	}
 }
