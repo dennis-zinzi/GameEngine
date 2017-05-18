@@ -12,6 +12,8 @@ Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer 
 	jumpNum = 0;
 	isJumping = false;
 	isFalling = false;
+
+	show = false;
 }
 
 
@@ -28,6 +30,8 @@ Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer 
 	jumpNum = 0;
 	isJumping = false;
 	isFalling = false;
+
+	show = false;
 }
 
 
@@ -176,7 +180,18 @@ void Player::Shoot(){
 }
 
 
-void Player::ShowControls(){
+void Player::ShowControls(bool show){
+	if(this->show != show){
+		if(show){
+			GameLevel::SetStartPause(SDL_GetTicks() / 1000);
+		}
+		else{
+			GameLevel::SetEndPause(SDL_GetTicks() / 1000);
+		}
+
+		this->show = show;
+	}
+
 	renderer->ShowControlsScreen();
 }
 

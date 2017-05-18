@@ -90,11 +90,21 @@ int main(int argc, char **argv){
 			bool restart = false;
 			while(!restart){
 				game->HandleGameFinish();
-				restart = input->CheckForRestart();
+				Action perform = input->CheckForRestart();
+
+				restart = perform == Action::Restart;
+
+				if(perform == Action::Close){
+					running = false;
+					break;
+				}
 			}
 
-			loader.LoadGame();
-			game->RestartLevel();
+			//As possible to close, check if actually restarting
+			if(restart){
+				loader.LoadGame();
+				game->RestartLevel();
+			}
 		}
 	}
 

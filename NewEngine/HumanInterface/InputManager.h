@@ -12,6 +12,12 @@
 using std::cout;
 using std::endl;
 
+enum Action{
+	Restart,
+	Close,
+	Nothing
+};
+
 class InputManager{
 	public:
 		InputManager();
@@ -26,7 +32,7 @@ class InputManager{
 		bool CheckForInputs();
 
 		//Check for restart key pressed
-		bool CheckForRestart();
+		Action CheckForRestart();
 
 	private:
 		InputPlayer *Player;

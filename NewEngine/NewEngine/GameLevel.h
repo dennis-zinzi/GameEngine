@@ -41,6 +41,16 @@ class GameLevel{
 			return state;
 		}
 
+		inline static void SetStartPause(int pause){
+			startPause = pause;
+		}
+		inline static void SetEndPause(int pause){
+			endPause = pause;
+		}
+
+		inline static void UpdatePauseTime(){
+			pauseTime += endPause - startPause;
+		}
 
 		void UpdateGame(int time);
 		void RestartLevel();
@@ -48,6 +58,10 @@ class GameLevel{
 
 	private:
 		static int score;
+		static int pauseTime;
+		static int startPause;
+		static int endPause;
+
 		static int timeLeft;
 		int startTime;
 		int gameTime;

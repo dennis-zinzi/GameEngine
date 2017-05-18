@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameLevel.h"
 #include "GameObject.h"
 #include <iostream>
 
@@ -31,7 +32,7 @@ class Player : public GameObject, public InputPlayer{
 		virtual void Jump() override;
 		virtual void Shoot() override;
 		virtual void NoMovement() override;
-		virtual void ShowControls() override;
+		virtual void ShowControls(bool show) override;
 
 	private:
 		Camera *camera;
@@ -41,4 +42,6 @@ class Player : public GameObject, public InputPlayer{
 		bool isJumping;
 		bool isFalling;
 		int jumpNum;
+
+		bool show;
 };

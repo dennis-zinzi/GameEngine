@@ -37,7 +37,7 @@ bool InputManager::CheckForInputs(){
 					//	Player->MoveRight();
 					//	break;
 					case SDLK_p:
-						Player->ShowControls();
+						Player->ShowControls(true);
 						break;
 					default:
 						break;
@@ -48,6 +48,9 @@ bool InputManager::CheckForInputs(){
 				switch(event.key.keysym.sym){
 					case SDLK_SPACE:
 						Player->Jump();
+						break;
+					case SDLK_p:
+						Player->ShowControls(false);
 						break;
 					default:
 						break;
@@ -97,7 +100,7 @@ bool InputManager::CheckForInputs(){
 	return true;
 }
 
-bool InputManager::CheckForRestart(){
+Action InputManager::CheckForRestart(){
 	SDL_Event event;
 
 	//Runs whilst there is an event being queued
@@ -106,12 +109,15 @@ bool InputManager::CheckForRestart(){
 			case SDL_KEYDOWN:
 			{
 				switch(event.key.keysym.sym){
+					case SDLK_ESCAPE:
+						return Action::Close;
+
 					case SDLK_r:
-						return true;
+						return Action::Restart;
 				}
 			}
 		}
 	}
 
-	return false;
+	return Action::Nothing;
 }
