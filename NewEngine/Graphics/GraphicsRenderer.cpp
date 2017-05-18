@@ -13,6 +13,10 @@ GraphicsRenderer::GraphicsRenderer(){
 
 	//Set up camera
 	camera = new Camera(screen);
+
+	//Game vars
+	startTime = SDL_GetTicks() / 1000;
+	gameTime = 90;//startTime;
 	
 	//Set OpenGL attribs
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -67,6 +71,19 @@ void GraphicsRenderer::UpdateScene(float msec){
 
 	string score = "Score: " + to_string(msec*.1f);
 	LoadSDLText(score, "Invasion2000.TTF", 50, 50, 650, 100, 50, 0, 255, 0);
+
+	glLoadIdentity();
+	
+	stringstream minsstream;
+	minsstream << setw(2) << setfill('0') << to_string(gameTime / 60);
+	string mins = minsstream.str();
+
+	stringstream secsstream;
+	secsstream << setw(2) << setfill('0') << to_string(gameTime % 60);
+	string secs = secsstream.str();
+
+	string time = mins + ":" + secs;
+	LoadSDLText(time, "Invasion2000.TTF", 50, 650, 600, 100, 50, 0, 150, 200);
 
 	//Draw aim assist
 	glLoadIdentity();
@@ -128,6 +145,7 @@ void GraphicsRenderer::UpdateScene(float msec){
 		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (GetTime() - msec)));
 	}
 
+	gameTime = 90 - ((SDL_GetTicks() / 1000) - startTime);
 	//camera->UpdateCamera();
 }
 
@@ -233,7 +251,7 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 	int h = power_two_floor(surface->h) * 2;
 
 	//Create a surface to the correct size in RGB format, and copy the old image
-	SDL_Surface * s = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_Surface *s = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_BlitSurface(surface, NULL, s, NULL);
 
 	//Copy the created image into OpenGL format

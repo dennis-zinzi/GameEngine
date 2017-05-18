@@ -67,7 +67,7 @@ void Player::Render(){
 
 	btTransform t;
 	//physicalBody->getMotionState()->getWorldTransform(t);
-	t = physicalBody->getWorldTransform();
+	t = physicalObj->GetBody()->getWorldTransform();
 
 	float matrix[16];
 	t.getOpenGLMatrix(matrix);
@@ -94,7 +94,7 @@ void Player::MovePhysicObj(float x1, float x2, float y1, float y2, float z1, flo
 
 	btVector3 vel(moved.x() * MOVE_VEL / dist, moved.y() * MOVE_VEL / dist, moved.z() * MOVE_VEL / dist);
 
-	physicalBody->setLinearVelocity(vel);
+	physicalObj->GetBody()->setLinearVelocity(vel);
 	/*physicalBody->setLinearVelocity(btVector3((camera->GetCameraLookVect()[0] + 0.0f) * (3.0f + moved.x()), (camera->GetCameraLookVect()[1] + 0.0f) * (3.0f + moved.y()),
 		(camera->GetCameraLookVect()[2] + 0.0f)) * (3.0f + moved.z()));*/
 	//physicalBody->translate(btVector3);
@@ -187,7 +187,7 @@ void Player::Shoot(){
 	RenderObject *bullet = new GameObject(*renderer, *physics, Shape::Sphere, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
 
 	float *camLook = camera->GetCameraLookVect();
-	((GameObject*)bullet)->GetPhysicalObj()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));
+	((GameObject*)bullet)->GetPhysicalObj()->GetBody()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));
 
 	player->PlayEffect("throw_sound.wav");
 }
@@ -200,5 +200,5 @@ void Player::ShowControls(){
 
 void Player::NoMovement(){
 	//cout << "NO MOVE" << endl;
-	physicalBody->setLinearVelocity(btVector3(0, 0, 0));
+	physicalObj->GetBody()->setLinearVelocity(btVector3(0, 0, 0));
 }

@@ -73,6 +73,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="PhysicsManager.h" />
+    <ClInclude Include="PhysicsObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PhysicsManager.cpp" />

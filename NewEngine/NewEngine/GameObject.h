@@ -7,6 +7,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "../Physics/PhysicsManager.h"
+#include "../Physics/PhysicsObject.h"
 #pragma comment(lib, "Physics.lib")
 
 #include "../Graphics/GraphicsRenderer.h"
@@ -25,8 +26,8 @@ enum Shape{
 class GameObject : public RenderObject{
 	public:
 		/* GameObject constructors */
-		GameObject(GraphicsRenderer &renderer, btRigidBody *physicalBody, int red = 127, int green = 127, int blue = 127, int alpha = 255);
-		GameObject(GraphicsRenderer &renderer, btRigidBody *physicalBody, float width, float height, float depth,
+		GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, int red = 127, int green = 127, int blue = 127, int alpha = 255);
+		GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, float width, float height, float depth,
 			int red = 127, int green = 127, int blue = 127, int alpha = 255);
 		//Base constructor
 		GameObject(GraphicsRenderer &renderer, int red = 127, int green = 127, int blue = 127, int alpha = 255);
@@ -41,12 +42,12 @@ class GameObject : public RenderObject{
 		virtual void Render();
 
 		//Get physical representation of game object
-		inline btRigidBody* GetPhysicalObj() const{
-			return physicalBody;
+		inline PhysicsObject* GetPhysicalObj() const{
+			return physicalObj;
 		}
 
 	protected:
-		btRigidBody *physicalBody;
+		PhysicsObject *physicalObj;
 		float radius;
 		float width, height, depth;
 		int red, green, blue, alpha;

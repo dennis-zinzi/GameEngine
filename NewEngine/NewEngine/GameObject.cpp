@@ -4,8 +4,8 @@
 using std::cout;
 using std::endl;
 
-GameObject::GameObject(GraphicsRenderer &renderer, btRigidBody * physicalBody, int red, int green, int blue, int alpha){
-	this->physicalBody = physicalBody;
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, int red, int green, int blue, int alpha){
+	this->physicalObj = physicalObj;
 
 	this->red = red;
 	this->green = green;
@@ -15,10 +15,10 @@ GameObject::GameObject(GraphicsRenderer &renderer, btRigidBody * physicalBody, i
 	renderer.AddRenderObject(this);
 }
 
-GameObject::GameObject(GraphicsRenderer &renderer, btRigidBody * physicalBody, float width, float height, float depth,
+GameObject::GameObject(GraphicsRenderer &renderer, PhysicsObject *physicalObj, float width, float height, float depth,
 	int red, int green, int blue, int alpha){
 
-	this->physicalBody = physicalBody;
+	this->physicalObj = physicalObj;
 
 	this->width = width;
 	this->height = height;
@@ -49,16 +49,16 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shap
 	
 	switch(shape){
 		case Plane:
-			physicalBody = physics.AddPlane(x, y, z, mass);
+			physicalObj = physics.AddPlane(x, y, z, mass);
 			break;
 		case Sphere:
-			physicalBody = physics.AddSphere(radius, x, y, z, mass);
+			physicalObj = physics.AddSphere(radius, x, y, z, mass);
 			break;
 		case Cylinder:
-			physicalBody = physics.AddCylinder(radius, height, x, y, z, mass);
+			physicalObj = physics.AddCylinder(radius, height, x, y, z, mass);
 			break;
 		case Cone:
-			physicalBody = physics.AddCone(radius, height, x, y, z, mass);
+			physicalObj = physics.AddCone(radius, height, x, y, z, mass);
 			break;
 	}
 
@@ -72,10 +72,10 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shap
 	
 	switch(shape){
 		case Plane:
-			physicalBody = physics.AddPlane(x, y, z, mass);
+			physicalObj = physics.AddPlane(x, y, z, mass);
 			break;
 		case Box:
-			physicalBody = physics.AddBox(width, height, depth, x, y, z, mass);
+			physicalObj = physics.AddBox(width, height, depth, x, y, z, mass);
 			break;
 	}
 
@@ -86,19 +86,20 @@ GameObject::GameObject(GraphicsRenderer &renderer, PhysicsManager &physics, Shap
 
 void GameObject::Render(){
 	//Get physical properties
-	btCollisionShape *shape = physicalBody->getCollisionShape();
+	btRigidBody *bod = physicalObj->GetBody();
+	btCollisionShape *shape = bod->getCollisionShape();
 
 	//Get model matrix
 	btTransform t;
-	physicalBody->getMotionState()->getWorldTransform(t);
+	bod->getMotionState()->getWorldTransform(t);
 	float matrix[16];
 	t.getOpenGLMatrix(matrix);
 
 	switch(shape->getShapeType()){
 		case STATIC_PLANE_PROXYTYPE: {
-			float x = physicalBody->getCenterOfMassPosition().x(),
-				y = physicalBody->getCenterOfMassPosition().y(),
-				z = physicalBody->getCenterOfMassPosition().z();
+			float x = bod->getCenterOfMassPosition().x(),
+				y = bod->getCenterOfMassPosition().y(),
+				z = bod->getCenterOfMassPosition().z();
 
 
 			GraphicsRenderer::RenderPlane(x, y, z, width, height, depth, matrix,

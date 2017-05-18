@@ -1,5 +1,7 @@
 #include "PhysicsManager.h"
 
+int PhysicsManager::ID = 0;
+
 PhysicsManager::PhysicsManager(){
 	collisionConfig = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfig);
@@ -19,10 +21,10 @@ PhysicsManager::PhysicsManager(){
 
 PhysicsManager::~PhysicsManager(){
 	for(auto body : physicsObjects){
-		world->removeCollisionObject(body);
-		delete body->getMotionState();
-		delete body->getCollisionShape();
-		delete body;
+		world->removeCollisionObject(body->GetBody());
+		delete body->GetBody()->getMotionState();
+		delete body->GetBody()->getCollisionShape();
+		delete body->GetBody();
 	}
 
 	delete solver;
@@ -35,7 +37,7 @@ PhysicsManager::~PhysicsManager(){
 /**
  * Add new Sphere physics object to world
  */
-btRigidBody* PhysicsManager::AddSphere(float radius, float x, float y, float z, float mass){
+PhysicsObject* PhysicsManager::AddSphere(float radius, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
@@ -51,16 +53,15 @@ btRigidBody* PhysicsManager::AddSphere(float radius, float x, float y, float z, 
 	btRigidBody *body = new btRigidBody(info);
 
 	world->addRigidBody(body);
-	physicsObjects.push_back(body);
 	
-	return body;
+	return addPhysicsObj(body);
 }
 
 
 /**
 * Add new Infinite plane physics object to world
 */
-btRigidBody * PhysicsManager::AddPlane(float x, float y, float z, float mass)
+PhysicsObject* PhysicsManager::AddPlane(float x, float y, float z, float mass)
 {
 	btTransform t;
 	t.setIdentity();
@@ -76,16 +77,15 @@ btRigidBody * PhysicsManager::AddPlane(float x, float y, float z, float mass)
 
 	btRigidBody *planeBod = new btRigidBody(info);
 	world->addRigidBody(planeBod);
-	physicsObjects.push_back(planeBod);
 
-	return planeBod;
+	return addPhysicsObj(planeBod);
 }
 
 
 /**
 * Add new Cylinder physics object to world
 */
-btRigidBody * PhysicsManager::AddCylinder(float radius, float height, float x, float y, float z, float mass){
+PhysicsObject* PhysicsManager::AddCylinder(float radius, float height, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
@@ -101,16 +101,15 @@ btRigidBody * PhysicsManager::AddCylinder(float radius, float height, float x, f
 
 	btRigidBody *cylinderBod = new btRigidBody(info);
 	world->addRigidBody(cylinderBod);
-	physicsObjects.push_back(cylinderBod);
-
-	return cylinderBod;
+	
+	return addPhysicsObj(cylinderBod);;
 }
 
 
 /**
 * Add new Cone physics object to world
 */
-btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float y, float z, float mass){
+PhysicsObject* PhysicsManager::AddCone(float radius, float height, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
@@ -126,16 +125,15 @@ btRigidBody * PhysicsManager::AddCone(float radius, float height, float x, float
 
 	btRigidBody *coneBod = new btRigidBody(info);
 	world->addRigidBody(coneBod);
-	physicsObjects.push_back(coneBod);
 
-	return coneBod;
+	return addPhysicsObj(coneBod);;
 }
 
 
 /**
 * Add new Box physics object to world
 */
-btRigidBody * PhysicsManager::AddBox(float width, float height, float depth, float x, float y, float z, float mass){
+PhysicsObject* PhysicsManager::AddBox(float width, float height, float depth, float x, float y, float z, float mass){
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(x, y, z));
@@ -151,9 +149,8 @@ btRigidBody * PhysicsManager::AddBox(float width, float height, float depth, flo
 
 	btRigidBody *boxBod = new btRigidBody(info);
 	world->addRigidBody(boxBod);
-	physicsObjects.push_back(boxBod);
 
-	return boxBod;
+	return addPhysicsObj(boxBod);
 }
 
 //Collision callback function

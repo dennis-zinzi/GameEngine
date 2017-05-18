@@ -8,7 +8,7 @@ void Profiler::ShowStats(){
 	if(!update){
 		return;
 	}
-
+	
 	cout << "Average execution speed per loop per second" << endl;
 	cout << "Graphics took: " << (times[Graphics] / startTime) << "s" << endl;
 	cout << "Physics took: " << (times[Physics] / startTime) << "s" << endl;

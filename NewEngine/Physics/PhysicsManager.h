@@ -8,6 +8,7 @@
 #include <vector>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include "PhysicsObject.h"
 
 using std::vector;
 
@@ -33,29 +34,31 @@ class PhysicsManager{
 					continue;
 				}
 				
-				contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
-				int numContacts = contactManifold->getNumContacts();
-				printf("Contacts: %i\n", numContacts);
-				//For each contact point in that manifold
-				for(int j = 0; j < numContacts; j++){
-					//Get the contact information
-					btManifoldPoint &pt = contactManifold->getContactPoint(j);
-					btVector3 ptA = pt.getPositionWorldOnA();
-					btVector3 ptB = pt.getPositionWorldOnB();
-					float ptdist = pt.getDistance();
-				}
+				printf("%i collided with %i\n", ((PhysicsObject*)obA->getUserPointer())->GetID(), ((PhysicsObject*)obB->getUserPointer())->GetID());
+
+				//contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
+				//int numContacts = contactManifold->getNumContacts();
+				////printf("Contacts: %i\n", numContacts);
+				////For each contact point in that manifold
+				//for(int j = 0; j < numContacts; j++){
+				//	//Get the contact information
+				//	btManifoldPoint &pt = contactManifold->getContactPoint(j);
+				//	btVector3 ptA = pt.getPositionWorldOnA();
+				//	btVector3 ptB = pt.getPositionWorldOnB();
+				//	float ptdist = pt.getDistance();
+				//}
 			}
 		}
 
 		/* Add new physical representation of game object */
-		btRigidBody* AddSphere(float radius, float x, float y, float z, float mass);
-		btRigidBody* AddPlane(float x, float y, float z, float mass);
-		btRigidBody* AddCylinder(float radius, float height, float x, float y, float z, float mass);
-		btRigidBody* AddCone(float radius, float height, float x, float y, float z, float mass);
-		btRigidBody* AddBox(float width, float height, float depth, float x, float y, float z, float mass);
+		PhysicsObject* AddSphere(float radius, float x, float y, float z, float mass);
+		PhysicsObject* AddPlane(float x, float y, float z, float mass);
+		PhysicsObject* AddCylinder(float radius, float height, float x, float y, float z, float mass);
+		PhysicsObject* AddCone(float radius, float height, float x, float y, float z, float mass);
+		PhysicsObject* AddBox(float width, float height, float depth, float x, float y, float z, float mass);
 
 		//Get physical floor of the world
-		btRigidBody* GetWorldPlane() const{
+		PhysicsObject* GetWorldPlane() const{
 			return physicsObjects[0];
 		}
 
@@ -63,11 +66,21 @@ class PhysicsManager{
 		bool CollisionFunc(btManifoldPoint &collisionPoint, const btCollisionObject *obj1, int id1, int index1, 
 			const btCollisionObject *obj2, int id2, int index2);
 
+		inline PhysicsObject* addPhysicsObj(btRigidBody *body){
+			PhysicsObject *obj = new PhysicsObject(ID, body);
+			body->setUserPointer(obj);
+			physicsObjects.push_back(obj);
+			ID++;
+
+			return obj;
+		}
+
 	private:
-		vector<btRigidBody*> physicsObjects;
+		vector<PhysicsObject*> physicsObjects;
 		btDynamicsWorld *world;
 		btDispatcher *dispatcher;
 		btCollisionConfiguration *collisionConfig;
 		btBroadphaseInterface *broadphase;
 		btConstraintSolver *solver;
+		static int ID;
 };

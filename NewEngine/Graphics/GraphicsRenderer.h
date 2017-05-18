@@ -15,6 +15,8 @@
 
 #include "common.h"
 #include <string>
+#include <iomanip>
+#include <sstream>
 #include <iostream>
 #include <vector>
 
@@ -23,6 +25,9 @@
 
 using std::string;
 using std::to_string;
+using std::setw;
+using std::setfill;
+using std::stringstream;
 using std::vector;
 using std::cout;
 using std::endl;
@@ -128,6 +133,8 @@ class GraphicsRenderer{
 		vector<RenderObject*> objectsToRender;
 		vector<Font> fonts;
 		static vector<Texture> textures;
+		int gameTime;
+		int startTime;
 
 		//Retrieves text font resource if found/loaded
 		inline TTF_Font* GetFont(string filename, int fontsize){

@@ -6,7 +6,7 @@
 
 class RenderObject{
 	public:
-		RenderObject();
+		RenderObject(){}
 
 		//Make rendering happen in subclass
 		virtual void Render() = 0;

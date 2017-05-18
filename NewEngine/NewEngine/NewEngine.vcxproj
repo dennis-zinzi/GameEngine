@@ -97,6 +97,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameLevel.h" />
     <ClInclude Include="GameLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Player.h" />
