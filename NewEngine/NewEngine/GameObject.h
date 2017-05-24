@@ -31,6 +31,8 @@ enum Shape{
 enum Type{
 	Target,
 	NonTarget,
+	DisabledTarget,
+	DisabledNonTarget,
 	Bullet,
 	PLAYER,
 	Floor,
@@ -65,10 +67,10 @@ class GameObject : public RenderObject, public PhysicsObject{
 			return ID;
 		}
 
-		////Get physical representation of game object
-		//inline PhysicsObject* GetPhysicalObj() const{
-		//	return physicalObj;
-		//}
+		inline void SetType(Type t){
+			objType = t;
+		}
+
 
 	protected:
 		float radius;

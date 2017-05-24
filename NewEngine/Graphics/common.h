@@ -7,6 +7,8 @@
 #define WINDOW_WIDTH 1200
 
 #define FRAME_RATE 45
-#define MOVE_VEL 0.2f
+#define MOVE_VEL 0.5f
 
 #define JUMP_VEL 0.4f
+
+#define BULLET_VEL 200

@@ -155,26 +155,43 @@ void GameObject::Render(){
 }
 
 void GameObject::HandleHit(PhysicsObject *Other){
-	if(objType == Type::Bullet && ((GameObject*)Other)->objType == Type::Target){
-		cout << "BULLET HIT Target" << endl;
-		audio->PlayEffect("mario_coin.wav");
-		GameLevel::UpdateScore(15);
-		//cout << "Score: " << GameLevel::GetScore() << endl;
+	GameObject *o = (GameObject*)Other;
+
+	if(objType == Type::Bullet){
+		switch(o->objType){
+			case DisabledTarget:{
+				audio->PlayEffect("minor_points.wav");
+				GameLevel::UpdateScore(GameLevel::GetDisabledTargetPoints());
+				break;
+			}
+			case DisabledNonTarget:{
+				audio->PlayEffect("bump.wav");
+				GameLevel::UpdateScore(GameLevel::GetDisabledNegativeTargetPoints());
+				break;
+			}
+			case Target:{
+				audio->PlayEffect("mario_coin.wav");
+				GameLevel::UpdateScore(GameLevel::GetTargetPoints());
+
+				o->objType = Type::DisabledTarget;
+				o->texture = "disabledTarget.png";
+				break;
+			}
+			case NonTarget:{
+				audio->PlayEffect("bump.wav");
+				GameLevel::UpdateScore(GameLevel::GetNegativeTargetPoints());
+
+				o->objType = Type::DisabledNonTarget;
+				o->texture = "wrongDisabledTarget.png";
+				break;
+			}
+
+			default:
+				return;
+		}
 
 		renderer->RemoveRenderObj(this);
 		physics->RemovePhysicsObj(this);
 	}
 
-	if(objType == Type::Bullet && ((GameObject*)Other)->objType == Type::NonTarget){
-		cout << "BULLET HIT nonTarget" << endl;
-		audio->PlayEffect("mario_coin.wav");
-		GameLevel::UpdateScore(-15);
-		//cout << "Score: " << GameLevel::GetScore() << endl;
-
-		renderer->RemoveRenderObj(this);
-		physics->RemovePhysicsObj(this);
-	}
-	//if(objType == Type::Target && ((GameObject*)Other)->objType == Type::Bullet){
-	//	cout << "Target HIT bullet" << endl;
-	//}
 }

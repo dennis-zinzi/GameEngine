@@ -155,8 +155,6 @@ void Player::MoveBackward(){
 	float x2 = camera->GetCameraPos()[0],
 		z2 = camera->GetCameraPos()[2];
 
-	//MovePhysicObj();
-	//physicalBody->translate(btVector3(x2 - x1, 0, z2 - z1));
 	MovePhysicObj(x1, x2, 0, 0, z1, z2);
 }
 
@@ -174,7 +172,7 @@ void Player::Shoot(){
 	RenderObject *bullet = new GameObject(renderer, physics, player, Shape::Sphere, Type::Bullet, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
 
 	float *camLook = camera->GetCameraLookVect();
-	((GameObject*)bullet)->GetBody()->setLinearVelocity(btVector3(camLook[0] * 50, camLook[1] * 50, camLook[2] * 50));
+	((GameObject*)bullet)->GetBody()->setLinearVelocity(btVector3(camLook[0] * BULLET_VEL, camLook[1] * BULLET_VEL, camLook[2] * BULLET_VEL));
 
 	player->PlayEffect("throw_sound.wav");
 }

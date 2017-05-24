@@ -193,7 +193,7 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 	//Render font to a SDL_Surface
 	if(!surface){
 		//TTF_CloseFont(font);
-		std::cout << "TTF_RenderText error: " << std::endl;
+		std::cout << "TTF_RenderText error: " <<  TTF_GetError() << std::endl;
 		return nullptr;
 	}
 
@@ -217,6 +217,11 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 	SDL_Surface *s = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_BlitSurface(surface, NULL, s, NULL);
 
+	if(!s){
+		cout << "Error loading text surface" << endl;
+		return nullptr;
+	}
+
 	//Copy the created image into OpenGL format
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, s->pixels);
 
@@ -232,9 +237,9 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 	glDisable(GL_TEXTURE_2D);
 
 	//Cleanup
-	//SDL_FreeSurface(s);
-	//SDL_FreeSurface(surface);
-	//glDeleteTextures(1, &texId);
+	SDL_FreeSurface(s);
+	SDL_FreeSurface(surface);
+	glDeleteTextures(1, &texId);
 
 	return nullptr;
 }
@@ -553,7 +558,7 @@ void GraphicsRenderer::ShowGameOverScreen(vector<int> scores){
 		y += 50;
 	}
 
-	DrawTextLabel("Press 'R' to play again", "Invasion2000.TTF", 50, 150, 650, 400, 70, 209, 197, 29);
+	DrawTextLabel("Press 'R' to play again", "Invasion2000.TTF", 50, 100, 650, 400, 70, 209, 197, 29);
 	DrawTextLabel("...or 'Esc' to quit", "Invasion2000.TTF", 50, 700, 650, 400, 70, 29, 86, 209);
 
 	SDLRender();
@@ -578,4 +583,6 @@ void GraphicsRenderer::LoadFont(string filename, int fontsize){
 
 	Font f = {filename, fontsize, font};
 	fonts.push_back(f);
+
+	cout << "Loaded font: " << filename << " with size " << fontsize << endl;
 }

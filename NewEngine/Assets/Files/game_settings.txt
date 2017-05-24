@@ -3,5 +3,14 @@
 notahero.wav
 #
 #Game time (seconds)
-#90
-10
+30
+#3000
+#
+#Target points
+50
+#Negative Target points
+-45
+#Disabled Target points
+5
+#Disabled Negative Target points
+-20

@@ -4,9 +4,15 @@
 #include "../Graphics/HUDObject.h"
 #pragma comment(lib, "Graphics.lib")
 
+//Audio includes
+#include "../Audio/AudioPlayer.h"
+#pragma comment(lib, "Audio.lib")
+
 #include <vector>
+#include <algorithm>
 
 using std::vector;
+using std::max_element;
 
 enum GameState{
 	Running,
@@ -16,7 +22,7 @@ enum GameState{
 
 class GameLevel{
 	public:
-		GameLevel(GraphicsRenderer *renderer);
+		GameLevel(GraphicsRenderer *renderer, AudioPlayer *player);
 
 		inline static int GetScore(){
 			return score;
@@ -52,6 +58,36 @@ class GameLevel{
 			pauseTime += endPause - startPause;
 		}
 
+
+		inline static void SetPointsValues(int pnts[4]){
+			points = vector<int>(pnts, pnts + 4);;
+		}
+		inline static int GetTargetPoints(){
+			if(points.size() > 0){
+				return points[0];
+			}
+			return 0;
+		}
+		inline static int GetNegativeTargetPoints(){
+			if(points.size() > 1){
+				return points[1];
+			}
+			return 0;
+		}
+		inline static int GetDisabledTargetPoints(){
+			if(points.size() > 2){
+				return points[2];
+			}
+			return 0;
+		}
+		inline static int GetDisabledNegativeTargetPoints(){
+			if(points.size() > 3){
+				return points[3];
+			}
+			return 0;
+		}
+
+		void StartGame();
 		void UpdateGame(int time);
 		void RestartLevel();
 		void HandleGameFinish();
@@ -61,6 +97,7 @@ class GameLevel{
 		static int pauseTime;
 		static int startPause;
 		static int endPause;
+		static vector<int> points;
 
 		static int timeLeft;
 		int startTime;
@@ -68,6 +105,7 @@ class GameLevel{
 		GameState state;
 
 		GraphicsRenderer *renderer;
+		AudioPlayer *player;
 
 		vector<int> scores;
 };

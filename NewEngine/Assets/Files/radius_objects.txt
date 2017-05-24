@@ -1,7 +1,8 @@
 # Used to loads objects like Spheres, Cylinders and Cones
 #
 # Shape,	Type,	x,	y,	z,	mass,	radius,	height,	red,	green,	blue,	alpha
-Sphere	Other	0.0	20.0	-20.0	1.0	1.0	0.0	127	127	127	255
-Cylinder	Other	1.2	10.0	-19.5	5.0	1.5	3.0	10	0	200	150
-Sphere	Other	0.5	20.5	-20.0	1.0	1.0	0.0	255	127	127	255
-Cone	Other	0.5	0.0	-21.0	2.0	0.5	2.0	255	0	200	140
+#
+#Sphere	Other	0.0	20.0	-20.0	1.0	1.0	0.0	127	127	127	255
+#Cylinder	Other	1.2	10.0	-19.5	5.0	1.5	3.0	10	0	200	150
+#Sphere	Other	0.5	20.5	-20.0	1.0	1.0	0.0	255	127	127	255
+#Cone	Other	0.5	0.0	-21.0	2.0	0.5	2.0	255	0	200	140

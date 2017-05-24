@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 	renderer->ShowLaunchScreen();
 
 	//Create level instance
-	GameLevel *game = new GameLevel(renderer);
+	GameLevel *game = new GameLevel(renderer, player);
 
 	//Load game specific attributes
 	GameLoader loader(game, renderer, physics, reader, player);
@@ -65,6 +65,8 @@ int main(int argc, char **argv){
 
 	Profiler profiler;
 
+	//Start Game
+	game->StartGame();
 
 	//Excecution loop
 	while(running){

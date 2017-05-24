@@ -117,6 +117,10 @@ void GameLoader::LoadGameSettings(){
 
 	//Set level play time
 	game->SetGameTime(stoi(gameData[1]));
+
+	//Set points earned for target types
+	int points[4] = {stoi(gameData[2]), stoi(gameData[3]), stoi(gameData[4]), stoi(gameData[5])};
+	game->SetPointsValues(points);
 }
 
 void GameLoader::LoadGameHUD(){
