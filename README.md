@@ -26,9 +26,7 @@ in the Assets/Music and Assets/Sounds directories respectively. The supported so
 music files can be either .wav or .mp3.
 
 ### File I/O (code in FileIO directory)
-The File I/O subsystem, managed by the FileReader class, is responsible for reading data from the .txt files in the Assets/Files, 
-and parsing the information in a suitable way in order for a game written using this engine to be able to be data-driven rather than
-hard-coded.
+The File I/O subsystem, managed by the FileReader class, is responsible for reading data from the .txt files in the Assets/Files, retrieving lists of files within a directory, and parsing the information in the text files a suitable way in order for a game written using this engine to be able to be data-driven rather than hard-coded.
 
 ### Graphics Subsystem (code in Graphics directory)
 The graphics subsystem, mostly managed by the GraphicsRenderer class, is responsible for rendering all objects in the 3-D game space; 
@@ -58,7 +56,7 @@ and resources the game needs. The loading makes use of other subsystems such as 
 the Assets file directories and load the audio, textures, and fonts the game might need. This is done in order to increase performance 
 whilst the game is running, as no additional time is spent loading assets.
 
-## Target Practice game (game logic code in NewEngine directory)
+## Target Practice overview (game logic code in NewEngine directory)
 This repository comes with a Target Practice game, as a demo of the engine's capabilities and demonstrates how to take advantage of the 
 data-driven approach to create levels and change the settings for a game, whitout the need to compile any of the code. The code is 
 structured in the following classes:
@@ -69,3 +67,6 @@ execute when hit
 - GameLevel - handles updates to the game progression (such as current points, highscores, and time), and holds settings information
 loaded in the GameLoader class (such as points when hitting a target, and time the level runs for)
 - GameHUDObject - represents an object on the HUD screen, its purpose, and how to visually represent it
+
+### Target Practice Game
+The game included is a simple 3-D FPS game whose aim is to get highest score by shooting at targets within an allotted time. Targets are of two types: positive and negative. Shoot a positive target and you get added points to your total score, but shoot them again and the points you get are significantly lower. Shoot a negative target, and watch your total score fall, shooting negative targets twice gives you a smaller penalty. Good luck!
