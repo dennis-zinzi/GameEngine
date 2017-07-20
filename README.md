@@ -70,3 +70,8 @@ loaded in the GameLoader class (such as points when hitting a target, and time t
 
 ### Target Practice Game
 The game included is a simple 3-D FPS game whose aim is to get highest score by shooting at targets within an allotted time. Targets are of two types: positive and negative. Shoot a positive target and you get added points to your total score, but shoot them again and the points you get are significantly lower. Shoot a negative target, and watch your total score fall, shooting negative targets twice gives you a smaller penalty. Good luck!
+
+### Running Target Practice Game Video
+Video of running game can be found at: https://dzinzi.tinytake.com/sf/MTc5MTIzN181ODQ4MDg5
+
+**NOTE:** Video appears to make the game run at a lower frame-rate with an overall performance hit than when running the engine locally.
