@@ -53,6 +53,13 @@ void GameHUDObject::Render(){
 			break;
 		}
 
+		case HighScore:
+		{
+			string hscore = "Highscore: " + to_string(GameLevel::GetHighscore());
+			GraphicsRenderer::LoadSDLText(hscore, fontname, fontsize, x, y, width, height, red, green, blue);
+			break;
+		}
+
 		case Image:
 		{
 			GraphicsRenderer::RenderHUDImage(x, y, width, height, imagename);

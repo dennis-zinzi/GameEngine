@@ -19,6 +19,7 @@ using std::stringstream;
 enum Purpose{
 	Score,
 	Time,
+	HighScore,
 	Image
 };
 

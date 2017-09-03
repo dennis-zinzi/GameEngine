@@ -56,11 +56,28 @@ GraphicsRenderer::~GraphicsRenderer(){
 
 
 void GraphicsRenderer::UpdateScene(float msec){
-	//SDL_SetRenderDrawColor(GraphicsRenderer, 79, 79, 79, 255);
-	//SDL_RenderClear(renderer);
-	
-	//SDL update render	
-	//SDL_RenderPresent(renderer);
+
+	//Switch to perspective
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glDepthMask(GL_TRUE);
+	//glEnable(GL_DEPTH_TEST);
+
+	//Update camera view
+	camera->UpdateCamera();
+	glPushMatrix();
+
+	//Render 3D objects
+	for(auto ro : objectsToRender){
+		ro->Render();
+	}
+
+	glPopMatrix();
+
+
 
 	//Switch to orthographic to render HUD
 	glMatrixMode(GL_PROJECTION);
@@ -68,36 +85,18 @@ void GraphicsRenderer::UpdateScene(float msec){
 	glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1.0, -1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glDepthMask(GL_FALSE);
-	
+	//glDepthMask(GL_FALSE);
+	//glDisable(GL_DEPTH_TEST);
+
 	//Draw the HUD
 	for(auto hudElem : hudObjects){
 		hudElem->Render();
 		glLoadIdentity();
 	}
 
-
-	//Go back to perspective
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(90, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 500.0f);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glDepthMask(GL_TRUE);
-
-	camera->UpdateCamera();
-	glPushMatrix();
-
-
-	for(auto ro : objectsToRender){
-		ro->Render();
-	}
-
-	glPopMatrix();
-
-	// Restore old ortho
-	glMatrixMode(GL_PROJECTION);
-	glMatrixMode(GL_MODELVIEW);
+	// Restore old perscpective
+	//glMatrixMode(GL_PROJECTION);
+	//glMatrixMode(GL_MODELVIEW);
 
 
 	SDL_GL_SwapWindow(screen);

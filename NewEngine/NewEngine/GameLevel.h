@@ -35,6 +35,10 @@ class GameLevel{
 		}
 
 
+		inline static int GetHighscore(){
+			return !scores.empty() ? *max_element(scores.begin(), scores.end()) : 0;
+		}
+
 		inline static int GetTimeLeft(){
 			return timeLeft;
 		}
@@ -107,5 +111,5 @@ class GameLevel{
 		GraphicsRenderer *renderer;
 		AudioPlayer *player;
 
-		vector<int> scores;
+		static vector<int> scores;
 };

@@ -6,6 +6,7 @@ int GameLevel::pauseTime = 0;
 int GameLevel::startPause = 0;
 int GameLevel::endPause = 0;
 vector<int> GameLevel::points = {};
+vector<int> GameLevel::scores = {};
 
 GameLevel::GameLevel(GraphicsRenderer *renderer, AudioPlayer *player){
 	this->renderer = renderer;

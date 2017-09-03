@@ -135,6 +135,9 @@ void GameLoader::LoadGameHUD(){
 			else if(hud[1] == "time"){
 				p = Purpose::Time;
 			}
+			else if(hud[1] == "highscore"){
+				p = Purpose::HighScore;
+			}
 			else{ continue; }
 
 			new GameHUDObject(renderer, p, hud[2], stof(hud[3]), stof(hud[4]), stof(hud[5]), stof(hud[6]), stoi(hud[7]), stoi(hud[8]), stoi(hud[9]), stoi(hud[10]));
