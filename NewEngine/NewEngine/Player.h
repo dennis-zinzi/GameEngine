@@ -34,14 +34,24 @@ class Player : public GameObject, public InputPlayer{
 		virtual void NoMovement() override;
 		virtual void ShowControls(bool show) override;
 
+		inline Camera* GetCamera(){
+			return camera;
+		}
+		inline void SetPlayerPos(float x, float y, float z){
+			camera->SetCameraLoc(x, y, z);
+		}
+
+		inline void ResetJump(){
+			isJumping = false;
+			isFalling = false;
+			jumpNum = 0;
+		}
+
+
 	private:
 		Camera *camera;
-		GraphicsRenderer *renderer;
-		PhysicsManager *physics;
-		AudioPlayer *player;
+
 		bool isJumping;
 		bool isFalling;
 		int jumpNum;
-
-		bool show;
 };

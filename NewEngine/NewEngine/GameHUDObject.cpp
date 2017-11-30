@@ -1,8 +1,9 @@
 #include "GameHUDObject.h"
 
-GameHUDObject::GameHUDObject(GraphicsRenderer *renderer, Purpose purpose, string fontname, float x, float y, float width, float height, int red, int green, int blue, int fontsize){
+GameHUDObject::GameHUDObject(GraphicsRenderer *renderer, Purpose purpose, string fontname, int fontsize, float x, float y, float width, float height, int red, int green, int blue, int alpha){
 	this->purpose = purpose;
 	this->fontname = fontname;
+	this->fontsize = fontsize;
 	this->x = x;
 	this->y = y;
 	this->width = width;
@@ -10,7 +11,7 @@ GameHUDObject::GameHUDObject(GraphicsRenderer *renderer, Purpose purpose, string
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
-	this->fontsize = fontsize;
+	this->alpha = alpha;
 
 	renderer->AddHUDObject(this);
 }
@@ -32,7 +33,7 @@ void GameHUDObject::Render(){
 		case Score:
 		{
 			string score = "Score: " + to_string(GameLevel::GetScore());
-			GraphicsRenderer::LoadSDLText(score, fontname, fontsize, x, y, width, height, red, green, blue);
+			GraphicsRenderer::LoadSDLText(score, fontname, fontsize, x, y, width, height, red, green, blue, alpha);
 
 			break;
 		}
@@ -48,7 +49,7 @@ void GameHUDObject::Render(){
 			string secs = secsstream.str();
 
 			string time = mins + ":" + secs;
-			GraphicsRenderer::LoadSDLText(time, fontname, fontsize, x, y, width, height, red, green, blue);
+			GraphicsRenderer::LoadSDLText(time, fontname, fontsize, x, y, width, height, red, green, blue, alpha);
 
 			break;
 		}
@@ -56,7 +57,7 @@ void GameHUDObject::Render(){
 		case HighScore:
 		{
 			string hscore = "Highscore: " + to_string(GameLevel::GetHighscore());
-			GraphicsRenderer::LoadSDLText(hscore, fontname, fontsize, x, y, width, height, red, green, blue);
+			GraphicsRenderer::LoadSDLText(hscore, fontname, fontsize, x, y, width, height, red, green, blue, alpha);
 			break;
 		}
 

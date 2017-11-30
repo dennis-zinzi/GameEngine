@@ -14,10 +14,6 @@ GraphicsRenderer::GraphicsRenderer(){
 
 	//Set up camera
 	camera = new Camera(screen);
-
-	//Game vars
-	startTime = SDL_GetTicks() / 1000;
-	gameTime = 90;//startTime;
 	
 	//Set OpenGL attribs
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -107,8 +103,6 @@ void GraphicsRenderer::UpdateScene(float msec){
 		SDL_Delay((Uint32)((1000 / FRAME_RATE) - (GetTime() - msec)));
 	}
 
-	gameTime = 90 - ((SDL_GetTicks() / 1000) - startTime);
-	//camera->UpdateCamera();
 }
 
 
@@ -179,14 +173,14 @@ unsigned int GraphicsRenderer::LoadTexture(string imagename){
 	return tex;
 }
 
-SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue){
+SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue, int alpha){
 	TTF_Font *font = GetFont(fontname, fontsize);//TTF_OpenFont("../Assets/Fonts/Invasion2000.ttf", fontSize);
 	if (!font){
 		return nullptr;
 	}
 
 
-	SDL_Color textColor = {red, green, blue};
+	SDL_Color textColor = {red, green, blue, alpha};
 	SDL_Surface *surface = TTF_RenderText_Blended(font, message.c_str(), textColor);
 
 	//Render font to a SDL_Surface
@@ -246,14 +240,22 @@ SDL_Texture* GraphicsRenderer::LoadSDLText(string message, string fontname, int 
 
 void GraphicsRenderer::RenderPlane(float x, float y, float z,
 	float width, float height, float depth, float matrix[16],
-	int red, int green, int blue, int alpha){
-	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
+	int red, int green, int blue, int alpha, string texname){
+	//glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
 
 	float halfWidth = width / 2.0f,
 		halfHeight = height / 2.0f,
 		halfDepth = depth / 2.0f;
 
-	GLuint tex = GetTexture("chess_board.jpg");//GetTexture("checkerboardSmall.jpg");// //LoadTexture("chess_board.jpg");
+	
+	if(texname != "none"){
+		GLuint tex = GetTexture(texname);
+		if(tex == -1){ cout << "NO TEX" << endl; }
+	}
+	else{
+		glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
+	}
+	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -283,10 +285,16 @@ void GraphicsRenderer::RenderPlane(float x, float y, float z,
 	//glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void GraphicsRenderer::RenderSphere(float radius, float matrix[16], int red, int green, int blue, int alpha){
-	glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
+void GraphicsRenderer::RenderSphere(float radius, float matrix[16], int red, int green, int blue, int alpha, string texname){
+	//glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
 
-	GLuint tex = GetTexture("metal.jpg");
+	if(texname != "none"){
+		GLuint tex = GetTexture(texname);
+		if(tex == -1){ cout << "NO TEX" << endl; }
+	}
+	else{
+		glColor4f(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
+	}
 
 	GLUquadricObj *quadr = gluNewQuadric();
 	gluQuadricNormals(quadr, GLU_SMOOTH);
@@ -507,15 +515,7 @@ void GraphicsRenderer::RenderHUDImage(float x, float y, float width, float heigh
 	glPopMatrix();
 }
 
-
-void GraphicsRenderer::ShowLaunchScreen(){
-	//Show at start up
-	DrawTextLabel("Loading Engine... please wait", "Invasion2000.TTF", 180, 150, 0, 900, 150, 66, 244, 217);
-	ShowControlsScreen();
-}
-
-
-void GraphicsRenderer::ShowControlsScreen(){
+void GraphicsRenderer::ShowControls(){
 	DrawTextLabel("Controls", "Invasion2000.TTF", 100, WINDOW_WIDTH / 2 - 130, 125, 300, 150, 100, 200, 100);
 
 	DrawTextLabel("Movement:", "Invasion2000.TTF", 75, 300, 275, 200, 50, 100, 200, 100);
@@ -538,6 +538,19 @@ void GraphicsRenderer::ShowControlsScreen(){
 
 	SDLRender();
 	SDL_Delay(500);
+}
+
+
+void GraphicsRenderer::ShowLaunchScreen(){
+	//Show at start up
+	DrawTextLabel("Loading Engine... please wait", "Invasion2000.TTF", 180, 150, 0, 900, 150, 66, 244, 217);
+	ShowControls();
+}
+
+
+void GraphicsRenderer::ShowControlsScreen(){
+	DrawTextLabel("Game Paused", "Invasion2000.TTF", 180, 150, 0, 900, 150, 66, 244, 217);
+	ShowControls();	
 }
 
 void GraphicsRenderer::ShowGameOverScreen(vector<int> scores){

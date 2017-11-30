@@ -26,7 +26,7 @@ enum Purpose{
 
 class GameHUDObject : public HUDObject{
 	public:
-		GameHUDObject(GraphicsRenderer *renderer, Purpose purpose, string fontname, float x, float y, float width, float height, int red, int green, int blue, int fontsize);
+		GameHUDObject(GraphicsRenderer *renderer, Purpose purpose, string fontname, int fontsize, float x, float y, float width, float height, int red, int green, int blue, int alpha);
 		GameHUDObject(GraphicsRenderer *renderer, string imagename, float x, float y, float width, float height);
 
 		virtual void Render() override;
@@ -41,6 +41,6 @@ class GameHUDObject : public HUDObject{
 		float x, y, 
 			width, height;
 
-		int red, green, blue;
+		int red, green, blue, alpha;
 
 };

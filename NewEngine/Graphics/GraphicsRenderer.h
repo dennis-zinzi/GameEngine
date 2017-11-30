@@ -62,7 +62,7 @@ class GraphicsRenderer{
 		//Loads OpenGL texture
 		unsigned int LoadTexture(string imagename);
 		//Loads SDL texture
-		static SDL_Texture* LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue);
+		static SDL_Texture* LoadSDLText(string message, string fontname, int fontsize, int x, int y, int width, int height, int red, int green, int blue, int alpha);
 
 		//Get current execution time since SDL environment initialized
 		inline float GetTime() const{
@@ -112,10 +112,10 @@ class GraphicsRenderer{
 		//Renders plane
 		static void RenderPlane(float x, float y, float z,
 			float width, float height, float depth, float matrix[16],
-			int red = 45, int green = 85, int blue = 235, int alpha = 255);
+			int red = 45, int green = 85, int blue = 235, int alpha = 255, string texname = "none");
 
 		//Renders spere objects
-		static void RenderSphere(float radius, float matrix[16], int red = 45, int green = 85, int blue = 235, int alpha = 255);
+		static void RenderSphere(float radius, float matrix[16], int red = 45, int green = 85, int blue = 235, int alpha = 255, string texname = "none");
 
 		//Renders cylinder objects
 		static void RenderCylinder(float radius, float height, float matrix[16],
@@ -160,8 +160,6 @@ class GraphicsRenderer{
 		vector<HUDObject*> hudObjects;
 		static vector<Font> fonts;
 		static vector<Texture> textures;
-		int gameTime;
-		int startTime;
 
 		//Retrieves text font resource if found/loaded
 		inline static TTF_Font* GetFont(string filename, int fontsize){
@@ -194,4 +192,7 @@ class GraphicsRenderer{
 				power *= 2;
 			return power * 2;
 		}
+
+		//Controls screen
+		void ShowControls();
 };

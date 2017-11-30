@@ -27,6 +27,9 @@ class InputManager{
 		inline void SetInputPlayer(InputPlayer *Player){
 			this->Player = Player;
 		}
+		inline InputPlayer* GetInputPlayer(){
+			return Player;
+		}
 
 		//Check for inputs and initiate apropriate action
 		bool CheckForInputs();
@@ -36,4 +39,5 @@ class InputManager{
 
 	private:
 		InputPlayer *Player;
+		bool isPaused;
 };

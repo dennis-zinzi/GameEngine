@@ -63,7 +63,7 @@ int main(int argc, char **argv){
 	//Time in msec
 	float time = 0;
 
-	Profiler profiler;
+	//Profiler profiler;
 
 	//Start Game
 	game->StartGame();
@@ -72,20 +72,21 @@ int main(int argc, char **argv){
 	while(running){
 		time = renderer->GetTime();
 
-		profiler.ResetTime(time);
-		physics->UpdatePhysics(time);
-		profiler.UpdateTime(System::Physics, renderer->GetTime());
-		renderer->UpdateScene(time);
-		profiler.UpdateTime(System::Graphics, renderer->GetTime());
+		if(game->GetState() == GameState::Running){
+			//profiler.ResetTime(time);
+			physics->UpdatePhysics(time);
+			//profiler.UpdateTime(System::Physics, renderer->GetTime());
+			renderer->UpdateScene(time);
+			//profiler.UpdateTime(System::Graphics, renderer->GetTime());
+		}
 		running = input->CheckForInputs();
-		profiler.UpdateTime(System::Input, renderer->GetTime());
+		//profiler.UpdateTime(System::Input, renderer->GetTime());
 
 		//Update level specific environment
 		game->UpdateGame(time);
 
 		//Show loop execution stats
-		profiler.ShowStats();
-
+		//profiler.ShowStats();
 
 		//Check for game state
 		if(game->GetState() == GameState::Done){
@@ -106,6 +107,10 @@ int main(int argc, char **argv){
 			if(restart){
 				loader.LoadGame();
 				game->RestartLevel();
+				//Reset player pos
+				((Player*)input->GetInputPlayer())->SetPlayerPos(0.0f, 0.0f, 0.0f);
+				//((Player*)input->GetInputPlayer())->ResetJump();
+				renderer->AddRenderObject((Player*)input->GetInputPlayer());
 			}
 		}
 	}

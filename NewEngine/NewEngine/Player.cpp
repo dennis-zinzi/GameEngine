@@ -2,36 +2,30 @@
 
 Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float radius, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, player, Shape::Sphere, Type::PLAYER, renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f, mass, radius, 0.0f, red, green, blue, alpha){
+	: GameObject(renderer, physics, player, Shape::Sphere, Type::PLAYER, 
+		renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f,
+		mass, radius, 0.0f, red, green, blue, alpha){
 
 	camera = renderer->GetCamera();
-	this->renderer = renderer;
-	this->physics = physics;
-	this->player = player;
 
 	jumpNum = 0;
 	isJumping = false;
 	isFalling = false;
-
-	show = false;
 }
 
 
 Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float width, float height, float depth, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, player, Shape::Box, Type::PLAYER, renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f, mass, width, height, depth,
+	: GameObject(renderer, physics, player, Shape::Box, Type::PLAYER, 
+		renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f,
+		mass, width, height, depth,
 		red, green, blue, alpha){
 
 	camera = renderer->GetCamera();
-	this->renderer = renderer;
-	this->physics = physics;
-	this->player = player;
 
 	jumpNum = 0;
 	isJumping = false;
 	isFalling = false;
-
-	show = false;
 }
 
 
@@ -40,6 +34,8 @@ void Player::Render(){
 		camera->MoveCameraY(JUMP_VEL, 90);
 		//camera->MoveCameraXZ(0.1, 0.0f);
 
+		jumpNum++;
+
 		if(jumpNum > 10){
 			isJumping = false;
 			isFalling = true;
@@ -47,24 +43,19 @@ void Player::Render(){
 		}
 
 
-		jumpNum++;
 		SDL_Delay(10);
 	}
-	
-	if(isFalling){
+	else if(isFalling){
 		camera->MoveCameraY(JUMP_VEL, -90.0f);
 		//camera->MoveCameraXZ(0.1, 0.0f);
 
-		if(jumpNum > 10){
+		jumpNum++;
+
+		if(jumpNum > 10 || camera->GetCameraPos()[1] < 1.0f){
 			isFalling = false;
 			jumpNum = 0;
 		}
 
-		if(camera->GetCameraPos()[1] < 0.0){
-			isFalling = false;
-		}
-
-		jumpNum++;
 		SDL_Delay(10);
 	}
 
@@ -160,7 +151,6 @@ void Player::MoveBackward(){
 
 
 void Player::Jump(){
-
 	if(!isJumping && !isFalling){
 		isJumping = true;
 	}
@@ -169,28 +159,26 @@ void Player::Jump(){
 
 
 void Player::Shoot(){
-	RenderObject *bullet = new GameObject(renderer, physics, player, Shape::Sphere, Type::Bullet, camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 0.2f, 0.05f, 0.0f, 255, 255, 255);
-
+	RenderObject *bullet = new GameObject(renderer, physics, audio, Shape::Sphere, Type::Bullet, 
+		camera->GetCameraPos()[0], camera->GetCameraPos()[1], camera->GetCameraPos()[2], 
+		0.2f, 0.05f, 0.0f, 255, 255, 255, 255, GameLevel::GetBulletTex(), 2500);
+	
 	float *camLook = camera->GetCameraLookVect();
 	((GameObject*)bullet)->GetBody()->setLinearVelocity(btVector3(camLook[0] * BULLET_VEL, camLook[1] * BULLET_VEL, camLook[2] * BULLET_VEL));
 
-	player->PlayEffect("throw_sound.wav");
+	audio->PlayEffect("throw_sound.wav");
 }
 
 
 void Player::ShowControls(bool show){
-	if(this->show != show){
-		if(show){
-			GameLevel::SetStartPause(SDL_GetTicks() / 1000);
-		}
-		else{
-			GameLevel::SetEndPause(SDL_GetTicks() / 1000);
-		}
-
-		this->show = show;
+	if(show){
+		GameLevel::SetStartPause(SDL_GetTicks() / 1000);
+		GameLevel::SetGameState(Paused);
 	}
-
-	renderer->ShowControlsScreen();
+	else{
+		GameLevel::SetEndPause(SDL_GetTicks() / 1000);
+		GameLevel::SetGameState(Running);
+	}
 }
 
 

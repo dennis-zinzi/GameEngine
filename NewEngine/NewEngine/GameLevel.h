@@ -16,13 +16,14 @@ using std::max_element;
 
 enum GameState{
 	Running,
+	Paused,
 	Done
 };
 
 
 class GameLevel{
 	public:
-		GameLevel(GraphicsRenderer *renderer, AudioPlayer *player);
+		GameLevel(GraphicsRenderer *renderer, AudioPlayer *audioPlayer);
 
 		inline static int GetScore(){
 			return score;
@@ -49,6 +50,9 @@ class GameLevel{
 
 		inline GameState GetState(){
 			return state;
+		}
+		inline static void SetGameState(GameState newState){
+			state = newState;
 		}
 
 		inline static void SetStartPause(int pause){
@@ -91,6 +95,13 @@ class GameLevel{
 			return 0;
 		}
 
+		inline static void SetBulletTex(string bulletTexture){
+			bulletTex = bulletTexture;
+		}
+		inline static string GetBulletTex(){
+			return bulletTex;
+		}
+
 		void StartGame();
 		void UpdateGame(int time);
 		void RestartLevel();
@@ -103,13 +114,15 @@ class GameLevel{
 		static int endPause;
 		static vector<int> points;
 
+		static GameState state;
 		static int timeLeft;
 		int startTime;
 		int gameTime;
-		GameState state;
+
+		static string bulletTex;
 
 		GraphicsRenderer *renderer;
-		AudioPlayer *player;
+		AudioPlayer *audioPlayer;
 
 		static vector<int> scores;
 };

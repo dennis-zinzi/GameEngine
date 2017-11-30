@@ -14,3 +14,8 @@ notahero.wav
 5
 #Disabled Negative Target points
 -20
+#Floor texture
+#chess_board.jpg
+ground.jpg
+#Bullet texture
+metal.jpg

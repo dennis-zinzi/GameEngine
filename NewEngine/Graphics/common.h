@@ -11,4 +11,4 @@
 
 #define JUMP_VEL 0.4f
 
-#define BULLET_VEL 200
+#define BULLET_VEL 300

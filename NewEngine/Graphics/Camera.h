@@ -54,6 +54,14 @@ class Camera{
 			return look;
 		}
 
+		inline void SetCameraLoc(float x = 0.0f, float y = 0.0f, float z = 0.0f, float yaw = 0.0f, float pitch = 5.0f){
+			this->x = x;
+			this->y = y;
+			this->z = z;
+			this->yaw = yaw;
+			this->pitch = pitch;
+		}
+
 
 	private:
 		float x, y, z;

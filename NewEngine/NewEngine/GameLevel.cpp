@@ -7,10 +7,12 @@ int GameLevel::startPause = 0;
 int GameLevel::endPause = 0;
 vector<int> GameLevel::points = {};
 vector<int> GameLevel::scores = {};
+GameState GameLevel::state = GameState::Running;
+string GameLevel::bulletTex = "none";
 
-GameLevel::GameLevel(GraphicsRenderer *renderer, AudioPlayer *player){
+GameLevel::GameLevel(GraphicsRenderer *renderer, AudioPlayer *audioPlayer){
 	this->renderer = renderer;
-	this->player = player;
+	this->audioPlayer = audioPlayer;
 }
 
 void GameLevel::StartGame(){
@@ -19,6 +21,10 @@ void GameLevel::StartGame(){
 }
 
 void GameLevel::UpdateGame(int time){
+	if(state == GameState::Paused){
+		renderer->ShowControlsScreen();
+		return;
+	}
 	if(startPause > 0 && endPause > 0){
 		UpdatePauseTime();
 		startPause = 0;
@@ -30,13 +36,15 @@ void GameLevel::UpdateGame(int time){
 	if(timeLeft < 0){
 		state = GameState::Done;
 		scores.push_back(score);
-		int maxScore = *max_element(scores.begin(), scores.end());
-		if(score == maxScore){
-			//play highscore music
-			player->PlayEffect("highscore.wav");
-			//player->ChangeMusic("khtheme.wav");
-		}
 
+		if(scores.size() > 1){
+			int maxScore = *max_element(scores.begin(), scores.end());
+			if(score == maxScore){
+				//play highscore music
+				audioPlayer->PlayEffect("highscore.wav");
+				//player->ChangeMusic("khtheme.wav");
+			}
+		}
 	}
 }
 

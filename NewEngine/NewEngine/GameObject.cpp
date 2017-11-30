@@ -31,7 +31,7 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 
 	renderer->AddRenderObject(this);
 
-	SetID(GetObjID());
+	SetID(GetNewObjID());
 	SetBody(body);
 
 	physics->AddPhysicsObj(this);
@@ -53,12 +53,12 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 	renderer->AddRenderObject(this);
 
 
-	SetID(GetObjID());
+	SetID(GetNewObjID());
 }
 
 
 GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height,
-	int red, int green, int blue, int alpha) : GameObject(renderer, physics, audio, type, red, green, blue, alpha){
+	int red, int green, int blue, int alpha, string texture, int lifeTime) : GameObject(renderer, physics, audio, type, red, green, blue, alpha){
 	
 	switch(shape){
 		case Plane:
@@ -77,6 +77,13 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 	
 	this->radius = radius;
 	this->height = height;
+
+	this->texture = texture;
+
+	this->lifeTime = lifeTime;
+	if(lifeTime > 0){
+		lifeStart = SDL_GetTicks();
+	}
 
 	physics->AddPhysicsObj(this);
 }
@@ -104,6 +111,12 @@ GameObject::GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, Audi
 }
 
 void GameObject::Render(){
+	//Check if object should be removed after certain interval
+	if(lifeTime > 0 && SDL_GetTicks() - lifeStart > lifeTime){
+		renderer->RemoveRenderObj(this);
+		physics->RemovePhysicsObj(this);
+		return;
+	}
 	//Get physical properties
 	btRigidBody *bod = GetBody();
 	btCollisionShape *shape = bod->getCollisionShape();
@@ -122,13 +135,13 @@ void GameObject::Render(){
 
 
 			GraphicsRenderer::RenderPlane(x, y, z, width, height, depth, matrix,
-				red, green, blue, alpha);
+				red, green, blue, alpha, texture);
 			break;
 		}
 
 		case SPHERE_SHAPE_PROXYTYPE: {
 			GraphicsRenderer::RenderSphere(((btSphereShape*)shape)->getRadius(), matrix,
-				red, green, blue, alpha);
+				red, green, blue, alpha, texture);
 			break;
 		}
 
@@ -185,6 +198,8 @@ void GameObject::HandleHit(PhysicsObject *Other){
 				o->texture = "wrongDisabledTarget.png";
 				break;
 			}
+			case Floor:
+				break;
 
 			default:
 				return;

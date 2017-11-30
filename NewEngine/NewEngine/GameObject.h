@@ -51,7 +51,7 @@ class GameObject : public RenderObject, public PhysicsObject{
 
 		//Spherical shape constructor
 		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float radius, float height = 0.0f,
-			int red = 127, int green = 127, int blue = 127, int alpha = 255);
+			int red = 127, int green = 127, int blue = 127, int alpha = 255, string texture = "none", int lifeTime = 0);
 		//Rectangular shape constructor
 		GameObject(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *audio, Shape shape, Type type, float x, float y, float z, float mass, float width, float height, float depth,
 			int red = 127, int green = 127, int blue = 127, int alpha = 255, string texture = "none");
@@ -62,7 +62,7 @@ class GameObject : public RenderObject, public PhysicsObject{
 		//Object Collision Callback
 		virtual void HandleHit(PhysicsObject *Other) override;
 
-		inline int GetObjID() const{
+		inline int GetNewObjID() const{
 			ID++;
 			return ID;
 		}
@@ -71,7 +71,9 @@ class GameObject : public RenderObject, public PhysicsObject{
 			objType = t;
 		}
 
-
+		inline int GetLife(){
+			return lifeTime;
+		}
 	protected:
 		float radius;
 		float width, height, depth;
@@ -84,5 +86,6 @@ class GameObject : public RenderObject, public PhysicsObject{
 		AudioPlayer *audio;
 		
 		static int ID;
-
+		int lifeTime;
+		int lifeStart;
 };

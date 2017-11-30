@@ -34,7 +34,7 @@ class PhysicsManager{
 				btCollisionObject *obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
 
 				//Ignore floor collisions
-				if (obA->getCollisionShape()->getShapeType() == STATIC_PLANE_PROXYTYPE
+				if(obA->getCollisionShape()->getShapeType() == STATIC_PLANE_PROXYTYPE
 					|| obB->getCollisionShape()->getShapeType() == STATIC_PLANE_PROXYTYPE){
 					continue;
 				}
