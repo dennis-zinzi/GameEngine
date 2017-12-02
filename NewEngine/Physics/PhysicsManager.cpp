@@ -7,7 +7,9 @@ PhysicsManager::PhysicsManager(){
 	solver = new btSequentialImpulseConstraintSolver();
 
 	world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
-	world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
+	world->setGravity(btVector3(0.0f, -29.81f, 0.0f));
+
+	player = nullptr;
 }
 
 
@@ -18,12 +20,15 @@ PhysicsManager::~PhysicsManager(){
 		delete body->GetBody()->getCollisionShape();
 		delete body->GetBody();
 	}
+	if(player){
+		RemovePhysicsPlayer();
+	}
 
+	delete world;
 	delete solver;
 	delete broadphase;
 	delete collisionConfig;
 	delete dispatcher;
-	delete world;
 }
 
 /**

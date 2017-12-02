@@ -25,7 +25,7 @@ void GameLoader::LoadGame(){
 
 void GameLoader::LoadGameFloor(string tex){
 	//new GameObject(renderer, physics, player, physics->AddPlane(0.0f, -2.0f, -10.0f, 0.0f), 500.0f, 0.0f, 500.0f, 240, 240, 240, 100);
-	new GameObject(renderer, physics, player, Shape::Plane, Type::Floor, 0.0f, -2.4f, -10.0f, 0.0f,
+	new GameObject(renderer, physics, player, Shape::Plane, Type::Floor, 0.0f, -2.4f, -100.0f, 0.0f,
 		500.0f, 0.0f, 500.0f,
 		240, 240, 240, 150, tex);
 }

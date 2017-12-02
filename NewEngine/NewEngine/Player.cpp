@@ -2,94 +2,42 @@
 
 Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float radius, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, player, Shape::Sphere, Type::PLAYER, 
-		renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f,
-		mass, radius, 0.0f, red, green, blue, alpha){
+	: PhysicsPlayer(){
 
 	camera = renderer->GetCamera();
 
-	jumpNum = 0;
-	isJumping = false;
-	isFalling = false;
+	this->renderer = renderer;
+	this->physics = physics;
+	this->audio = player;
+
+	physics->AddPhysicsPlayer(this);
 }
+
 
 
 Player::Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float width, float height, float depth, float mass,
 	int red, int green, int blue, int alpha)
-	: GameObject(renderer, physics, player, Shape::Box, Type::PLAYER, 
-		renderer->GetCamera()->GetCameraPos()[0], renderer->GetCamera()->GetCameraPos()[1], renderer->GetCamera()->GetCameraPos()[2] - 5.0f,
-		mass, width, height, depth,
-		red, green, blue, alpha){
+	: PhysicsPlayer(){
 
 	camera = renderer->GetCamera();
 
-	jumpNum = 0;
-	isJumping = false;
-	isFalling = false;
+	this->renderer = renderer;
+	this->physics = physics;
+	this->audio = player;
+
+	physics->AddPhysicsPlayer(this);
 }
 
 
-void Player::Render(){
-	if(isJumping){
-		camera->MoveCameraY(JUMP_VEL, 90);
-		//camera->MoveCameraXZ(0.1, 0.0f);
-
-		jumpNum++;
-
-		if(jumpNum > 10){
-			isJumping = false;
-			isFalling = true;
-			jumpNum = 0;
-		}
-
-
-		SDL_Delay(10);
-	}
-	else if(isFalling){
-		camera->MoveCameraY(JUMP_VEL, -90.0f);
-		//camera->MoveCameraXZ(0.1, 0.0f);
-
-		jumpNum++;
-
-		if(jumpNum > 10 || camera->GetCameraPos()[1] < 1.0f){
-			isFalling = false;
-			jumpNum = 0;
-		}
-
-		SDL_Delay(10);
-	}
-
-
-	//btTransform t;
-	////physicalBody->getMotionState()->getWorldTransform(t);
-	//t = GetBody()->getWorldTransform();
-
-	//float matrix[16];
-	//t.getOpenGLMatrix(matrix);
-	
-	
-	//GraphicsRenderer::RenderSphere(radius, matrix, red, green, blue, alpha);
-
-	//btVector3 extents = ((btBoxShape*)physicalBody->getCollisionShape())->getHalfExtentsWithoutMargin();
-	//GraphicsRenderer::RenderBox(extents.x(), extents.y(), extents.z(), matrix,
-	//	red, green, blue, alpha);
+//void Player::Render(){
+void Player::Tick(){
+	btVector3 pos = charController->getGhostObject()->getWorldTransform().getOrigin();
+	camera->SetCameraLoc(pos.x(), pos.y() + 1.0f, pos.z());
 }
 
 
 void Player::MovePhysicObj(float x1, float x2, float y1, float y2, float z1, float z2){
-	//cout << "p= X1: " << physicalBody->getCenterOfMassPosition().x() << ", Y1: " << physicalBody->getCenterOfMassPosition().y()
-	//		<< ", Z1: " << physicalBody->getCenterOfMassPosition().z() << endl;
-
-	//cout << x2 << "," << x1 << endl;
-	//cout << x2 << "," << x1 << endl;
-	btVector3 moved(x2 - x1, y2 - y1, z2 - z1);
-	//btVector3 look = btVector3(camera->GetCameraLookVect()[0] + 0.0f, camera->GetCameraLookVect()[1] + 0.0f, camera->GetCameraLookVect()[2] + 0.0f);
-
-	float dist = sqrt((moved.x()*moved.x()) + (moved.y()*moved.y()) + (moved.z()*moved.z()));
-
-	btVector3 vel(moved.x() * MOVE_VEL / dist, moved.y() * MOVE_VEL / dist, moved.z() * MOVE_VEL / dist);
-
-	GetBody()->setLinearVelocity(vel);
+	charController->setWalkDirection(btVector3(x2 - x1, y2 - y1, z2 - z1));
 }
 
 
@@ -103,7 +51,6 @@ void Player::MoveLeft(){
 		z2 = camera->GetCameraPos()[2];
 
 	MovePhysicObj(x1, x2, 0, 0, z1, z2);
-	//physicalBody->translate(btVector3(x2 - x1, 0, z2 - z1));
 }
 
 
@@ -116,9 +63,7 @@ void Player::MoveForward(){
 	float x2 = camera->GetCameraPos()[0],
 		z2 = camera->GetCameraPos()[2];
 
-	//MovePhysicObj();
 	MovePhysicObj(x1, x2, 0, 0, z1, z2);
-	//physicalBody->translate(btVector3(x2 - x1, 0, z2 - z1));
 }
 
 
@@ -131,8 +76,7 @@ void Player::MoveRight(){
 	float x2 = camera->GetCameraPos()[0],
 		z2 = camera->GetCameraPos()[2];
 
-	//MovePhysicObj();
-	//physicalBody->translate(btVector3(x2 - x1, 0, z2 - z1));
+
 	MovePhysicObj(x1, x2, 0, 0, z1, z2);
 }
 
@@ -151,8 +95,8 @@ void Player::MoveBackward(){
 
 
 void Player::Jump(){
-	if(!isJumping && !isFalling){
-		isJumping = true;
+	if(charController->onGround()){
+		charController->jump(btVector3(0.0f, 10.0f, 0.0f));
 	}
 
 }
@@ -183,6 +127,5 @@ void Player::ShowControls(bool show){
 
 
 void Player::NoMovement(){
-	//cout << "NO MOVE" << endl;
-	GetBody()->setLinearVelocity(btVector3(0, 0, 0));
+	charController->setWalkDirection(btVector3(0.0f,0.0f,0.0f));
 }

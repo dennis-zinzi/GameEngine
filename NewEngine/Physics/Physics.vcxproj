@@ -75,9 +75,11 @@
   <ItemGroup>
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsObject.h" />
+    <ClInclude Include="PhysicsPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PhysicsManager.cpp" />
+    <ClCompile Include="PhysicsPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\bullet3-2.86.1\build3\vs2010\BulletCollision.vcxproj">

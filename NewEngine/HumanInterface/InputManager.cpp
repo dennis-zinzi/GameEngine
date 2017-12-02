@@ -65,32 +65,37 @@ bool InputManager::CheckForInputs(){
 	//Gather player input if game unpaused
 	if(!isPaused){
 		const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
-
+		bool moving = false;
 		// Move player
 		if((keyboard_state[SDL_SCANCODE_W] && !keyboard_state[SDL_SCANCODE_S])
 			|| (keyboard_state[SDL_SCANCODE_UP] && !keyboard_state[SDL_SCANCODE_DOWN])) {
 			//Apply force upwards
 			Player->MoveForward();
+			moving = true;
 		}
 		else if((keyboard_state[SDL_SCANCODE_S] && !keyboard_state[SDL_SCANCODE_W])
 			|| (keyboard_state[SDL_SCANCODE_DOWN] && !keyboard_state[SDL_SCANCODE_UP])) {
 			//Apply force downwards
 			Player->MoveBackward();
+			moving = true;
 		}
 
 		if((keyboard_state[SDL_SCANCODE_D] && !keyboard_state[SDL_SCANCODE_A])
 			|| (keyboard_state[SDL_SCANCODE_RIGHT] && !keyboard_state[SDL_SCANCODE_LEFT])) {
 			//Apply force rightwards
 			Player->MoveRight();
+			moving = true;
 		}
 		else if((keyboard_state[SDL_SCANCODE_A] && !keyboard_state[SDL_SCANCODE_D])
 			|| (keyboard_state[SDL_SCANCODE_LEFT] && !keyboard_state[SDL_SCANCODE_RIGHT])) {
 			//Apply force leftwards
 			Player->MoveLeft();
+			moving = true;
 		}
 
-
-		//Player->NoMovement();
+		if(!moving){
+			Player->NoMovement();
+		}
 	}
 
 	return true;

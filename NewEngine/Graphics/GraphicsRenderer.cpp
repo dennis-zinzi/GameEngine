@@ -530,8 +530,8 @@ void GraphicsRenderer::ShowControls(){
 	DrawTextLabel("Jump:", "Invasion2000.TTF", 75, 300, 500, 200, 50, 100, 200, 100);
 	DrawTextLabel("Space", "Invasion2000.TTF", 50, 700, 500, 200, 50, 100, 200, 100);
 
-	DrawTextLabel("Show Controls:", "Invasion2000.TTF", 75, 300, 575, 200, 50, 100, 200, 100);
-	DrawTextLabel("Hold P", "Invasion2000.TTF", 50, 700, 575, 200, 50, 100, 200, 100);
+	DrawTextLabel("Pause/Controls:", "Invasion2000.TTF", 75, 300, 575, 200, 50, 100, 200, 100);
+	DrawTextLabel("  P  ", "Invasion2000.TTF", 50, 700, 575, 200, 50, 100, 200, 100);
 
 	DrawTextLabel("Exit:", "Invasion2000.TTF", 75, 300, 650, 200, 50, 100, 200, 100);
 	DrawTextLabel(" Esc ", "Invasion2000.TTF", 50, 700, 650, 200, 50, 100, 200, 100);

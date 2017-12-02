@@ -11,6 +11,7 @@
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 #include "PhysicsObject.h"
+#include "PhysicsPlayer.h"
 
 using std::vector;
 using std::find;
@@ -26,9 +27,9 @@ class PhysicsManager{
 			world->stepSimulation(1 / 90.0f);
 			world->performDiscreteCollisionDetection();
 
-			int numManifolds = world->getDispatcher()->getNumManifolds();
+
 			//For each contact manifold
-			for(int i = 0; i < numManifolds; i++){
+			for(int i = 0; i < world->getDispatcher()->getNumManifolds(); i++){
 				btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
 				btCollisionObject *obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 				btCollisionObject *obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
@@ -39,8 +40,15 @@ class PhysicsManager{
 					continue;
 				}
 				
-				((PhysicsObject*)obA->getUserPointer())->HandleHit((PhysicsObject*)obB->getUserPointer());
-				((PhysicsObject*)obB->getUserPointer())->HandleHit((PhysicsObject*)obA->getUserPointer());
+				if((PhysicsObject*)obA->getUserPointer() != nullptr && (PhysicsObject*)obB->getUserPointer() != nullptr){
+					((PhysicsObject*)obA->getUserPointer())->HandleHit((PhysicsObject*)obB->getUserPointer());
+					((PhysicsObject*)obB->getUserPointer())->HandleHit((PhysicsObject*)obA->getUserPointer());
+				}
+			}
+
+			//Update physics player
+			if(player){
+				player->Tick();
 			}
 		}
 
@@ -81,6 +89,28 @@ class PhysicsManager{
 			}
 		}
 
+		//Add PhysicsPlayer to physics system
+		inline void AddPhysicsPlayer(PhysicsPlayer *player){
+			this->player = player;
+
+			world->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+			this->player->SetGravity(world->getGravity());
+
+			world->addCollisionObject(this->player->GetGhostObj(), btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter);
+			world->addAction(this->player->GetCharController());
+		}
+		inline void RemovePhysicsPlayer(){
+			if(player){
+				//world->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(nullptr);
+				world->removeCollisionObject(player->GetGhostObj());
+				world->removeAction(player->GetCharController());
+			}
+		}
+
+		inline btDynamicsWorld* GetWorld(){
+			return world;
+		}
+
 	private:
 		vector<PhysicsObject*> physicsObjects;
 		btDynamicsWorld *world;
@@ -88,4 +118,5 @@ class PhysicsManager{
 		btCollisionConfiguration *collisionConfig;
 		btBroadphaseInterface *broadphase;
 		btConstraintSolver *solver;
+		PhysicsPlayer *player;
 };

@@ -54,7 +54,12 @@ class Camera{
 			return look;
 		}
 
-		inline void SetCameraLoc(float x = 0.0f, float y = 0.0f, float z = 0.0f, float yaw = 0.0f, float pitch = 5.0f){
+		inline void SetCameraLoc(float x = 0.0f, float y = 0.0f, float z = 0.0f){
+			this->x = x;
+			this->y = y;
+			this->z = z;
+		}
+		inline void SetCameraLoc(float x, float y, float z, float yaw, float pitch){
 			this->x = x;
 			this->y = y;
 			this->z = z;
@@ -62,6 +67,7 @@ class Camera{
 			this->pitch = pitch;
 		}
 
+		void UpdatePitchYaw();
 
 	private:
 		float x, y, z;
@@ -69,5 +75,5 @@ class Camera{
 		SDL_Window *window;
 
 		void LockCamera();
-		void UpdatePitchYaw();
+		
 };

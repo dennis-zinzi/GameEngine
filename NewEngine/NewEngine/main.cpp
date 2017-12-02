@@ -109,8 +109,6 @@ int main(int argc, char **argv){
 				game->RestartLevel();
 				//Reset player pos
 				((Player*)input->GetInputPlayer())->SetPlayerPos(0.0f, 0.0f, 0.0f);
-				//((Player*)input->GetInputPlayer())->ResetJump();
-				renderer->AddRenderObject((Player*)input->GetInputPlayer());
 			}
 		}
 	}

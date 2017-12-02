@@ -13,7 +13,7 @@
 using std::cout;
 using std::endl;
 
-class Player : public GameObject, public InputPlayer{
+class Player : public InputPlayer, public PhysicsPlayer{
 	public:
 		Player(GraphicsRenderer *renderer, PhysicsManager *physics, AudioPlayer *player, float width, float height, float depth, float mass = 5.0f,
 			int red = 68, int green = 195, int blue = 18, int alpha = 255);
@@ -23,7 +23,8 @@ class Player : public GameObject, public InputPlayer{
 
 		void MovePhysicObj(float x1, float x2, float y1, float y2, float z1, float z2);
 
-		virtual void Render() override;
+		//virtual void Render() override;
+		virtual void Tick() override;
 
 		virtual void MoveLeft() override;
 		virtual void MoveForward() override;
@@ -39,19 +40,14 @@ class Player : public GameObject, public InputPlayer{
 		}
 		inline void SetPlayerPos(float x, float y, float z){
 			camera->SetCameraLoc(x, y, z);
-		}
-
-		inline void ResetJump(){
-			isJumping = false;
-			isFalling = false;
-			jumpNum = 0;
+			charController->getGhostObject()->getWorldTransform().setOrigin(btVector3(x, y, z));
 		}
 
 
 	private:
 		Camera *camera;
 
-		bool isJumping;
-		bool isFalling;
-		int jumpNum;
+		GraphicsRenderer *renderer;
+		PhysicsManager *physics;
+		AudioPlayer *audio;
 };

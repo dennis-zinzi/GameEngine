@@ -35,16 +35,17 @@ void GameLevel::UpdateGame(int time){
 
 	if(timeLeft < 0){
 		state = GameState::Done;
-		scores.push_back(score);
 
 		if(scores.size() > 1){
 			int maxScore = *max_element(scores.begin(), scores.end());
-			if(score == maxScore){
+			if(score > maxScore){
 				//play highscore music
 				audioPlayer->PlayEffect("highscore.wav");
 				//player->ChangeMusic("khtheme.wav");
 			}
 		}
+
+		scores.push_back(score);
 	}
 }
 
